@@ -1,0 +1,15 @@
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\bin\Debug\net10.0\DigitalBusiness.Json.deps.json
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\bin\Debug\net10.0\DigitalBusiness.Json.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\bin\Debug\net10.0\DigitalBusiness.Json.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\bin\Debug\net10.0\DigitalBusiness.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\bin\Debug\net10.0\DigitalBusiness.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.csproj.AssemblyReference.cache
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.AssemblyInfoInputs.cache
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.AssemblyInfo.cs
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.csproj.CoreCompileInputs.cache
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalB.61E373F9.Up2Date
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\refint\DigitalBusiness.Json.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\ref\DigitalBusiness.Json.dll

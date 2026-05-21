@@ -1,0 +1,11 @@
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\bin\Debug\net10.0\DigitalBusiness.deps.json
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\bin\Debug\net10.0\DigitalBusiness.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\bin\Debug\net10.0\DigitalBusiness.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.AssemblyInfoInputs.cache
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.AssemblyInfo.cs
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.csproj.CoreCompileInputs.cache
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\refint\DigitalBusiness.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\DigitalBusiness.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness\obj\Debug\net10.0\ref\DigitalBusiness.dll
