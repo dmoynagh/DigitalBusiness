@@ -15,3 +15,4 @@ C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.JsonDataWrappe
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.JsonDataWrappers\obj\Debug\net10.0\refint\DigitalBusiness.JsonDataWrappers.dll
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.JsonDataWrappers\obj\Debug\net10.0\DigitalBusiness.JsonDataWrappers.pdb
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.JsonDataWrappers\obj\Debug\net10.0\ref\DigitalBusiness.JsonDataWrappers.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.JsonDataWrappers\obj\Debug\net10.0\DigitalBusiness.JsonDataWrappers.sourcelink.json

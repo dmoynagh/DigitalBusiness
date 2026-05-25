@@ -13,3 +13,4 @@ C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\refint\DigitalBusiness.Json.dll
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.pdb
 C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\ref\DigitalBusiness.Json.dll
+C:\Users\david\dev\repos\DigitalBusiness\Projects\DigitalBusiness.Json\obj\Debug\net10.0\DigitalBusiness.Json.sourcelink.json
