@@ -11,6 +11,7 @@ namespace DigitalBusiness.Json.JsonNodes
     {
         extension<T>(T node) where T : JsonNode
         {
+            //Creates a JsonElement from the JsonNode. This is useful for serialization and deserialization.
             public JsonElement ToJsonElement() => node.Deserialize<JsonElement>();
         }
     }
