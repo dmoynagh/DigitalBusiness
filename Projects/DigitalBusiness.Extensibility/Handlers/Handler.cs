@@ -32,57 +32,54 @@ namespace DigitalBusiness.Extensibility.Handlers
         private readonly bool _hasFactories;
         private readonly HandlerActionAsync<TContext>[] _cachedActions;
 
-         public async ValueTask ExecuteAsync(TContext context, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(TContext context, CancellationToken cancellationToken)
         {
             var descriptors = _executionPlan.HandlerDescriptors;
             
             var execution = context is IHandlerExecutionController<IHandlerExecution> executionController ? executionController .Execution : null;
-      
+            if ((execution is not null && !execution.ContinueExecution))
+            {
+                return;               
+            }
+
             if (_hasFactories)
             {
                 var count = descriptors.Length;
                 for (int i = 0; i < count; i++)
-                {
-                    if((execution is not null && !execution.ContinueExecution))
-                    {
-                        break;
-                    }
+                {                   
 
                     var descriptor = descriptors[i];
+                    if(descriptor.Condition is null || descriptor.Condition.Applies(context))
+                    {
+                        var action = descriptor.Action ?? (_cachedActions[i] ??= descriptor.ActionFactory!(_serviceProvider.ServiceProvider));
 
-                    if (descriptor.Action is not null) 
-                    {
-                        await descriptor.Action(context, cancellationToken);
-                    }
-                    else
-                    {
-                        var action = _cachedActions[i] ??= descriptor.ActionFactory!(_serviceProvider.ServiceProvider);
                         await action(context, cancellationToken);
-                    }
-                    if (execution is not null && !execution.ContinueExecution)
-                    {
-                        execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptors[i]);
-                        break;
-                    }
 
+                        if (execution is not null && !execution.ContinueExecution)
+                        {
+                            execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptors[i]);
+                            break;
+                        }
+                    }
                 }   
             }
             else
             {
                 for (int i = 0; i < descriptors.Length; i++)
                 {
-                    if ((execution is not null && !execution.ContinueExecution))
+                    var descriptor = descriptors[i];
+                    if (descriptor.Condition is null || descriptor.Condition.Applies(context))
                     {
-                        break;
+
+                        await descriptor.Action!(context, cancellationToken);
+
+                        if (execution is not null && !execution.ContinueExecution)
+                        {
+                            execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptor);
+                            break;
+                        }
                     }
 
-                    await descriptors[i].Action!(context, cancellationToken);
-
-                    if (execution is not null && !execution.ContinueExecution)
-                    {
-                        execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptors[i]); 
-                        break;
-                    }
                 }
             }
         }
