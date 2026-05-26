@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DigitalBusiness.Json")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+601c62aa9f552a6a664b9b58b7a059c28f07c78d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34fb711a7736c3d513b0da548a04d9dd33f4e119")]
 [assembly: System.Reflection.AssemblyProductAttribute("DigitalBusiness.Json")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DigitalBusiness.Json")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
