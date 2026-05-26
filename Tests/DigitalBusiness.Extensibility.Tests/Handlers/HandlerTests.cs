@@ -1,4 +1,4 @@
-using DigitalBusiness.Extensibility.Handlers;
+﻿using DigitalBusiness.Extensibility.Handlers;
 using DigitalBusiness.Extensibility.Handlers.Execution;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +13,10 @@ public class HandlerTests
         string name,
         Func<TContext, CancellationToken, ValueTask> action,
         HandlerActionOptions? options = null)
-        => HandlerActionDescriptor<TContext>.Create("Test", name,
-            (ctx, ct) => action(ctx, ct), null, options);
+        => HandlerActionDescriptor<TContext>.Create(
+            "Test", name,
+            (HandlerActionAsync<TContext>)((ctx, ct) => action(ctx, ct)),
+            null, options);
 
     private static Handler<TContext> Build<TContext>(
         IEnumerable<HandlerActionDescriptor<TContext>> descriptors,
@@ -54,11 +56,11 @@ public class HandlerTests
         var log = new List<string>();
 
         var runs = HandlerActionDescriptor<TestContext>.Create("Test", "Runs",
-            (_, __) => { log.Add("Runs"); return ValueTask.CompletedTask; },
+            (HandlerActionAsync<TestContext>)((_, __) => { log.Add("Runs"); return ValueTask.CompletedTask; }),
             new AlwaysAppliesCondition<TestContext>());
 
         var skipped = HandlerActionDescriptor<TestContext>.Create("Test", "Skipped",
-            (_, __) => { log.Add("Skipped"); return ValueTask.CompletedTask; },
+            (HandlerActionAsync<TestContext>)((_, __) => { log.Add("Skipped"); return ValueTask.CompletedTask; }),
             new NeverAppliesCondition<TestContext>());
 
         await Build([runs, skipped]).ExecuteAsync(new TestContext(), CancellationToken.None);
@@ -86,10 +88,10 @@ public class HandlerTests
         var ctx = new ControllableContext();
 
         var a = HandlerActionDescriptor<ControllableContext>.Create("Test", "A",
-            (c, __) => { log.Add("A"); c.Execution.Stop(); return ValueTask.CompletedTask; }, null);
+            (HandlerActionAsync<ControllableContext>)((c, __) => { log.Add("A"); c.Execution.Stop(); return ValueTask.CompletedTask; }), null);
 
         var b = HandlerActionDescriptor<ControllableContext>.Create("Test", "B",
-            (_, __) => { log.Add("B"); return ValueTask.CompletedTask; }, null);
+            (HandlerActionAsync<ControllableContext>)((_, __) => { log.Add("B"); return ValueTask.CompletedTask; }), null);
 
         await Build([a, b]).ExecuteAsync(ctx, CancellationToken.None);
 
@@ -102,7 +104,7 @@ public class HandlerTests
         var ctx = new ControllableContext();
 
         var stopper = HandlerActionDescriptor<ControllableContext>.Create("Test", "Stopper",
-            (c, __) => { c.Execution.Stop(); return ValueTask.CompletedTask; }, null);
+            (HandlerActionAsync<ControllableContext>)((c, __) => { c.Execution.Stop(); return ValueTask.CompletedTask; }), null);
 
         await Build([stopper]).ExecuteAsync(ctx, CancellationToken.None);
 
@@ -121,7 +123,7 @@ public class HandlerTests
         ctx.Execution.Stop();
 
         var a = HandlerActionDescriptor<ControllableContext>.Create("Test", "ShouldNotRun",
-            (_, __) => ValueTask.CompletedTask, null);
+            (HandlerActionAsync<ControllableContext>)((_, __) => ValueTask.CompletedTask), null);
 
         await Build([a]).ExecuteAsync(ctx, CancellationToken.None);
 
@@ -147,10 +149,10 @@ public class HandlerTests
     public async Task ExecuteAsync_FactoryAction_ResolvedAndInvoked()
     {
         var ran = false;
-        var sp  = new ServiceCollection().BuildServiceProvider();
+        var sp = new ServiceCollection().BuildServiceProvider();
 
         var d = HandlerActionDescriptor<TestContext>.Create("Test", "F",
-            _ => (_, __) => { ran = true; return ValueTask.CompletedTask; }, null);
+            (HandlerActionAsyncFactory<TestContext>)(_ => (_, __) => { ran = true; return ValueTask.CompletedTask; }), null);
 
         await Build([d], sp).ExecuteAsync(new TestContext(), CancellationToken.None);
 
@@ -163,11 +165,12 @@ public class HandlerTests
         int factoryCallCount = 0;
         var sp = new ServiceCollection().BuildServiceProvider();
 
-        var d = HandlerActionDescriptor<TestContext>.Create("Test", "F", _ =>
-        {
-            factoryCallCount++;
-            return (_, __) => ValueTask.CompletedTask;
-        }, null);
+        var d = HandlerActionDescriptor<TestContext>.Create("Test", "F",
+            (HandlerActionAsyncFactory<TestContext>)(_ =>
+            {
+                factoryCallCount++;
+                return (_, __) => ValueTask.CompletedTask;
+            }), null);
 
         var handler = Build([d], sp);
 

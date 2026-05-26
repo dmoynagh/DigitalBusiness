@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DigitalBusiness.Extensibility")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+601c62aa9f552a6a664b9b58b7a059c28f07c78d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2046b9958c3707582dbe957fe55cbc524c5d0b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("DigitalBusiness.Extensibility")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DigitalBusiness.Extensibility")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
