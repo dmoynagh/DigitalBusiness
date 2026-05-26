@@ -4,17 +4,22 @@ using System.Text;
 
 namespace DigitalBusiness.Extensibility.Handlers
 {
-    //Build derived pipelines from this class
-    //as a sealed record class is easiest.
-    //example below
-    //  public sealed record JsonDocumentPipeline(
-    //      Handler<PrepareItemContext> PrepareItem,
-    //      Handler<BeforeUpdateContext> BeforeUpdate,
-    //      Handler<AfterUpdateContext> AfterUpdate,
-    //      Handler<BeforeSaveContext> BeforeSave,
-    //      Handler<CompleteContext> Complete);
-
-
+    /// <summary>
+    /// Base class for pipeline definitions that group multiple typed <see cref="Handler{TContext}"/> instances.
+    /// </summary>
+    /// <remarks>
+    /// Derive from this class using a <c>sealed record</c> whose constructor parameters are the
+    /// <see cref="Handler{TContext}"/> instances that form the pipeline. Example:
+    /// <code>
+    /// public sealed record JsonDocumentPipeline(
+    ///     Handler&lt;PrepareItemContext&gt;  PrepareItem,
+    ///     Handler&lt;BeforeUpdateContext&gt; BeforeUpdate,
+    ///     Handler&lt;AfterUpdateContext&gt;  AfterUpdate,
+    ///     Handler&lt;BeforeSaveContext&gt;   BeforeSave,
+    ///     Handler&lt;CompleteContext&gt;     Complete);
+    /// </code>
+    /// Register pipelines with <c>AddPipeline&lt;TPipeline&gt;()</c> during startup.
+    /// </remarks>
     public abstract class Pipeline
     {
     }

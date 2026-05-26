@@ -5,6 +5,11 @@ using System.Text;
 
 namespace DigitalBusiness.Extensibility.Handlers
 {
+    /// <summary>
+    /// Provides extension methods for <see cref="IHandlerExecution"/> and typed
+    /// <see cref="IHandlerExecutionController{TExecution}"/> instances to check and request
+    /// execution flow changes (skip remaining, cancel, end pipeline).
+    /// </summary>
     public static class HandlerExecutionExtensions
     {
         extension(IHandlerExecution execution)
