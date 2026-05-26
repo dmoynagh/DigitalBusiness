@@ -119,3 +119,4 @@ C:\Users\david\dev\repos\DigitalBusiness\Tests\DigitalBusiness.Extensibility.Tes
 C:\Users\david\dev\repos\DigitalBusiness\Tests\DigitalBusiness.Extensibility.Tests\bin\Debug\net10.0\DigitalBusiness.Extensibility.dll
 C:\Users\david\dev\repos\DigitalBusiness\Tests\DigitalBusiness.Extensibility.Tests\bin\Debug\net10.0\DigitalBusiness.Extensibility.pdb
 C:\Users\david\dev\repos\DigitalBusiness\Tests\DigitalBusiness.Extensibility.Tests\bin\Debug\net10.0\DigitalBusiness.pdb
+C:\Users\david\dev\repos\DigitalBusiness\Tests\DigitalBusiness.Extensibility.Tests\bin\Debug\net10.0\Microsoft.Extensions.DependencyInjection.dll

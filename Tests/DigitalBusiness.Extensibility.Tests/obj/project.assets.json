@@ -53,6 +53,25 @@
           "build/netstandard2.0/Microsoft.CodeCoverage.targets": {}
         }
       },
+      "Microsoft.Extensions.DependencyInjection/10.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+        },
+        "compile": {
+          "lib/net10.0/Microsoft.Extensions.DependencyInjection.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyInjection.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
       "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.8": {
         "type": "package",
         "compile": {
@@ -825,6 +844,37 @@
         "microsoft.codecoverage.nuspec"
       ]
     },
+    "Microsoft.Extensions.DependencyInjection/10.0.0": {
+      "sha512": "f0RBabswJq+gRu5a+hWIobrLWiUYPKMhCD9WO3sYBAdSy3FFH14LMvLVFZc2kPSCimBLxSuitUhsd6tb0TAY6A==",
+      "type": "package",
+      "path": "microsoft.extensions.dependencyinjection/10.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.DependencyInjection.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyInjection.targets",
+        "lib/net10.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net10.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/net8.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net8.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/net9.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net9.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.xml",
+        "microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.8": {
       "sha512": "21nbDV60SRPWGIivsyl6lqBeEJNG1sginhhfWgRrr3Ais7aQ12To25OAHQxgoiJkjqy1aQ6RxpZBGYuTi7Ge6A==",
       "type": "package",
@@ -1468,8 +1518,10 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "DigitalBusiness >= 1.0.0",
       "DigitalBusiness.Extensibility >= 1.0.0",
       "FluentAssertions >= 7.0.0",
+      "Microsoft.Extensions.DependencyInjection >= 10.0.0",
       "Microsoft.NET.Test.Sdk >= 17.14.1",
       "Moq >= 4.20.72",
       "coverlet.collector >= 6.0.4",
@@ -1512,6 +1564,9 @@
           "projectReferences": {
             "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness.Extensibility\\DigitalBusiness.Extensibility.csproj": {
               "projectPath": "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness.Extensibility\\DigitalBusiness.Extensibility.csproj"
+            },
+            "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness\\DigitalBusiness.csproj": {
+              "projectPath": "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness\\DigitalBusiness.csproj"
             }
           }
         }
@@ -1536,6 +1591,10 @@
           "FluentAssertions": {
             "target": "Package",
             "version": "[7.0.0, )"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
+            "target": "Package",
+            "version": "[10.0.0, )"
           },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",

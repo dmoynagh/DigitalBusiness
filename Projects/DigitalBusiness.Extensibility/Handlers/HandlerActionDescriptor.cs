@@ -84,6 +84,7 @@ namespace DigitalBusiness.Extensibility.Handlers
                 throw new ArgumentOutOfRangeException(nameof(executionStage), $"ExecutionStage must be between {HandlerDefaults.MinExecutionStage} and {HandlerDefaults.MaxExecutionStage}.");
             }
 
+            ExecutionStage = executionStage;
             ExecutionOrder = executionOrder;
      
         }

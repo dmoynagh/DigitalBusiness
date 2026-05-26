@@ -1,9 +1,6 @@
 ﻿
 using DigitalBusiness.Extensibility.Handlers.Execution;
 using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Text;
 
 namespace DigitalBusiness.Extensibility.Handlers
 {
@@ -36,58 +33,33 @@ namespace DigitalBusiness.Extensibility.Handlers
         {
             var descriptors = _executionPlan.HandlerDescriptors;
             
-            var execution = context is IHandlerExecutionController<IHandlerExecution> executionController ? executionController .Execution : null;
+            var execution = context is IHandlerExecutionController executionController ? executionController .Execution : null;
             if ((execution is not null && !execution.ContinueExecution))
             {
                 return;               
             }
-
-            if (_hasFactories)
-            {
-                var count = descriptors.Length;
-                for (int i = 0; i < count; i++)
-                {                   
-
-                    var descriptor = descriptors[i];
-                    if(descriptor.Condition is null || descriptor.Condition.Applies(context))
-                    {
-                        var action = descriptor.Action ?? (_cachedActions[i] ??= descriptor.ActionFactory!(_serviceProvider.ServiceProvider));
-
-                        await action(context, cancellationToken);
-
-                        if (execution is not null && !execution.ContinueExecution)
-                        {
-                            execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptors[i]);
-                            break;
-                        }
-                    }
-                }   
-            }
-            else
-            {
-                for (int i = 0; i < descriptors.Length; i++)
+           
+            var count = descriptors.Length;
+            for (int i = 0; i < count; i++)
+            {                   
+                var descriptor = descriptors[i];
+                if(descriptor.Condition is null || descriptor.Condition.Applies(context))
                 {
-                    var descriptor = descriptors[i];
-                    if (descriptor.Condition is null || descriptor.Condition.Applies(context))
+                    var action = _hasFactories
+                        ? descriptor.Action ?? (_cachedActions[i] ??= descriptor.ActionFactory!(_serviceProvider.ServiceProvider))
+                        : descriptor.Action!;
+
+                    await action(context, cancellationToken);
+
+                    if (execution is not null && !execution.ContinueExecution)
                     {
-
-                        await descriptor.Action!(context, cancellationToken);
-
-                        if (execution is not null && !execution.ContinueExecution)
-                        {
-                            execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptor);
-                            break;
-                        }
+                        execution.ExecutionSource ??= HandlerExecutionSource.Create(descriptors[i]);
+                        break;
                     }
-
                 }
-            }
+            }   
+            
         }
-
-
-
-
-
 
     }
 }

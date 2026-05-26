@@ -727,6 +727,9 @@
             "projectReferences": {
               "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness.Extensibility\\DigitalBusiness.Extensibility.csproj": {
                 "projectPath": "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness.Extensibility\\DigitalBusiness.Extensibility.csproj"
+              },
+              "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness\\DigitalBusiness.csproj": {
+                "projectPath": "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Projects\\DigitalBusiness\\DigitalBusiness.csproj"
               }
             }
           }
@@ -751,6 +754,10 @@
             "FluentAssertions": {
               "target": "Package",
               "version": "[7.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[10.0.0, )"
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",

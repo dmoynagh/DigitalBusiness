@@ -23,14 +23,19 @@
   <PackageReference Include="FluentAssertions" Version="7.0.0" />
 
   <PackageReference Include="Moq" Version="4.20.72" />
+
+  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
 </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Projects\DigitalBusiness.Extensibility\DigitalBusiness.Extensibility.csproj" />
+    <ProjectReference Include="..\..\Projects\DigitalBusiness\DigitalBusiness.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
+
+
 
 </Project>

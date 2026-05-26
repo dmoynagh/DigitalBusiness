@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "wf0uN0HQDhE=",
+  "dgSpecHash": "aX6FgOYRaYU=",
   "success": true,
   "projectFilePath": "C:\\Users\\david\\dev\\repos\\DigitalBusiness\\Tests\\DigitalBusiness.Extensibility.Tests\\DigitalBusiness.Extensibility.Tests.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\david\\.nuget\\packages\\coverlet.collector\\6.0.4\\coverlet.collector.6.0.4.nupkg.sha512",
     "C:\\Users\\david\\.nuget\\packages\\fluentassertions\\7.0.0\\fluentassertions.7.0.0.nupkg.sha512",
     "C:\\Users\\david\\.nuget\\packages\\microsoft.codecoverage\\17.14.1\\microsoft.codecoverage.17.14.1.nupkg.sha512",
+    "C:\\Users\\david\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.0\\microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512",
     "C:\\Users\\david\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.8\\microsoft.extensions.dependencyinjection.abstractions.10.0.8.nupkg.sha512",
     "C:\\Users\\david\\.nuget\\packages\\microsoft.net.test.sdk\\17.14.1\\microsoft.net.test.sdk.17.14.1.nupkg.sha512",
     "C:\\Users\\david\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.14.1\\microsoft.testplatform.objectmodel.17.14.1.nupkg.sha512",
