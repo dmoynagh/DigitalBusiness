@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+# IDE state (Visual Studio, Copilot snapshots)
+.vs/
+
+# Build output
+bin/
+obj/
+debug/
+
+# User-specific settings
+*.user
+*.suo
+
+# Test results
+TestResults/
+*.coverage
