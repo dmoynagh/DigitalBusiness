@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DigitalBusiness.JsonDataWrappers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34fb711a7736c3d513b0da548a04d9dd33f4e119")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+669b277574e248552ce2195963577c76ff057f65")]
 [assembly: System.Reflection.AssemblyProductAttribute("DigitalBusiness.JsonDataWrappers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DigitalBusiness.JsonDataWrappers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
