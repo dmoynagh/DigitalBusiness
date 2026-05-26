@@ -7,9 +7,14 @@ using System.Text.Json.Nodes;
 
 namespace DigitalBusiness.JsonDataWrappers.Internal
 {
+    /// <summary>
+    /// Deep structural equality comparisons for <see cref="JsonData"/> instances.
+    /// Handles all source combinations: Element/Element, Node/Node, and cross-source Element/Node.
+    /// Cross-source comparison iterates structures manually since the BCL provides no built-in cross-type deep equals.
+    /// </summary>
     public static class JsonDataEquality
     {
-
+        /// <summary>Compares two <see cref="JsonData"/> instances for structural equality regardless of source type.</summary>
         public static bool Equals(in JsonData a, in JsonData b)
         {
             if (a.IsNull && b.IsNull) return true;
@@ -20,18 +25,21 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
 
             return false;
         }
+        /// <summary>Treats a null (no-value) <paramref name="b"/> as equal to a null <see cref="JsonData"/>.</summary>
         public static bool Equals(in JsonData a, in JsonData? b)
         {
             if (!b.HasValue) return a.IsNull; // If b is null, return true if a is empty or explicitly null
             return Equals(a, b.Value);
         }
 
+        /// <summary>Treats a null (no-value) <paramref name="a"/> as equal to a null <see cref="JsonData"/>.</summary>
         public static bool Equals(in JsonData? a, in JsonData b)
         {
             if (!a.HasValue) return b.IsNull; // If a is null, return true if b is empty or explicitly null
             return Equals(a.Value, b);
         }
 
+        /// <summary>Compares two nullable <see cref="JsonData"/> instances. Two no-value instances are equal.</summary>
         public static bool Equals(in JsonData? a, in JsonData? b)
         {
             if (!a.HasValue)
@@ -48,7 +56,9 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
         }
 
         
+        /// <summary>Delegates to <see cref="JsonElement.DeepEquals"/>.</summary>
         public static bool Equals(in  JsonElement element1, in JsonElement element2) => JsonElement.DeepEquals(element1, element2);
+        /// <summary>Treats a missing element as equal to an explicit null element.</summary>
         public static bool Equals(in  JsonElement? element1, in JsonElement? element2)
         {
             if (!element1.HasValue && !element2.HasValue) return true;
@@ -57,9 +67,10 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
             return Equals(element1!.Value, element2!.Value);
         }
 
+        /// <summary>Delegates to <see cref="JsonNode.DeepEquals"/>.</summary>
         public static bool Equals(JsonNode? nodeA, JsonNode? nodeB)=>JsonNode.DeepEquals(nodeA, nodeB);
 
-
+        // Cross-source comparisons (Node vs Element) — requires manual structural traversal
         public static bool Equals(JsonNode? node,in JsonElement? element) => Equals(in element, node);
         public static bool Equals(in JsonElement? element, JsonNode? node) => element.HasValue ? Equals(element.Value, node) : node is null || node.GetValueKind() == JsonValueKind.Null;
         public static bool Equals(in JsonElement element, JsonNode? node) => Equals(node,in element);      

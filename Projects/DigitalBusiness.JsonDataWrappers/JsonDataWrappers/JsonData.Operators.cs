@@ -7,12 +7,21 @@ using System.Text.Json.Nodes;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
+    /// <summary>
+    /// Implicit and explicit cast operators for <see cref="JsonData"/> covering all common primitive types.
+    /// <para>
+    /// Implicit (widening) casts allow primitive values to be assigned directly to <see cref="JsonData"/>.
+    /// Explicit (narrowing) casts extract values — non-nullable forms throw on null or type mismatch,
+    /// nullable forms return null rather than throwing.
+    /// </para>
+    /// </summary>
     public readonly partial struct JsonData
-    {
-     
+    {     
+        // string
         public static implicit operator JsonData(string? value) => new JsonData(JsonValue.Create(value));
         public static explicit operator string?(in JsonData jsonData) => jsonData.Get<string>();
 
+        // bool
         public static implicit operator JsonData(bool value) => new JsonData(JsonValue.Create(value));
         public static implicit operator JsonData(bool? value) => new JsonData(JsonValue.Create(value));
         public static explicit operator bool(in JsonData jsonData) => jsonData.Get<bool>();

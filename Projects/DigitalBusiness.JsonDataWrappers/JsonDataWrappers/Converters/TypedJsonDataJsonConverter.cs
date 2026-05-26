@@ -1,23 +1,19 @@
-﻿using DigitalBusiness.JsonDataWrappers;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace DigitalBusiness.JsonDataWrappers.Converters
 {
-    //Json serializer for JsonData<T> struct, which can handle both JsonNode and JsonElement representations of JSON data.
-    //It ensures that the correct type is deserialized based on the input JSON structure and provides a way to serialize JsonData<T> back to JSON format.
-    public class TypedJsonDataJsonConverter<T>: JsonConverter<JsonData<T>>
+    /// <summary>
+    /// JSON converter for <see cref="JsonData{T}"/>.
+    /// Deserializes as a JsonElement (readonly). Serializes from either JsonNode or JsonElement source.
+    /// </summary>
+    public class TypedJsonDataJsonConverter<T>: JsonConverter<JsonData<T>> where T : IJsonDataKey
     {
         public override JsonData<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if(typeToConvert != typeof(JsonData))
-                throw new JsonException($"Unexpected type to convert: {typeToConvert.FullName}. Expected: {typeof(JsonData).FullName}");
             
             var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-            return new JsonData<T> { Json = new JsonData(element) };
+            return new JsonData<T>(new JsonData(element));
         }
        
         public override void Write(Utf8JsonWriter writer, JsonData<T> value, JsonSerializerOptions options)

@@ -5,19 +5,27 @@ using System.Text;
 
 namespace DigitalBusiness.JsonDataWrappers.Internal
 {
+    /// <summary>
+    /// Centralised factory for exceptions thrown by <see cref="JsonData"/> operations.
+    /// Keeps error message logic out of hot paths and ensures consistent messaging.
+    /// </summary>
     public static class JsonDataExceptionHelper
     {
+        /// <summary>Thrown when a mutating operation is attempted on a readonly instance.</summary>
         public static Exception ReadOnlyException()
            => new InvalidOperationException("Cannot modify read-only JsonData.");
 
+        /// <summary>Thrown when an operation is attempted on a null instance.</summary>
         public static Exception NullException() => new InvalidOperationException("JsonData is null.");
 
+        /// <summary>Constructs an appropriate exception for a failed typed value extraction, accounting for null vs type mismatch.</summary>
         public static Exception GetTypedValueException<T>(JsonData jsonData)
         {
             if(jsonData.IsNull)  return NullException();
             return new InvalidOperationException($"Cannot get value of type {typeof(T).FullName} from JsonData with ValueKind {jsonData.ValueKind}.");
         }
 
+        /// <summary>Constructs an exception for a failed typed property extraction.</summary>
         public static Exception GetTypedPropertyException<T>(string propertyName, JsonData objectJsonData)
         {
             if (objectJsonData.IsNull) return NullException();
@@ -25,6 +33,7 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
             return new InvalidOperationException($"Cannot get value of type {typeof(T).FullName} from property '{propertyName}' with ValueKind {objectJsonData[propertyName]?.ValueKind.ToString() ?? "null"}.");
         }
 
+        /// <summary>Constructs an exception for a failed typed index extraction.</summary>
         public static Exception GetTypedIndexException<T>(int index, JsonData arrayJsonData)
         {
             if (arrayJsonData.IsNull) return NullException();

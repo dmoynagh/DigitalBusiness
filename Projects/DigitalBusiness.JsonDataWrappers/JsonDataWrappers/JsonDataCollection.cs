@@ -9,23 +9,36 @@ using System.Text.Json.Nodes;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
+    /// <summary>Marks a collection as enumerable as <see cref="JsonData"/> items.</summary>
     public interface IJsonDataCollection : IEnumerable<JsonData>
     {       
     }
 
+    /// <summary>
+    /// Abstract base for collections that enumerate JSON data from various sources as <see cref="JsonData"/> items.
+    /// Concrete implementations wrap <see cref="JsonNode"/>, <see cref="JsonArray"/>, <see cref="JsonDocument"/>,
+    /// <see cref="JsonElement"/> sequences, or raw JSON strings.
+    /// <para>
+    /// Implements <see cref="IDisposable"/> because some sources (<see cref="JsonDocument"/>, parsed strings)
+    /// own unmanaged memory and must be disposed. Use <c>autoDispose</c> where the collection owns the document.
+    /// </para>
+    /// </summary>
     public abstract class JsonDataCollection : IJsonDataCollection, IDisposable
     {
+        /// <summary>Creates a collection from a sequence of <see cref="JsonNode"/> instances.</summary>
         public static JsonDataCollection Create(IEnumerable<JsonNode> nodes) => new JsonDataJsonNodeCollection(nodes);
-
+        /// <summary>Creates a collection from a <see cref="JsonArray"/>.</summary>
         public static JsonDataCollection Create(JsonArray array) => new JsonDataJsonArrayCollection(array);
-
+        /// <summary>
+        /// Creates a collection from a <see cref="JsonDocument"/>.
+        /// Set <paramref name="autoDispose"/> to true if this collection should dispose the document when it is disposed.
+        /// </summary>
         public static JsonDataCollection Create(JsonDocument document, bool autoDispose=false)=> new JsonDataJsonDocumentCollection(document, autoDispose);
-
+        /// <summary>Creates a collection from a sequence of <see cref="JsonElement"/> instances.</summary>
         public static JsonDataCollection Create(IEnumerable<JsonElement> elements) => new JsonDataJsonElementCollection(elements);
-
+        /// <summary>Creates a collection from the children of a <see cref="JsonElement"/> array.</summary>
         public static JsonDataCollection Create(JsonElement rootElement) => new JsonDataJsonElementChildrenCollection(rootElement);
-
-
+        /// <summary>Creates a collection by parsing a raw JSON array string. The document is lazily created and disposed with this collection.</summary>
         public static JsonDataCollection Create(string jsonData) => new JsonDataJsonStringCollection(jsonData);
 
      
@@ -175,11 +188,13 @@ namespace DigitalBusiness.JsonDataWrappers
 
     }
 
+    /// <summary>Extension methods for <see cref="IJsonDataCollection"/>.</summary>
     public static class JsonDataCollectionExtensions
     {
         extension(IJsonDataCollection collection)
         {
-            public IEnumerable<JsonData<T>> AsJsonData<T>() => collection.Select(d => d.AsJsonData<T>());
+            /// <summary>Projects the collection as a sequence of typed <see cref="JsonData{T}"/> wrappers.</summary>
+            public IEnumerable<JsonData<T>> AsJsonData<T>() where T : IJsonDataKey => collection.Select(d => d.AsJsonData<T>());
         }        
     }
 }

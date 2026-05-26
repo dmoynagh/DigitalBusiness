@@ -16,4 +16,8 @@
     <ProjectReference Include="..\DigitalBusiness\DigitalBusiness.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Architecture\" />
+  </ItemGroup>
+
 </Project>

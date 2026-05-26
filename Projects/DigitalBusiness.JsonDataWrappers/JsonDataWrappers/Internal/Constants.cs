@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace DigitalBusiness.JsonDataWrappers.Internal
 {
-    public static class Constants
+    internal static class Constants
     {
+        /// <summary>Default format for Guid serialization. "B" produces the standard registry format: {00000000-0000-0000-0000-000000000000}.</summary>
         public const string DefaultGuidFormat = "B";
     }
 }

@@ -7,10 +7,16 @@ using System.Text.RegularExpressions;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
+    /// <summary>
+    /// Internal utility methods for working with <see cref="JsonData"/> internals.
+    /// Handles JsonNode tree navigation and cross-source operations not suited to extension methods.
+    /// </summary>
     public static class JsonDataHelper
     {
+        /// <summary>Wraps a <see cref="JsonElement"/> as a <see cref="JsonNode"/> (as a JsonValue).</summary>
         public static JsonNode? CreateNodeFromElement(in JsonElement element) =>  JsonValue.Create(element);
 
+        /// <summary>Walks up the parent chain to return the root node of a node tree.</summary>
         public static JsonNode GetRootNode(JsonNode node)
         {
             JsonNode current = node;
@@ -21,9 +27,14 @@ namespace DigitalBusiness.JsonDataWrappers
             return current;
         }
 
+        /// <summary>Returns true if both nodes share the same root — i.e. they are part of the same node tree.</summary>
         public static bool HasCommonRoot(JsonNode nodeA, JsonNode nodeB)=> GetRootNode(nodeA) == GetRootNode(nodeB);
-        
 
+
+        /// <summary>
+        /// Returns the node safe to add to another tree. If the node already has a parent in a different tree,
+        /// returns a deep clone to avoid cross-tree ownership violations enforced by <see cref="JsonNode"/>.
+        /// </summary>
         public static JsonNode GetNodeToAdd(JsonNode addNode, JsonNode parentNode)
         {            
             if(addNode.Parent is null) return addNode;
@@ -32,6 +43,7 @@ namespace DigitalBusiness.JsonDataWrappers
             return addNode.DeepClone();
         }
 
+        /// <summary>Resolves the correct node to add from a <see cref="JsonData"/> value, handling null, Element, and Node sources.</summary>
         public static JsonNode? GetNodeToAdd(in JsonData addValue, JsonNode addToNode)
         {
             if (addValue.IsNull) return default;
@@ -42,6 +54,7 @@ namespace DigitalBusiness.JsonDataWrappers
             throw new InvalidOperationException("JsonData does not contain a valid node or element.");
         }
 
+        /// <summary>Enumerates property names from an object-kind <see cref="JsonData"/>, regardless of source type.</summary>
         public static IEnumerable<string> GetPropertyNames(JsonData jsonData)
         {
             if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Object)
@@ -60,6 +73,7 @@ namespace DigitalBusiness.JsonDataWrappers
             }
         }
 
+        /// <summary>Enumerates array items from an array-kind <see cref="JsonData"/>, regardless of source type.</summary>
         public static IEnumerable<JsonData> GetArrayItems(JsonData jsonData)
         {
             if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Array)

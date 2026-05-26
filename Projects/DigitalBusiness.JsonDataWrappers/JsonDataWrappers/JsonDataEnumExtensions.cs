@@ -10,21 +10,28 @@ using System.Text.Json.Nodes;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
+    /// <summary>
+    /// Extension methods for reading and writing enum values via <see cref="JsonData"/>.
+    /// Enums are stored as strings in JSON. Conversion is handled by <see cref="Converters.JsonDataEnumValueConverter{TEnum}"/>.
+    /// </summary>
     public static class JsonDataEnumExtensions
     {
         extension(in JsonData jsonData)
         {
-            //Enum As String Values
+            // Direct value access
 
-            //Enum
+            /// <summary>Gets the enum value from this node. Throws if null, not a value, or cannot be converted.</summary>
             public TEnum GetEnum<TEnum>() where TEnum : struct, Enum => jsonData.TryGetEnum<TEnum>(out var result) ? result : throw JsonDataExceptionHelper.GetTypedValueException<TEnum>(jsonData);
+            /// <summary>Gets the enum value, or default if null or conversion fails.</summary>
             public TEnum? TryGetEnum<TEnum>() where TEnum : struct, Enum => jsonData.TryGetEnum<TEnum>(out var result) ? result : default;
+            /// <summary>Tries to get the enum value. Returns false if not a value or conversion fails.</summary>
             public bool TryGetEnum<TEnum>([NotNullWhen(true)] out TEnum value) where TEnum : struct, Enum
             {
                 jsonData.ThrowIfNotValue();
                 return JsonDataEnumValueConverter<TEnum>.FromJsonData(jsonData, out value);
             }
 
+            /// <summary>Creates a <see cref="JsonData"/> wrapping an enum value serialized as its JSON string representation.</summary>
             public static JsonData CreateFromEnum<TEnum>(TEnum value) where TEnum : struct, Enum
             {
                 if (JsonDataEnumValueConverter<TEnum>.TryToJsonValue(value, out var jsonValue))
@@ -33,6 +40,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
                 throw new InvalidOperationException($"Unable to convert enum value '{value}' of type '{typeof(TEnum).FullName}' to a JSON node.");
             }
+            /// <summary>Creates a <see cref="JsonData"/> from a nullable enum. Returns <see cref="JsonData.CreateNull"/> if null.</summary>
             public static JsonData CreateFromEnum<TEnum>(TEnum? value) where TEnum : struct, Enum => value.HasValue ? CreateFromEnum(value.Value) : JsonData.CreateNull();
             
 
