@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Projects\DigitalBusiness.Extensibility\DigitalBusiness.Extensibility.csproj" />
+    <ProjectReference Include="..\..\Projects\DigitalBusiness.JsonDataWrappers\DigitalBusiness.JsonDataWrappers.csproj" />
     <ProjectReference Include="..\..\Projects\DigitalBusiness\DigitalBusiness.csproj" />
   </ItemGroup>
 

@@ -20,4 +20,8 @@
     <Folder Include="Architecture\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="DigitalBusiness.JsonDataWrappers.Tests" />
+  </ItemGroup>
+
 </Project>
