@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="../Tests/DigitalBusiness.Extensibility.Tests/DigitalBusiness.Extensibility.Tests.csproj" />
+    <Project Path="../Tests/DigitalBusiness.Json.Tests/DigitalBusiness.Json.Tests.csproj" />
+    <Project Path="../Tests/DigitalBusiness.JsonDataWrappers/DigitalBusiness.JsonDataWrappers.csproj" />
+    <Project Path="../Tests/DigtitalBusiness.Tests/DigtitalBusiness.Tests.csproj" />
+  </Folder>
+  <Project Path="../Projects/DigitalBusiness.Extensibility/DigitalBusiness.Extensibility.csproj" />
+  <Project Path="../Projects/DigitalBusiness.Json/DigitalBusiness.Json.csproj" />
+  <Project Path="../Projects/DigitalBusiness.JsonDataWrappers.UnitTests/DigitalBusiness.JsonDataWrappers.UnitTests.csproj" Id="97442279-368d-4c7d-b29a-9fa9d4e3398d" />
+  <Project Path="../Projects/DigitalBusiness.JsonDataWrappers/DigitalBusiness.JsonDataWrappers.csproj" />
+  <Project Path="../Projects/DigitalBusiness/DigitalBusiness.csproj" />
+</Solution>
