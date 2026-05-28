@@ -692,8 +692,7 @@ public class JsonDataTests
         Assert.False(a.DeepEquals(b));
     }
 
-    [Fact(Skip="ProductionBugSuspected")]
-    [Trait("Category", "ProductionBugSuspected")]
+    [Fact]
     public void DeepEquals_ElementBackedAndEquivalentNodeBacked_ReturnsTrue()
     {
         using var doc = JsonDocument.Parse("{\"z\":3}");
