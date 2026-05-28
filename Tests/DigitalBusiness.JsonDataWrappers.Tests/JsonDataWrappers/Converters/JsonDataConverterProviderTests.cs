@@ -9,8 +9,9 @@ public class JsonDataConverterProviderTests
 {
     private enum SampleEnum { A, B, C }
 
-    private sealed class ConcreteJsonDataObject : JsonDataObject
+    private struct ConcreteJsonDataWrapper : IJsonDataWrapper
     {
+        public JsonData Json { get; init; }
     }
 
     // -- Primitive types ------------------------------------------------------
@@ -171,25 +172,25 @@ public class JsonDataConverterProviderTests
         Assert.Equal(jsonData, value);
     }
 
-    // -- IJsonDataWrapper (concrete JsonDataObject) ---------------------------
+    // -- IJsonDataWrapper (concrete struct) -----------------------------------
 
     [Fact]
-    public void GetConverter_ConcreteJsonDataObject_ReturnsNonNullConverter()
+    public void GetConverter_ConcreteIJsonDataWrapper_ReturnsNonNullConverter()
     {
-        var converter = JsonDataConverterProvider.GetConverter<ConcreteJsonDataObject>();
+        var converter = JsonDataConverterProvider.GetConverter<ConcreteJsonDataWrapper>();
         Assert.NotNull(converter);
     }
 
     [Fact]
-    public void GetConverter_ConcreteJsonDataObject_TryGetReturnsTrue()
+    public void GetConverter_ConcreteIJsonDataWrapper_TryGetReturnsTrue()
     {
         var jsonData = new JsonData(JsonValue.Create("test"));
-        var converter = JsonDataConverterProvider.GetConverter<ConcreteJsonDataObject>();
+        var converter = JsonDataConverterProvider.GetConverter<ConcreteJsonDataWrapper>();
 
         var result = converter.TryGet(in jsonData, out var value);
 
         Assert.True(result);
-        Assert.NotNull(value);
+        Assert.Equal(jsonData, value.Json);
     }
 
     // -- Fallback: unknown type returns non-null (UndefinedConverter) ---------

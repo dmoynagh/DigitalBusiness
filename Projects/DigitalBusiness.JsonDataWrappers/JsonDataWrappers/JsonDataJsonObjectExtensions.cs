@@ -2,10 +2,8 @@ using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Xml.Linq;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
@@ -13,19 +11,22 @@ namespace DigitalBusiness.JsonDataWrappers
     {
         extension(in JsonData jsonData)
         {
-
+            /// <summary>True if this instance represents a JSON object, regardless of source type.</summary>
             public bool IsObject => (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Object) || (jsonData.Node != null && jsonData.Node is JsonObject);
 
+            /// <summary>Throws if this instance is not a JSON object.</summary>
             public void ThrowIfNotObject() { if (!jsonData.IsObject) throw new InvalidOperationException("JsonData is not an object."); }
 
-            //public JsonData RequireObject() => jsonData.IsObject ? jsonData : throw new InvalidOperationException("JsonData is not an object.");
-            
-
+            /// <summary>Creates a new writable Node-backed JSON object instance.</summary>
             public static JsonData CreateObject() => new JsonData(new JsonObject());
 
+            /// <summary>Returns this instance asserted as an object, or throws if it is not.</summary>
             public JsonData AsObject() => jsonData.IsObject ? jsonData : throw new InvalidOperationException("JsonData is not an object.");
+
+            /// <summary>Returns this instance as an object, or null if it is not an object.</summary>
             public JsonData? TryAsObject() => jsonData.IsObject ? jsonData : (JsonData?)null;
 
+            /// <summary>Returns true if the object contains a property with the given key.</summary>
             public bool ContainsProperty(string key)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(key);
@@ -40,8 +41,10 @@ namespace DigitalBusiness.JsonDataWrappers
                 return false;
             }
 
+            /// <summary>Alias for <see cref="ContainsProperty"/>.</summary>
             public bool HasProperty(string key)=>jsonData.ContainsProperty(key);
 
+            /// <summary>Returns true if the property exists and its value is not null or undefined.</summary>
             public bool PropertyHasValue(string key)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(key);
@@ -57,6 +60,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 return false;
             }
 
+            /// <summary>Gets the named property. Throws if the property does not exist or this is not an object.</summary>
             public JsonData Get(string name)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -67,13 +71,15 @@ namespace DigitalBusiness.JsonDataWrappers
                 else
                 {
                     if (!jsonData.IsObject) throw JsonDataExceptionHelper.JsonDataObjectExpectedException();
-                    
+
                     throw JsonDataExceptionHelper.JsonDataPropertyNotExist(name);
                 }
             }
 
+            /// <summary>Gets the named property, or null if it does not exist.</summary>
             public JsonData? TryGet(string key) => jsonData.TryGet(key, out var result) ? result : (JsonData?)null;
 
+            /// <summary>Gets the named property. Returns false if missing; child inherits parent readonly state for Node-backed sources.</summary>
             public bool TryGet(string key,[MaybeNullWhen(false)] out JsonData value)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(key);
@@ -94,7 +100,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 else if (jsonData.Node != null && jsonData.Node is JsonObject jsonObject 
                     && jsonObject.TryGetPropertyValue(key, out var nResult))
                 {
-                    value = new JsonData(nResult);
+                    value = new JsonData(nResult, jsonData.ReadOnly);
                     return true;
                 }
                 value = default;
@@ -102,6 +108,7 @@ namespace DigitalBusiness.JsonDataWrappers
             }
             
 
+            /// <summary>Gets the named property as an object, creating it if absent. Requires a writable instance.</summary>
             public JsonData GetOrCreateObject(string name)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -118,6 +125,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
             }
 
+            /// <summary>Gets the named property as an array, creating it if absent. Requires a writable instance.</summary>
             public JsonData GetOrCreateArray(string name)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -136,8 +144,9 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
 
-            public void Set(string key, JsonData? value)
-            {               
+            /// <summary>Sets the named property. A null value removes the property. Requires a writable instance.</summary>
+            public void Set(string key, JsonData? value)               
+            {
                 jsonData.ThrowIfReadOnly(); 
                 jsonData.ThrowIfNotObject();
 
@@ -151,8 +160,8 @@ namespace DigitalBusiness.JsonDataWrappers
                     jsonData.Remove(key);
                 }                
             }
-        
 
+            /// <summary>Removes the named property. Requires a writable instance.</summary>
             public bool Remove(string key)
             {
                 jsonData.ThrowIfReadOnly(); 
@@ -160,8 +169,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 return jsonData.Node!.AsObject().Remove(key);
             }
 
-
-
+            /// <summary>Enumerates all property names in this JSON object.</summary>
             public IEnumerable<string> PropertyNames => JsonDataHelper.GetPropertyNames(jsonData);
       
         }

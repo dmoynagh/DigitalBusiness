@@ -34,7 +34,7 @@ JsonData fromObject = JsonNode.Parse("{\"title\":\"Hello\"}");
 JsonData fromArray  = JsonNode.Parse("[1,2,3]");
 
 // Force readonly on a node
-JsonData locked = new JsonData(jsonObject, readOnly: true);
+JsonData locked = JsonData.CreateReadOnly(jsonObject);
 JsonData locked = fromObject.AsReadOnly();
 ```
 
@@ -87,6 +87,23 @@ jsonData["title"] = "New";    // throws InvalidOperationException if ReadOnly
 ```
 
 The setter on the `JsonData` indexer calls this guard internally.
+
+---
+
+## Child Readonly Propagation
+
+When a child `JsonData` is returned from a Node-backed parent via property or array access
+(`TryGet`, `Get`, `Items`, `IndexOf`), it inherits the parent's readonly state:
+
+```csharp
+JsonData parent = JsonData.CreateReadOnly(new JsonObject { ["child"] = new JsonObject() });
+
+JsonData child = parent["child"]!.Value;
+// child.ReadOnly == true — inherited from parent
+```
+
+This means a readonly parent produces readonly children throughout the tree.
+`JsonElement`-backed children are always readonly regardless of the parent.
 
 ---
 

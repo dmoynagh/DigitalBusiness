@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.RegularExpressions;
 
 namespace DigitalBusiness.JsonDataWrappers
 {
@@ -47,10 +45,10 @@ namespace DigitalBusiness.JsonDataWrappers
         public static JsonNode? GetNodeToAdd(in JsonData addValue, JsonNode addToNode)
         {
             if (addValue.IsNull) return default;
-            
-            if (addValue.Element.HasValue) CreateNodeFromElement(addValue.Element.Value);
 
-            if(addValue.Node is not null) return GetNodeToAdd(addValue.Node, addToNode);
+            if (addValue.Element.HasValue) return CreateNodeFromElement(addValue.Element.Value);
+
+            if (addValue.Node is not null) return GetNodeToAdd(addValue.Node, addToNode);
             throw new InvalidOperationException("JsonData does not contain a valid node or element.");
         }
 
@@ -87,19 +85,11 @@ namespace DigitalBusiness.JsonDataWrappers
             {
                 foreach (var item in jsonArray)
                 {
-                    yield return new JsonData(item);
+                    yield return new JsonData(item, jsonData.ReadOnly);
                 }
             }
         }
 
 
-        //public static JsonNode? GetNodeToAdd(JsonData? addValue, JsonData? addTo)
-        //{
-        //    if (addValue is null) return null;
-        //    if (addValue.Value.Node is not null) return GetNodeToAdd(addValue.Value.Node, addTo?.Node);
-        //    if (addValue.Element.HasValue) return GetNodeToAdd(CreateNodeFromElement(addValue.Element.Value), addTo?.Node);
-        //    return null;
-        //}
-
-    }
+        }
 }

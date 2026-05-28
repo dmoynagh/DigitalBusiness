@@ -91,52 +91,42 @@ public class JsonDataTests
         Assert.Same(node, sut.Node);
     }
 
-    // -- JsonData(JsonNode?, bool) constructor ---------------------------------
+    // -- JsonData.CreateReadOnly factory --------------------------------------
 
     [Fact]
-    public void ConstructorNodeReadOnly_WithNullNode_IsReadOnlyRegardlessOfFlag()
+    public void CreateReadOnly_WithNullNode_IsReadOnly()
     {
-        var sut = new JsonData((JsonNode?)null, false);
+        var sut = JsonData.CreateReadOnly(null);
 
         Assert.True(sut.ReadOnly);
     }
 
     [Fact]
-    public void ConstructorNodeReadOnly_WithJsonValueAndFalse_IsReadOnlyDueToJsonValue()
+    public void CreateReadOnly_WithJsonObject_IsReadOnly()
     {
-        JsonNode node = JsonValue.Create("hello")!;
+        JsonNode node = new JsonObject();
 
-        var sut = new JsonData(node, false);
+        var sut = JsonData.CreateReadOnly(node);
 
         Assert.True(sut.ReadOnly);
     }
 
     [Fact]
-    public void ConstructorNodeReadOnly_WithJsonObjectAndTrue_IsReadOnly()
+    public void CreateReadOnly_WithJsonArray_IsReadOnly()
     {
-        JsonNode node = new JsonObject();
+        JsonNode node = new JsonArray();
 
-        var sut = new JsonData(node, true);
+        var sut = JsonData.CreateReadOnly(node);
 
         Assert.True(sut.ReadOnly);
     }
 
     [Fact]
-    public void ConstructorNodeReadOnly_WithJsonObjectAndFalse_IsNotReadOnly()
+    public void CreateReadOnly_WithJsonObject_SetsNode()
     {
         JsonNode node = new JsonObject();
 
-        var sut = new JsonData(node, false);
-
-        Assert.False(sut.ReadOnly);
-    }
-
-    [Fact]
-    public void ConstructorNodeReadOnly_WithJsonObjectAndFalse_SetsNode()
-    {
-        JsonNode node = new JsonObject();
-
-        var sut = new JsonData(node, false);
+        var sut = JsonData.CreateReadOnly(node);
 
         Assert.Same(node, sut.Node);
     }
@@ -336,15 +326,15 @@ public class JsonDataTests
     [Fact]
     public void ReadOnly_NodeBackedJsonObject_WhenNotForcedReadOnly_IsFalse()
     {
-        var sut = new JsonData(new JsonObject(), false);
+        var sut = new JsonData(new JsonObject());
 
         Assert.False(sut.ReadOnly);
     }
 
     [Fact]
-    public void ReadOnly_NodeBackedJsonObject_WhenForcedReadOnly_IsTrue()
+    public void ReadOnly_NodeBackedJsonObject_WhenCreatedReadOnly_IsTrue()
     {
-        var sut = new JsonData(new JsonObject(), true);
+        var sut = JsonData.CreateReadOnly(new JsonObject());
 
         Assert.True(sut.ReadOnly);
     }
@@ -352,7 +342,7 @@ public class JsonDataTests
     [Fact]
     public void ReadOnly_NodeBackedJsonValue_IsAlwaysTrue()
     {
-        var sut = new JsonData(JsonValue.Create(99)!, false);
+        var sut = new JsonData(JsonValue.Create(99)!);
 
         Assert.True(sut.ReadOnly);
     }
@@ -589,7 +579,7 @@ public class JsonDataTests
     public void Clone_NodeBacked_ReturnsNodeBackedInstance()
     {
         var node = new JsonObject { ["x"] = 7 };
-        var sut = new JsonData(node, false);
+        var sut = new JsonData(node);
 
         var clone = sut.Clone();
 
@@ -600,7 +590,7 @@ public class JsonDataTests
     public void Clone_NodeBacked_ReturnsDistinctNode()
     {
         var node = new JsonObject { ["x"] = 7 };
-        var sut = new JsonData(node, false);
+        var sut = new JsonData(node);
 
         var clone = sut.Clone();
 
@@ -611,7 +601,7 @@ public class JsonDataTests
     public void Clone_NodeBackedReadOnly_CloneIsReadOnly()
     {
         var node = new JsonObject();
-        var sut = new JsonData(node, true);
+        var sut = JsonData.CreateReadOnly(node);
 
         var clone = sut.Clone();
 
@@ -622,7 +612,7 @@ public class JsonDataTests
     public void Clone_NodeBackedWritable_CloneIsWritable()
     {
         var node = new JsonObject();
-        var sut = new JsonData(node, false);
+        var sut = new JsonData(node);
 
         var clone = sut.Clone();
 
@@ -633,7 +623,7 @@ public class JsonDataTests
     public void Clone_NodeBackedWithData_CloneHasSameData()
     {
         var node = new JsonObject { ["key"] = "value" };
-        var sut = new JsonData(node, false);
+        var sut = new JsonData(node);
 
         var clone = sut.Clone();
 

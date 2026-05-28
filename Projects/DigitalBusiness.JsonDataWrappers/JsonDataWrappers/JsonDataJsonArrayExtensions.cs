@@ -1,13 +1,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
 using DigitalBusiness.JsonDataWrappers;
 
 
@@ -19,14 +16,22 @@ namespace DigitalBusiness.JsonDataWrappers
     {
         extension(in JsonData jsonData)
         {
+            /// <summary>True if this instance represents a JSON array, regardless of source type.</summary>
             public bool IsArray => (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Array) || (jsonData.Node != null && jsonData.Node is JsonArray);
 
+            /// <summary>Throws if this instance is not a JSON array. Returns true if it is (allows use in guard expressions).</summary>
             public bool ThrowIfNotArray() { if (!jsonData.IsArray) throw new InvalidOperationException("Node is not an array."); else return true; }
+
+            /// <summary>Returns this instance asserted as an array, or throws if it is not.</summary>
             public JsonData EnsureArray() => jsonData.IsArray ? jsonData : throw new InvalidOperationException("Node is not an array.");
 
+            /// <summary>Creates a new writable Node-backed JSON array instance.</summary>
             public static JsonData CreateArray() => new JsonData(new JsonArray());
 
+            /// <summary>Returns this instance asserted as an array, or throws if it is not.</summary>
             public JsonData AsArray() => jsonData.IsArray ? jsonData : throw new InvalidOperationException("Node is not an array.");
+
+            /// <summary>Returns this instance as an array, or null if it is not an array.</summary>
             public JsonData? TryAsArray() => jsonData.IsArray ? jsonData : (JsonData?)null;
 
 
@@ -35,6 +40,7 @@ namespace DigitalBusiness.JsonDataWrappers
             //    (jsonData.Node is JsonArray jsonArray ? jsonArray.Count : 0)) : throw new InvalidOperationException("Node is not an array.");
 
 
+            /// <summary>Gets the item at the given index. Throws if out of range or not an array.</summary>
             public JsonData Get(int index)
             {
                 if (jsonData.TryGet(index, out var result))
@@ -45,8 +51,10 @@ namespace DigitalBusiness.JsonDataWrappers
                 throw new IndexOutOfRangeException("Index was out of range.");
             }
 
+            /// <summary>Gets the item at the given index, or null if out of range.</summary>
             public JsonData? TryGet(int index) => jsonData.TryGet(index, out JsonData? result) ? result : default;
 
+            /// <summary>Gets the item at the given index. Returns false if out of range; child inherits parent readonly state for Node-backed sources.</summary>
             public bool TryGet(int index, [MaybeNullWhen(false)] out JsonData result)
             {
 
@@ -62,7 +70,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 {
                     if (index > -1 && index < jsonArray.Count)
                     {
-                        result = new JsonData(jsonArray[index]!);
+                        result = new JsonData(jsonArray[index]!, jsonData.ReadOnly);
                         return true;
                     }
                 }
@@ -72,6 +80,7 @@ namespace DigitalBusiness.JsonDataWrappers
             }
 
 
+            /// <summary>Gets the item at the given index as an object, creating it if absent. Requires a writable instance.</summary>
             public JsonData GetOrCreateObject(int index)
             {
                 if (jsonData.TryGet(index, out var result))
@@ -87,6 +96,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
             }
 
+            /// <summary>Gets the item at the given index as an array, creating it if absent. Requires a writable instance.</summary>
             public JsonData GetOrCreateArray(int index)
             {
                 if (jsonData.TryGet(index, out var result))
@@ -104,8 +114,11 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
 
+            /// <summary>Returns true if any item in the array satisfies the predicate.</summary>
             public bool Contains(JsonDataPredicate predicate) => jsonData.IndexOf(predicate) > -1;
 
+            /// <summary>Returns the index of the first item satisfying the predicate, or -1 if not found.
+            /// Child items inherit parent readonly state for Node-backed sources.</summary>
             public int IndexOf(JsonDataPredicate predicate)
             {
                 if (jsonData.Element.HasValue && jsonData.Element!.Value.ValueKind == JsonValueKind.Array)
@@ -123,7 +136,7 @@ namespace DigitalBusiness.JsonDataWrappers
                     int index = 0;
                     foreach (var item in jsonArray)
                     {
-                        var jsonDataItem = new JsonData(item!);
+                        var jsonDataItem = new JsonData(item!, jsonData.ReadOnly);
                         if (predicate(in jsonDataItem)) return index;
                         index++;
                     }
@@ -131,6 +144,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 return -1;
             }
 
+            /// <summary>Returns true if the index is within range and the value at that index is not null or undefined.</summary>
             public bool IndexHasValue(int index)
             {
                 if(index < 0) return false;
@@ -153,11 +167,14 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
 
+            /// <summary>Enumerates all items in the array. Child items inherit parent readonly state for Node-backed sources.</summary>
             public IEnumerable<JsonData> Items => JsonDataHelper.GetArrayItems(jsonData);
 
-                   
-         
 
+
+
+            /// <summary>Sets the item at the given index. A null value sets a JSON null at that position.
+            /// Extends the array with nulls if the index is beyond the current length. Requires a writable instance.</summary>
             public void Set(int index, JsonData? value)
             {
                 jsonData.ThrowIfNotArray();
@@ -178,6 +195,7 @@ namespace DigitalBusiness.JsonDataWrappers
             }
 
       
+            /// <summary>Appends an item to the end of the array. Requires a writable instance.</summary>
             public void Add(in JsonData? value)
             {
                 jsonData.ThrowIfNotArray();
@@ -191,7 +209,8 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
                 else throw new InvalidOperationException("Node is not an array.");
             }
-            
+
+            /// <summary>Inserts an item at the given index, shifting subsequent items. Requires a writable instance.</summary>
             public void Insert(int index, JsonData? value)
             {
                 jsonData.ThrowIfNotArray();
@@ -205,7 +224,8 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
                 else throw new InvalidOperationException("Node is not an array.");              
             }           
-            
+
+            /// <summary>Removes the item at the given index. Requires a writable instance.</summary>
             public void RemoveAt(int index)
             {
                 jsonData.ThrowIfReadOnly();
@@ -221,15 +241,5 @@ namespace DigitalBusiness.JsonDataWrappers
 
         }
 
-        //extension(in JsonData? node)
-        //{
-        //    public bool IsArray => !node.HasValue || node.Value.IsArray;
-
-        //    public JsonData RequireArray() => node.HasValue ? node.Value.EnsureArray() : throw JNodeExceptionHelper.NullException();
-
-        //    public JsonData? Get(int index) => node.HasValue ? node.Value.TryGet(index) : default;
-
-            
-        //}
     }
 }

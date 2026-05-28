@@ -281,7 +281,7 @@ public class JsonDataHelperTests
     }
 
     [Fact]
-    public void GetNodeToAddJsonData_ElementBacked_DoesNotThrow()
+    public void GetNodeToAddJsonData_ElementBacked_ReturnsNode()
     {
         // Arrange
         using var doc = JsonDocument.Parse("\"test\"");
@@ -289,10 +289,11 @@ public class JsonDataHelperTests
         var addValue = new JsonData(element);
         var addToNode = new JsonObject();
 
-        // Act & Assert
-        // Line 51 discards the result, then falls through to the Node check.
-        // Since Node is null after creating from element, it should throw.
-        Assert.Throws<InvalidOperationException>(() => JsonDataHelper.GetNodeToAdd(addValue, addToNode));
+        // Act
+        var result = JsonDataHelper.GetNodeToAdd(addValue, addToNode);
+
+        // Assert — Element-backed value converts to a JsonValue node, no throw
+        Assert.NotNull(result);
     }
 
     // -- GetPropertyNames -----------------------------------------------------

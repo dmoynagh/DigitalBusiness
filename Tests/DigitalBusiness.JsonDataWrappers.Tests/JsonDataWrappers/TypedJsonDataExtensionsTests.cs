@@ -150,7 +150,7 @@ public class TypedJsonDataExtensionsTests
     public void GetOrCreateJsonData_WhenReadOnly_ThrowsInvalidOperationException()
     {
         // Arrange
-        var jsonData = new JsonData(new JsonObject(), readOnly: true);
+        var jsonData = JsonData.CreateReadOnly(new JsonObject());
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => jsonData.GetOrCreateJsonData<TestKey>("child"));
@@ -189,7 +189,7 @@ public class TypedJsonDataExtensionsTests
     public void GetOrCreateJsonDataArray_WhenReadOnly_ThrowsInvalidOperationException()
     {
         // Arrange
-        var jsonData = new JsonData(new JsonObject(), readOnly: true);
+        var jsonData = JsonData.CreateReadOnly(new JsonObject());
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => jsonData.GetOrCreateJsonDataArray<TestKey>("items"));

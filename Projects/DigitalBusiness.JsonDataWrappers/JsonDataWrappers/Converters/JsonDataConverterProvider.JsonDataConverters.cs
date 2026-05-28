@@ -23,7 +23,7 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
             {
                 return new JsonDataConverterProvider.JsonDataConverter() as IJsonDataConverter<T> ?? throw new InvalidOperationException("Failed to create JsonDataConverter.");
             }
-            //covers IJsonDataWrapper, JsonData<T>, IJsonDataObject
+            //covers IJsonDataWrapper, JsonData<T>
             else if (typeof(IJsonDataWrapper).IsAssignableFrom(type))
             {
                 var converterType = typeof(JsonDataWrapperConverter<>).MakeGenericType(type);

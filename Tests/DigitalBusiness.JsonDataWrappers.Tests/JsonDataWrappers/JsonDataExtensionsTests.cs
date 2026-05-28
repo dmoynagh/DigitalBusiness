@@ -147,7 +147,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = JsonValue.Create(1)!;
-        var data = new JsonData(node, readOnly: true);
+        var data = JsonData.CreateReadOnly(node);
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => data.ThrowIfReadOnly());
@@ -158,7 +158,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange – JsonObject is not a JsonValue so it can be writable
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act & Assert – should not throw
         data.ThrowIfReadOnly();
@@ -227,7 +227,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = JsonValue.Create(1)!;
-        var data = new JsonData(node, readOnly: true);
+        var data = JsonData.CreateReadOnly(node);
 
         // Act
         var result = data.AsReadOnly();
@@ -241,7 +241,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange – JsonObject is writable; JsonValue is always readonly
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.AsReadOnly();
@@ -255,7 +255,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.AsReadOnly();
@@ -270,7 +270,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.AsReadOnly();
@@ -590,7 +590,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = JsonNode.Parse("{\"a\":1}")!;
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.ToJsonNodeJsonData();
@@ -606,7 +606,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.ToJsonNodeJsonData();
@@ -620,7 +620,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act
         var result = data.ToJsonNodeJsonData(readOnly: true);
@@ -634,7 +634,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: true);
+        var data = JsonData.CreateReadOnly(node);
 
         // Act
         var result = data.ToJsonNodeJsonData(readOnly: false);
@@ -661,8 +661,8 @@ public class JsonDataExtensionsTests
     [Fact]
     public void ToJsonNodeJsonData_ElementBacked_DefaultReadOnlyFalse()
     {
-        // Arrange
-        var element = JsonDocument.Parse("1").RootElement;
+        // Arrange — use an object so JsonValue readonly-promotion does not apply
+        var element = JsonDocument.Parse("{}").RootElement;
         var data = new JsonData(element);
 
         // Act
@@ -695,9 +695,9 @@ public class JsonDataExtensionsTests
         // Act
         var result = data.ToJsonNodeJsonData();
 
-        // Assert
+        // Assert — null nodes are always readonly by the readonly-promotion rule
         Assert.True(result.IsNode || result.IsNull);
-        Assert.False(result.ReadOnly);
+        Assert.True(result.ReadOnly);
     }
 
     [Fact]
@@ -720,7 +720,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = new JsonObject();
-        var data = new JsonData(node, readOnly: true);
+        var data = JsonData.CreateReadOnly(node);
 
         // Act
         var result = data.ToEditableJsonData();
@@ -733,8 +733,8 @@ public class JsonDataExtensionsTests
     [Fact]
     public void ToEditableJsonData_ElementBacked_ReturnsWritableNodeBacked()
     {
-        // Arrange
-        var element = JsonDocument.Parse("99").RootElement;
+        // Arrange — use an object so JsonValue readonly-promotion does not apply
+        var element = JsonDocument.Parse("{\"x\":1}").RootElement;
         var data = new JsonData(element);
 
         // Act
@@ -746,7 +746,7 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToEditableJsonData_Uninitialized_ReturnsWritable()
+    public void ToEditableJsonData_Uninitialized_ReturnsReadOnly()
     {
         // Arrange
         var data = new JsonData();
@@ -754,8 +754,8 @@ public class JsonDataExtensionsTests
         // Act
         var result = data.ToEditableJsonData();
 
-        // Assert
-        Assert.False(result.ReadOnly);
+        // Assert — null nodes are always readonly (readonly-promotion rule)
+        Assert.True(result.ReadOnly);
     }
 
     // -- Count -----------------------------------------------------------------
@@ -798,7 +798,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var arr = JsonNode.Parse("[1,2,3,4]") as JsonArray;
-        var data = new JsonData(arr!, readOnly: false);
+        var data = new JsonData(arr!);
 
         // Act & Assert
         Assert.Equal(4, data.Count);
@@ -809,7 +809,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var obj = JsonNode.Parse("{\"x\":1,\"y\":2,\"z\":3}") as JsonObject;
-        var data = new JsonData(obj!, readOnly: false);
+        var data = new JsonData(obj!);
 
         // Act & Assert
         Assert.Equal(3, data.Count);
@@ -843,7 +843,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var arr = JsonNode.Parse("[1,2,3]") as JsonArray;
-        var data = new JsonData(arr!, readOnly: false);
+        var data = new JsonData(arr!);
 
         // Act
         data.Clear();
@@ -857,7 +857,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var obj = JsonNode.Parse("{\"a\":1,\"b\":2}") as JsonObject;
-        var data = new JsonData(obj!, readOnly: false);
+        var data = new JsonData(obj!);
 
         // Act
         data.Clear();
@@ -871,7 +871,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var arr = JsonNode.Parse("[1,2]") as JsonArray;
-        var data = new JsonData(arr!, readOnly: true);
+        var data = JsonData.CreateReadOnly(arr!);
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => data.Clear());
@@ -882,7 +882,7 @@ public class JsonDataExtensionsTests
     {
         // Arrange
         var node = JsonValue.Create(5)!;
-        var data = new JsonData(node, readOnly: false);
+        var data = new JsonData(node);
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => data.Clear());

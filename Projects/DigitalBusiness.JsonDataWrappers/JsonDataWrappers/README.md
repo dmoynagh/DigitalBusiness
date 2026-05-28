@@ -183,6 +183,49 @@ public class MyFactory : IJsonDataConverterFactory
 
 ---
 
+## Typed Arrays
+
+`JsonDataArray<T>` is a typed wrapper around a JSON array node. It provides strongly typed element
+access using the converter system, and supports mutation (add, insert, remove, clear) when the
+backing data is not readonly.
+
+```csharp
+// Get a typed array from a JsonData property
+JsonDataArray<string> tags = data.GetArray<string>("tags");
+
+// Typed indexer and enumeration
+string? first = tags[0];
+foreach (string tag in tags) { ... }
+
+// Mutation (only when not readonly)
+tags.Add("new-tag");
+tags.RemoveAt(0);
+
+// Create or retrieve an array, creating it if absent
+JsonDataArray<string> tags = data.GetOrCreateArray<string>("tags");
+```
+
+For arrays of typed wrappers, use the element type `T` constrained to the key type:
+
+```csharp
+JsonDataArray<JsonData<TagItem>> tagItems = data.GetArray<JsonData<TagItem>>("tags");
+foreach (JsonData<TagItem> tag in tagItems)
+{
+	Console.WriteLine(tag.Name);
+}
+```
+
+`TryGetArray<T>` is available when the array may be absent:
+
+```csharp
+if (data.TryGetArray<string>("tags", out var tags))
+{
+	foreach (string tag in tags) { ... }
+}
+```
+
+---
+
 ## Collections
 
 `JsonDataCollection` wraps various sources as an `IEnumerable<JsonData>`:
@@ -259,11 +302,16 @@ JsonDataWrappers/
 ├── JsonDataOfT.cs                 Typed wrapper struct JsonData<T>
 ├── IJsonData.cs                   Base interface — exposes JsonData.Json
 ├── IJsonDataWrapper.cs            Interface for typed wrappers (adds init)
-├── IJsonDataObject.cs             Marker for object-structured wrappers
 ├── IJsonDataKey.cs                Marker interface for T phantom type keys
 ├── JsonDataExtensions.cs          Core extension methods (null, state, convert, count)
 ├── TypedJsonDataExtensions.cs     AsJsonData<T> cast extensions
+├── TypedJsonDataArray.cs          Typed array wrapper struct JsonDataArray<T>
+├── TypedJsonDataArrayExtensions.cs  GetArray / TryGetArray / GetOrCreateArray / Set extensions
+├── JsonDataObjectExtensions.cs    AsJsonDataObject<T> helper for wrapper construction
 ├── JsonDataEnumExtensions.cs      Enum read/write extensions
+├── JsonDataSerializedExtensions.cs  Serialized value get/set extensions
+├── JsonDataJsonObjectExtensions.cs  JSON object property helpers
+├── JsonDataJsonArrayExtensions.cs   JSON array item helpers
 ├── JsonDataCollection.cs          Collection wrappers and AsJsonData<T> projection
 ├── JsonDataHelper.cs              Internal utilities (node tree, property/array enumeration)
 ├── Converters/

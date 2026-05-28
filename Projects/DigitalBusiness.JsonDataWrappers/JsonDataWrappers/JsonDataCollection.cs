@@ -58,12 +58,9 @@ namespace DigitalBusiness.JsonDataWrappers
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
                     OnDispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }      

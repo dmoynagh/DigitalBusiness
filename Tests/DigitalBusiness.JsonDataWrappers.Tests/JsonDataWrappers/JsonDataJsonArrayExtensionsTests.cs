@@ -677,7 +677,7 @@ public class JsonDataJsonArrayExtensionsTests
     public void Set_OnReadOnly_ThrowsInvalidOperationException()
     {
         var array = new JsonArray(JsonValue.Create(1));
-        var data = new JsonData(array, readOnly: true);
+        var data = JsonData.CreateReadOnly(array);
         Assert.Throws<InvalidOperationException>(() => data.Set(0, new JsonData(JsonValue.Create(99))));
     }
 
@@ -726,7 +726,7 @@ public class JsonDataJsonArrayExtensionsTests
     public void Add_OnReadOnly_ThrowsInvalidOperationException()
     {
         var array = new JsonArray();
-        var data = new JsonData(array, readOnly: true);
+        var data = JsonData.CreateReadOnly(array);
         Assert.Throws<InvalidOperationException>(() => data.Add(new JsonData(JsonValue.Create(1))));
     }
 
@@ -774,7 +774,7 @@ public class JsonDataJsonArrayExtensionsTests
     public void Insert_OnReadOnly_ThrowsInvalidOperationException()
     {
         var array = new JsonArray(JsonValue.Create(1));
-        var data = new JsonData(array, readOnly: true);
+        var data = JsonData.CreateReadOnly(array);
         Assert.Throws<InvalidOperationException>(() => data.Insert(0, new JsonData(JsonValue.Create(99))));
     }
 
@@ -812,7 +812,7 @@ public class JsonDataJsonArrayExtensionsTests
     public void RemoveAt_OnReadOnly_ThrowsInvalidOperationException()
     {
         var array = new JsonArray(JsonValue.Create(1));
-        var data = new JsonData(array, readOnly: true);
+        var data = JsonData.CreateReadOnly(array);
         Assert.Throws<InvalidOperationException>(() => data.RemoveAt(0));
     }
 
@@ -850,5 +850,82 @@ public class JsonDataJsonArrayExtensionsTests
         var data = new JsonData(new JsonArray());
         var items = data.Items.ToList();
         Assert.Empty(items);
+    }
+
+    // -- Readonly propagation -- TryGet(int) ------------------------------------
+
+    [Fact]
+    public void TryGet_ReadOnlyParent_ChildIsReadOnly()
+    {
+        var array = new JsonArray(new JsonObject());
+        var parent = JsonData.CreateReadOnly(array);
+
+        var found = parent.TryGet(0, out var child);
+
+        Assert.True(found);
+        Assert.True(child.ReadOnly);
+    }
+
+    [Fact]
+    public void TryGet_WritableParent_ChildIsWritable()
+    {
+        var array = new JsonArray(new JsonObject());
+        var parent = new JsonData(array);
+
+        var found = parent.TryGet(0, out var child);
+
+        Assert.True(found);
+        Assert.False(child.ReadOnly);
+    }
+
+    // -- Readonly propagation -- IndexOf ----------------------------------------
+
+    [Fact]
+    public void IndexOf_ReadOnlyParent_PredicateReceivesReadOnlyChild()
+    {
+        var array = new JsonArray(JsonValue.Create(1));
+        var parent = JsonData.CreateReadOnly(array);
+        bool childWasReadOnly = false;
+
+        parent.IndexOf((in JsonData item) => { childWasReadOnly = item.ReadOnly; return true; });
+
+        Assert.True(childWasReadOnly);
+    }
+
+    [Fact]
+    public void IndexOf_WritableParent_PredicateReceivesWritableChild()
+    {
+        var array = new JsonArray(new JsonObject());
+        var parent = new JsonData(array);
+        bool childWasReadOnly = true;
+
+        parent.IndexOf((in JsonData item) => { childWasReadOnly = item.ReadOnly; return true; });
+
+        // JsonObject children from writable parent should be writable
+        Assert.False(childWasReadOnly);
+    }
+
+    // -- Readonly propagation -- Items ------------------------------------------
+
+    [Fact]
+    public void Items_ReadOnlyParent_AllChildrenAreReadOnly()
+    {
+        var array = new JsonArray(new JsonObject(), new JsonObject());
+        var parent = JsonData.CreateReadOnly(array);
+
+        var items = parent.Items.ToList();
+
+        Assert.All(items, item => Assert.True(item.ReadOnly));
+    }
+
+    [Fact]
+    public void Items_WritableParent_ObjectChildrenAreWritable()
+    {
+        var array = new JsonArray(new JsonObject(), new JsonObject());
+        var parent = new JsonData(array);
+
+        var items = parent.Items.ToList();
+
+        Assert.All(items, item => Assert.False(item.ReadOnly));
     }
 }

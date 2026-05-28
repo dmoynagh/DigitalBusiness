@@ -128,21 +128,39 @@ The child wrapper can then have its own extension methods via its own key type.
 
 ## Working with Arrays
 
-For typed arrays, use `JsonDataCollection` and `AsJsonData<T>`:
+For typed arrays, use `JsonDataArray<T>` via the `GetArray` / `TryGetArray` extensions:
 
 ```csharp
 extension(JsonData<ArticleItem> article)
 {
-	public IEnumerable<JsonData<TagItem>> Tags
+	public JsonDataArray<JsonData<TagItem>>? Tags =>
+		article.Json.TryGetArray<JsonData<TagItem>>("tags", out var tags) ? tags : null;
+}
+```
+
+`JsonDataArray<T>` is a typed wrapper around a JSON array node. It provides a `Count`, a typed
+indexer, and typed enumeration. It also supports mutation (add, insert, remove, clear) when the
+backing data is not readonly.
+
+For arrays of plain values, the element type is the value type directly:
+
+```csharp
+extension(JsonData<ArticleItem> article)
+{
+	public JsonDataArray<string>? TagNames =>
+		article.Json.TryGetArray<string>("tagNames", out var tags) ? tags : null;
+}
+```
+
+Use `GetOrCreateArray<T>` when mutation is expected and the array may not yet exist:
+
+```csharp
+extension(JsonData<ArticleItem> article)
+{
+	public void AddTag(string tag)
 	{
-		get
-		{
-			var tagsNode = article.Json["tags"];
-			if (tagsNode is null || tagsNode.Value.IsNull) return [];
-			return JsonDataCollection.Create(tagsNode.Value.Node as JsonArray
-				   ?? throw new InvalidOperationException("tags is not an array"))
-				   .AsJsonData<TagItem>();
-		}
+		article.Json.ThrowIfReadOnly();
+		article.Json.GetOrCreateArray<string>("tagNames").Add(tag);
 	}
 }
 ```

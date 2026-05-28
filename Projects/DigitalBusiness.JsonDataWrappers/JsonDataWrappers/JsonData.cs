@@ -3,20 +3,15 @@ using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
 using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 
 namespace DigitalBusiness.JsonDataWrappers
 {
-    [DebuggerDisplay("{DebugDisplay,nq}")]
-    [JsonConverter(typeof(JsonDataJsonConverter))]
     /// <summary>
     /// A lightweight readonly struct that wraps a JSON value from either a <see cref="JsonElement"/> (always readonly)
     /// or a <see cref="JsonNode"/> (read or write). Provides a unified API over both sources.
@@ -25,6 +20,8 @@ namespace DigitalBusiness.JsonDataWrappers
     /// Use <see cref="JsonData{T}"/> to attach a typed key and gain domain-specific extension methods.
     /// </para>
     /// </summary>
+    [DebuggerDisplay("{DebugDisplay,nq}")]
+    [JsonConverter(typeof(JsonDataJsonConverter))]
     public readonly partial struct JsonData : IJsonData
     {
         JsonData IJsonData.Json => this;
@@ -38,31 +35,7 @@ namespace DigitalBusiness.JsonDataWrappers
         /// Wraps a <see cref="JsonNode"/>. Null nodes and <see cref="JsonValue"/> nodes are always readonly
         /// since <see cref="JsonValue"/> is an immutable leaf.
         /// </summary>
-        public JsonData(JsonNode? node)
-        {
-            Node = node;
-            _readOnly = node is null || node is JsonValue;
-        }
-
-        /// <summary>
-        /// Wraps a <see cref="JsonNode"/> with an explicit readonly override.
-        /// A null node or <see cref="JsonValue"/> is always readonly regardless of the <paramref name="readOnly"/> parameter.
-        /// </summary>
-        public JsonData(JsonNode? node, bool readOnly)
-        {
-            Node = node;
-            _readOnly = readOnly || node is null || node is JsonValue;
-        }
-
-        /// <summary>
-        /// Internal constructor that allows bypassing the <see cref="JsonValue"/>-is-always-readonly rule.
-        /// Used by conversion helpers (e.g., <c>ToJsonNodeJsonData</c>) that explicitly opt-in to a writable state.
-        /// </summary>
-        internal JsonData(JsonNode? node, bool readOnly, bool forceReadOnly)
-        {
-            Node = node;
-            _readOnly = forceReadOnly || readOnly;
-        }
+        public JsonData(JsonNode? node) : this(node, false) { }
 
         /// <summary>Wraps a <see cref="JsonElement"/>. Always readonly — JsonElement is an immutable BCL type.</summary>
         public JsonData(JsonElement element)
@@ -78,8 +51,15 @@ namespace DigitalBusiness.JsonDataWrappers
             Element = element;
         }
 
-        /// <summary>Creates an explicit JSON null instance (no source, readonly).</summary>
-        public static JsonData CreateNull() => new JsonData();
+        /// <summary>
+        /// Sets readonly state explicitly, with automatic promotion:
+        /// null nodes and <see cref="JsonValue"/> leaf nodes are always readonly regardless of <paramref name="readOnly"/>.
+        /// </summary>
+        internal JsonData(JsonNode? node, bool readOnly)
+        {
+            Node = node;
+            _readOnly = readOnly || node is null || node is JsonValue;
+        }
 
         /// <summary>The underlying <see cref="JsonNode"/>, if this instance was created from one. Null for Element-backed or uninitialized instances.</summary>
         public readonly JsonNode? Node { get; }
@@ -126,18 +106,6 @@ namespace DigitalBusiness.JsonDataWrappers
         /// <summary>True if this instance is backed by a <see cref="JsonNode"/>.</summary>
         [MemberNotNullWhen(true, nameof(Node))]
         public bool IsNode => Node is not null;
-
-
-        /// <summary>
-        /// Returns a deep copy. Element-backed clones produce a new Element; Node-backed clones produce a new node tree.
-        /// Uninitialized instances return a new null instance.
-        /// </summary>
-        public JsonData Clone()
-        {            
-            if (IsElement) return new JsonData(Element.Value.Clone());
-            if (IsNode) return new JsonData(Node.DeepClone(),ReadOnly);
-            return new JsonData();
-        }
 
         /// <summary>Compares the JSON content of two instances for structural equality, regardless of source type.</summary>
         public bool DeepEquals(in JsonData other)=> JsonDataEquality.Equals(this, other);

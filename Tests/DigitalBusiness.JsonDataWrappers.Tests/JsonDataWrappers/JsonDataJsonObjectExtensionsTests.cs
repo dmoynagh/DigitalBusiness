@@ -611,7 +611,7 @@ public class JsonDataJsonObjectExtensionsTests
     [Fact]
     public void Set_ReadOnlyData_ThrowsInvalidOperationException()
     {
-        var data = new JsonData(new JsonObject(), readOnly: true);
+        var data = JsonData.CreateReadOnly(new JsonObject());
         Assert.Throws<InvalidOperationException>(() => data.Set("key", new JsonData(JsonValue.Create(1))));
     }
 
@@ -654,7 +654,7 @@ public class JsonDataJsonObjectExtensionsTests
     [Fact]
     public void Remove_ReadOnlyData_ThrowsInvalidOperationException()
     {
-        var data = new JsonData(new JsonObject(), readOnly: true);
+        var data = JsonData.CreateReadOnly(new JsonObject());
         Assert.Throws<InvalidOperationException>(() => data.Remove("key"));
     }
 
@@ -749,5 +749,31 @@ public class JsonDataJsonObjectExtensionsTests
     {
         var data = new JsonData(new JsonArray());
         Assert.Empty(data.PropertyNames);
+    }
+
+    // -- Readonly propagation -- TryGet(string) ---------------------------------
+
+    [Fact]
+    public void TryGet_ReadOnlyParent_ChildIsReadOnly()
+    {
+        var obj = new JsonObject { ["child"] = new JsonObject() };
+        var parent = JsonData.CreateReadOnly(obj);
+
+        var found = parent.TryGet("child", out var child);
+
+        Assert.True(found);
+        Assert.True(child.ReadOnly);
+    }
+
+    [Fact]
+    public void TryGet_WritableParent_ChildIsWritable()
+    {
+        var obj = new JsonObject { ["child"] = new JsonObject() };
+        var parent = new JsonData(obj);
+
+        var found = parent.TryGet("child", out var child);
+
+        Assert.True(found);
+        Assert.False(child.ReadOnly);
     }
 }

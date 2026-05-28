@@ -43,7 +43,7 @@ public class TypedJsonDataArrayTests
     public void ReadOnly_WhenJsonIsReadOnly_ReturnsTrue()
     {
         // Arrange – JsonArray wrapped with readOnly=true
-        var readOnlyJson = new JsonData(new JsonArray(), readOnly: true);
+        var readOnlyJson = JsonData.CreateReadOnly(new JsonArray());
         var sut = new JsonDataArray<string> { Json = readOnlyJson };
 
         // Act & Assert

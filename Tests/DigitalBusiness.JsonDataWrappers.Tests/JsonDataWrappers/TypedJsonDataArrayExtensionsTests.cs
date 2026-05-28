@@ -407,7 +407,7 @@ public class TypedJsonDataArrayExtensionsTests
     public void GetOrCreateArray_WhenReadOnlyAndPropertyMissing_ThrowsInvalidOperationException()
     {
         // Arrange
-        var parent = new JsonData(new System.Text.Json.Nodes.JsonObject(), readOnly: true);
+        var parent = JsonData.CreateReadOnly(new System.Text.Json.Nodes.JsonObject());
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => parent.GetOrCreateArray<string>("items"));
@@ -623,7 +623,7 @@ public class TypedJsonDataArrayExtensionsTests
     public void EnsureArrayByIndex_WhenReadOnlyAndIndexMissing_ThrowsInvalidOperationException()
     {
         // Arrange
-        var parent = new JsonData(new System.Text.Json.Nodes.JsonArray(), readOnly: true);
+        var parent = JsonData.CreateReadOnly(new System.Text.Json.Nodes.JsonArray());
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => parent.EnsureArray<string>(0));
