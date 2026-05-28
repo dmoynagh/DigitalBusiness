@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers;
+using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
 using System.Text.Json.Nodes;
@@ -103,12 +103,12 @@ public class JsonDataExceptionHelperTests
         Assert.Equal("JsonData is null.", ex.Message);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetTypedPropertyException_WhenPropertyDoesNotExist_ReturnsTypeMismatchException()
     {
         var obj = new JsonObject { ["name"] = "test" };
         var objData = new JsonData(obj);
-        // "missing" property doesn't exist → should return type mismatch exception
+        // "missing" property doesn't exist ? should return type mismatch exception
         var ex = JsonDataExceptionHelper.GetTypedPropertyException<int>("missing", objData);
         Assert.IsType<InvalidOperationException>(ex);
         Assert.Contains("missing", ex.Message);
@@ -119,7 +119,7 @@ public class JsonDataExceptionHelperTests
     {
         var obj = new JsonObject { ["name"] = "test" };
         var objData = new JsonData(obj);
-        // property "name" exists → code returns JsonDataPropertyNotExist (line 32)
+        // property "name" exists ? code returns JsonDataPropertyNotExist (line 32)
         var ex = JsonDataExceptionHelper.GetTypedPropertyException<int>("name", objData);
         Assert.IsType<InvalidOperationException>(ex);
         Assert.Contains("name", ex.Message);
@@ -166,7 +166,7 @@ public class JsonDataExceptionHelperTests
         Assert.IsType<IndexOutOfRangeException>(ex);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetTypedIndexException_WhenNotArrayAndIndexValid_ReturnsTypeMismatchException()
     {
         // Create an object with a known key; Count for object = number of properties

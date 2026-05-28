@@ -29,18 +29,32 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 
         public static bool FromJsonData(JsonData jsonData, [NotNullWhen(true)] out TEnum value)
         {
-            if (!jsonData.IsValue)
-            {
-                if(jsonData.IsElement) 
-                    return FromJson(jsonData.Element!.Value, out value);
-                else if(jsonData.IsNode && jsonData.Node is JsonValue jValue) 
-                    return FromJson(jValue, out value);               
-            }
+            if (!jsonData.IsValue && jsonData.IsElement)
+                return FromJson(jsonData.Element!.Value, out value);
             value = default;
             return false;
         }
 
-        public static bool FromJson(JsonValue jsonValue, [NotNullWhen(true)] out TEnum value) => jsonValue.TryGetValue<TEnum>(out value);
+        public static bool FromJson(JsonValue jsonValue, [NotNullWhen(true)] out TEnum value)
+        {
+            if (PersistAsNumber)
+            {
+                if (jsonValue.TryGetValue<long>(out var longVal))
+                {
+                    value = (TEnum)Enum.ToObject(typeof(TEnum), longVal);
+                    return true;
+                }
+            }
+            else
+            {
+                if (jsonValue.TryGetValue<string>(out var strVal) && strVal != null)
+                    return Enum.TryParse<TEnum>(strVal, out value);
+                if (jsonValue.TryGetValue<TEnum>(out value))
+                    return true;
+            }
+            value = default;
+            return false;
+        }
 
         public static bool FromJson(JsonElement jsonElement, [NotNullWhen(true)] out TEnum value)
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -10,7 +10,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataJsonArrayExtensionsTests
 {
-    // ── IsArray ──────────────────────────────────────────────────────────────
+    // -- IsArray --------------------------------------------------------------
 
     [Fact]
     public void IsArray_WithJsonArrayNode_ReturnsTrue()
@@ -64,7 +64,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.False(data.IsArray);
     }
 
-    // ── ThrowIfNotArray ──────────────────────────────────────────────────────
+    // -- ThrowIfNotArray ------------------------------------------------------
 
     [Fact]
     public void ThrowIfNotArray_WhenArray_ReturnsTrue()
@@ -97,7 +97,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.True(data.ThrowIfNotArray());
     }
 
-    // ── EnsureArray ──────────────────────────────────────────────────────────
+    // -- EnsureArray ----------------------------------------------------------
 
     [Fact]
     public void EnsureArray_WhenArray_ReturnsSameJsonData()
@@ -131,7 +131,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.True(result.IsArray);
     }
 
-    // ── CreateArray ──────────────────────────────────────────────────────────
+    // -- CreateArray ----------------------------------------------------------
 
     [Fact]
     public void CreateArray_ReturnsJsonDataThatIsArray()
@@ -148,7 +148,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.NotEqual(first, second);
     }
 
-    // ── AsArray ───────────────────────────────────────────────────────────────
+    // -- AsArray ---------------------------------------------------------------
 
     [Fact]
     public void AsArray_WhenArray_ReturnsSameJsonData()
@@ -189,7 +189,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.AsArray());
     }
 
-    // ── TryAsArray ────────────────────────────────────────────────────────────
+    // -- TryAsArray ------------------------------------------------------------
 
     [Fact]
     public void TryAsArray_WhenArray_ReturnsJsonData()
@@ -200,7 +200,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.True(result.Value.IsArray);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryAsArray_WhenNotArray_ReturnsNull()
     {
         var data = new JsonData(new JsonObject());
@@ -234,7 +234,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Null(result);
     }
 
-    // ── Get(int index) ────────────────────────────────────────────────────────
+    // -- Get(int index) --------------------------------------------------------
 
     [Fact]
     public void Get_WithValidIndex_ReturnsElement()
@@ -285,7 +285,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<IndexOutOfRangeException>(() => data.Get(10));
     }
 
-    // ── TryGet(int index) → JsonData? ─────────────────────────────────────────
+    // -- TryGet(int index) ? JsonData? -----------------------------------------
 
     [Fact]
     public void TryGet_NullableReturn_WhenValidIndex_ReturnsElement()
@@ -314,7 +314,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Null(result);
     }
 
-    // ── TryGet(int index, out JsonData) ───────────────────────────────────────
+    // -- TryGet(int index, out JsonData) ---------------------------------------
 
     [Fact]
     public void TryGet_WithOutParam_OnJsonNodeArray_ValidIndex_ReturnsTrueAndResult()
@@ -388,7 +388,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.False(found);
     }
 
-    // ── GetOrCreateObject ─────────────────────────────────────────────────────
+    // -- GetOrCreateObject -----------------------------------------------------
 
     [Fact]
     public void GetOrCreateObject_WhenIndexHasObject_ReturnsExistingObject()
@@ -418,7 +418,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.GetOrCreateObject(0));
     }
 
-    // ── GetOrCreateArray ──────────────────────────────────────────────────────
+    // -- GetOrCreateArray ------------------------------------------------------
 
     [Fact]
     public void GetOrCreateArray_WhenIndexHasArray_ReturnsExistingArray()
@@ -456,7 +456,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.GetOrCreateArray(0));
     }
 
-    // ── Contains ──────────────────────────────────────────────────────────────
+    // -- Contains --------------------------------------------------------------
 
     [Fact]
     public void Contains_WhenPredicateMatchesItemInJsonNodeArray_ReturnsTrue()
@@ -502,7 +502,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.False(result);
     }
 
-    // ── IndexOf ───────────────────────────────────────────────────────────────
+    // -- IndexOf ---------------------------------------------------------------
 
     [Fact]
     public void IndexOf_WhenPredicateMatchesFirstItemInJsonNodeArray_ReturnsZero()
@@ -574,7 +574,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Equal(-1, index);
     }
 
-    // ── IndexHasValue ─────────────────────────────────────────────────────────
+    // -- IndexHasValue ---------------------------------------------------------
 
     [Fact]
     public void IndexHasValue_NegativeIndex_ReturnsFalse()
@@ -645,7 +645,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.False(data.IndexHasValue(0));
     }
 
-    // ── Set ───────────────────────────────────────────────────────────────────
+    // -- Set -------------------------------------------------------------------
 
     [Fact]
     public void Set_WithValidIndexAndValue_SetsElementAtIndex()
@@ -681,7 +681,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Set(0, new JsonData(JsonValue.Create(99))));
     }
 
-    // ── Add ───────────────────────────────────────────────────────────────────
+    // -- Add -------------------------------------------------------------------
 
     [Fact]
     public void Add_WithValue_AppendsElementToArray()
@@ -730,7 +730,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Add(new JsonData(JsonValue.Create(1))));
     }
 
-    // ── Insert ────────────────────────────────────────────────────────────────
+    // -- Insert ----------------------------------------------------------------
 
     [Fact]
     public void Insert_AtZero_InsertsAtBeginning()
@@ -778,7 +778,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Insert(0, new JsonData(JsonValue.Create(99))));
     }
 
-    // ── RemoveAt ──────────────────────────────────────────────────────────────
+    // -- RemoveAt --------------------------------------------------------------
 
     [Fact]
     public void RemoveAt_ValidIndex_RemovesElement()
@@ -824,7 +824,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.Throws<ArgumentOutOfRangeException>(() => data.RemoveAt(5));
     }
 
-    // ── Items ─────────────────────────────────────────────────────────────────
+    // -- Items -----------------------------------------------------------------
 
     [Fact]
     public void Items_OnJsonNodeArray_ReturnsAllItems()

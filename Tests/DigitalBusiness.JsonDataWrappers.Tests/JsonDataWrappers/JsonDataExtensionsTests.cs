@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
@@ -8,7 +8,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataExtensionsTests
 {
-    // ── IsNull ────────────────────────────────────────────────────────────────
+    // -- IsNull ----------------------------------------------------------------
 
     [Fact]
     public void IsNull_Uninitialized_ReturnsTrue()
@@ -96,12 +96,12 @@ public class JsonDataExtensionsTests
         Assert.True(data.IsNull);
     }
 
-    // ── IsUndefined ───────────────────────────────────────────────────────────
+    // -- IsUndefined -----------------------------------------------------------
 
     [Fact]
     public void IsUndefined_UninitializedElement_ReturnsFalse()
     {
-        // Arrange – default JsonData has no node and no element; ValueKind returns Null
+        // Arrange � default JsonData has no node and no element; ValueKind returns Null
         var data = new JsonData();
 
         // Act & Assert
@@ -111,7 +111,7 @@ public class JsonDataExtensionsTests
     [Fact]
     public void IsUndefined_DefaultJsonElement_ReturnsTrue()
     {
-        // Arrange – default JsonElement has ValueKind == Undefined
+        // Arrange � default JsonElement has ValueKind == Undefined
         var data = new JsonData(default(JsonElement));
 
         // Act & Assert
@@ -140,7 +140,7 @@ public class JsonDataExtensionsTests
         Assert.False(data.IsUndefined);
     }
 
-    // ── ThrowIfReadOnly ───────────────────────────────────────────────────────
+    // -- ThrowIfReadOnly -------------------------------------------------------
 
     [Fact]
     public void ThrowIfReadOnly_ReadOnlyInstance_Throws()
@@ -156,25 +156,25 @@ public class JsonDataExtensionsTests
     [Fact]
     public void ThrowIfReadOnly_WritableJsonObjectInstance_DoesNotThrow()
     {
-        // Arrange – JsonObject is not a JsonValue so it can be writable
+        // Arrange � JsonObject is not a JsonValue so it can be writable
         var node = new JsonObject();
         var data = new JsonData(node, readOnly: false);
 
-        // Act & Assert – should not throw
+        // Act & Assert � should not throw
         data.ThrowIfReadOnly();
     }
 
     [Fact]
     public void ThrowIfReadOnly_UninitializedInstance_Throws()
     {
-        // Arrange – uninitialized is always readonly
+        // Arrange � uninitialized is always readonly
         var data = new JsonData();
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => data.ThrowIfReadOnly());
     }
 
-    // ── ThrowIfNull ───────────────────────────────────────────────────────────
+    // -- ThrowIfNull -----------------------------------------------------------
 
     [Fact]
     public void ThrowIfNull_NullInstance_Throws()
@@ -205,7 +205,7 @@ public class JsonDataExtensionsTests
         var node = JsonValue.Create(42)!;
         var data = new JsonData(node);
 
-        // Act & Assert – should not throw
+        // Act & Assert � should not throw
         data.ThrowIfNull();
     }
 
@@ -216,11 +216,11 @@ public class JsonDataExtensionsTests
         var element = JsonDocument.Parse("\"text\"").RootElement;
         var data = new JsonData(element);
 
-        // Act & Assert – should not throw
+        // Act & Assert � should not throw
         data.ThrowIfNull();
     }
 
-    // ── AsReadOnly ────────────────────────────────────────────────────────────
+    // -- AsReadOnly ------------------------------------------------------------
 
     [Fact]
     public void AsReadOnly_AlreadyReadOnly_ReturnsSameInstance()
@@ -239,7 +239,7 @@ public class JsonDataExtensionsTests
     [Fact]
     public void AsReadOnly_Writable_ReturnsReadOnlyInstance()
     {
-        // Arrange – JsonObject is writable; JsonValue is always readonly
+        // Arrange � JsonObject is writable; JsonValue is always readonly
         var node = new JsonObject();
         var data = new JsonData(node, readOnly: false);
 
@@ -260,7 +260,7 @@ public class JsonDataExtensionsTests
         // Act
         var result = data.AsReadOnly();
 
-        // Assert – original is writable, result is readonly
+        // Assert � original is writable, result is readonly
         Assert.False(data.ReadOnly);
         Assert.True(result.ReadOnly);
     }
@@ -282,7 +282,7 @@ public class JsonDataExtensionsTests
     [Fact]
     public void AsReadOnly_Uninitialized_ReturnsSameInstance()
     {
-        // Arrange – uninitialized is already readonly
+        // Arrange � uninitialized is already readonly
         var data = new JsonData();
 
         // Act
@@ -292,7 +292,7 @@ public class JsonDataExtensionsTests
         Assert.Equal(data, result);
     }
 
-    // ── Source ────────────────────────────────────────────────────────────────
+    // -- Source ----------------------------------------------------------------
 
     [Fact]
     public void Source_Uninitialized_ReturnsNull()
@@ -369,7 +369,7 @@ public class JsonDataExtensionsTests
         Assert.Null(data.Source);
     }
 
-    // ── Create() ─────────────────────────────────────────────────────────────
+    // -- Create() -------------------------------------------------------------
 
     [Fact]
     public void Create_NoArgs_ReturnsUninitializedInstance()
@@ -391,12 +391,12 @@ public class JsonDataExtensionsTests
         Assert.True(data.ReadOnly);
     }
 
-    // ── Create(JsonNode?, bool) ───────────────────────────────────────────────
+    // -- Create(JsonNode?, bool) -----------------------------------------------
 
     [Fact]
     public void Create_WithNullNode_ReturnsNullInstance()
     {
-        // Act – explicit cast to resolve the correct overload
+        // Act � explicit cast to resolve the correct overload
         var data = JsonData.Create(source: (JsonNode?)null);
 
         // Assert
@@ -409,7 +409,7 @@ public class JsonDataExtensionsTests
         // Arrange
         JsonNode node = new JsonObject();
 
-        // Act – explicit cast to resolve the correct overload
+        // Act � explicit cast to resolve the correct overload
         var data = JsonData.Create(source: (JsonNode?)node);
 
         // Assert
@@ -455,7 +455,7 @@ public class JsonDataExtensionsTests
         Assert.False(data.ReadOnly);
     }
 
-    // ── Create(JsonElement) ───────────────────────────────────────────────────
+    // -- Create(JsonElement) ---------------------------------------------------
 
     [Fact]
     public void Create_WithElement_ReturnsElementBackedInstance()
@@ -484,7 +484,7 @@ public class JsonDataExtensionsTests
         Assert.True(data.ReadOnly);
     }
 
-    // ── Create(JsonElement?) ──────────────────────────────────────────────────
+    // -- Create(JsonElement?) --------------------------------------------------
 
     [Fact]
     public void Create_WithNullableElementHasValue_ReturnsElementBackedInstance()
@@ -523,7 +523,7 @@ public class JsonDataExtensionsTests
         Assert.True(data.ReadOnly);
     }
 
-    // ── ToJsonElementJsonData ─────────────────────────────────────────────────
+    // -- ToJsonElementJsonData -------------------------------------------------
 
     [Fact]
     public void ToJsonElementJsonData_ElementBacked_ReturnsElementBackedClone()
@@ -583,7 +583,7 @@ public class JsonDataExtensionsTests
         Assert.Equal(JsonValueKind.Null, result.Element!.Value.ValueKind);
     }
 
-    // ── ToJsonNodeJsonData ────────────────────────────────────────────────────
+    // -- ToJsonNodeJsonData ----------------------------------------------------
 
     [Fact]
     public void ToJsonNodeJsonData_NodeBacked_ReturnsNodeBackedDeepClone()
@@ -658,7 +658,7 @@ public class JsonDataExtensionsTests
         Assert.Equal(JsonValueKind.Object, result.Node!.GetValueKind());
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ToJsonNodeJsonData_ElementBacked_DefaultReadOnlyFalse()
     {
         // Arrange
@@ -686,7 +686,7 @@ public class JsonDataExtensionsTests
         Assert.True(result.ReadOnly);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ToJsonNodeJsonData_Uninitialized_ReturnsNullNodeBacked()
     {
         // Arrange
@@ -713,9 +713,9 @@ public class JsonDataExtensionsTests
         Assert.True(result.ReadOnly);
     }
 
-    // ── ToEditableJsonData ────────────────────────────────────────────────────
+    // -- ToEditableJsonData ----------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ToEditableJsonData_NodeBacked_ReturnsWritableNodeBacked()
     {
         // Arrange
@@ -730,7 +730,7 @@ public class JsonDataExtensionsTests
         Assert.False(result.ReadOnly);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ToEditableJsonData_ElementBacked_ReturnsWritableNodeBacked()
     {
         // Arrange
@@ -745,7 +745,7 @@ public class JsonDataExtensionsTests
         Assert.False(result.ReadOnly);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ToEditableJsonData_Uninitialized_ReturnsWritable()
     {
         // Arrange
@@ -758,7 +758,7 @@ public class JsonDataExtensionsTests
         Assert.False(result.ReadOnly);
     }
 
-    // ── Count ─────────────────────────────────────────────────────────────────
+    // -- Count -----------------------------------------------------------------
 
     [Fact]
     public void Count_ElementBackedArray_ReturnsArrayLength()
@@ -836,7 +836,7 @@ public class JsonDataExtensionsTests
         Assert.Equal(0, data.Count);
     }
 
-    // ── Clear ─────────────────────────────────────────────────────────────────
+    // -- Clear -----------------------------------------------------------------
 
     [Fact]
     public void Clear_NodeBackedJsonArray_RemovesAllItems()
@@ -888,7 +888,7 @@ public class JsonDataExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Clear());
     }
 
-    // ── IsValue ───────────────────────────────────────────────────────────────
+    // -- IsValue ---------------------------------------------------------------
 
     [Fact]
     public void IsValue_NodeBackedJsonValue_ReturnsTrue()
@@ -1020,7 +1020,7 @@ public class JsonDataExtensionsTests
         Assert.False(data.IsValue);
     }
 
-    // ── ThrowIfNotValue ───────────────────────────────────────────────────────
+    // -- ThrowIfNotValue -------------------------------------------------------
 
     [Fact]
     public void ThrowIfNotValue_NodeBackedJsonValue_ReturnsTrue()

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
 
@@ -12,7 +12,7 @@ public class JsonDataObjectExtensionsTests
         public JsonData Json { get; init; }
     }
 
-    // ── AsJsonDataObject ──────────────────────────────────────────────────────
+    // -- AsJsonDataObject ------------------------------------------------------
 
     [Fact]
     public void AsJsonDataObject_WithJsonNodeBacked_CopiesJsonProperty()
@@ -66,7 +66,7 @@ public class JsonDataObjectExtensionsTests
         var result1 = source.AsJsonDataObject<TestWrapper>();
         var result2 = source.AsJsonDataObject<TestWrapper>();
 
-        // Assert – both should carry the same Json
+        // Assert � both should carry the same Json
         Assert.Equal(result1.Json, result2.Json);
     }
 }

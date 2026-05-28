@@ -63,11 +63,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class ByteConverter : IJsonDataConverter<byte>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out byte value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetByte(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetByte(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<byte>(out value);
@@ -82,11 +82,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class SByteConverter : IJsonDataConverter<sbyte>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out sbyte value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetSByte(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetSByte(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<sbyte>(out value);
@@ -118,11 +118,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class UShortConverter : IJsonDataConverter<ushort>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out ushort value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetUInt16(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetUInt16(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<ushort>(out value);
@@ -136,11 +136,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class IntConverter : IJsonDataConverter<int>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out int value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetInt32(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetInt32(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<int>(out value);
@@ -154,11 +154,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class UIntConverter : IJsonDataConverter<uint>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out uint value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetUInt32(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetUInt32(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<uint>(out value);
@@ -172,11 +172,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class LongConverter : IJsonDataConverter<long>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out long value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetInt64(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetInt64(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<long>(out value);
@@ -190,11 +190,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class ULongConverter : IJsonDataConverter<ulong>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out ulong value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetUInt64(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetUInt64(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<ulong>(out value);
@@ -208,11 +208,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class FloatConverter : IJsonDataConverter<float>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out float value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetSingle(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetSingle(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<float>(out value);
@@ -226,11 +226,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class DoubleConverter : IJsonDataConverter<double>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out double value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetDouble(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetDouble(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<double>(out value);
@@ -244,11 +244,11 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 		private class DecimalConverter : IJsonDataConverter<decimal>
 		{
 			public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out decimal value)
-            {
-                if (jsonData.Element.HasValue)
-                {
-                    return jsonData.Element.Value.TryGetDecimal(out value);
-                }
+			{
+				if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Number)
+				{
+					return jsonData.Element.Value.TryGetDecimal(out value);
+				}
                 else if (jsonData.Node != null && jsonData.Node is JsonValue jv)
                 {
                     return jv.TryGetValue<decimal>(out value);

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Moq;
 using Xunit;
@@ -10,7 +10,7 @@ public class TypedJsonDataExtensionsTests
     // A minimal IJsonDataKey for phantom-type tests
     private sealed class TestKey : IJsonDataKey { }
 
-    // ── AsJsonData<T> on IJsonDataWrapper ──────────────────────────────────────
+    // -- AsJsonData<T> on IJsonDataWrapper --------------------------------------
 
     [Fact]
     public void AsJsonData_IJsonDataWrapper_WithJsonNodeBacked_ReturnsJsonDataTWithSameJson()
@@ -42,7 +42,7 @@ public class TypedJsonDataExtensionsTests
         Assert.Equal(default, result.Json);
     }
 
-    // ── AsJsonData<T> on IJsonData ─────────────────────────────────────────────
+    // -- AsJsonData<T> on IJsonData ---------------------------------------------
 
     [Fact]
     public void AsJsonData_IJsonData_WithJsonNodeBacked_ReturnsJsonDataTWithSameJson()
@@ -74,7 +74,7 @@ public class TypedJsonDataExtensionsTests
         Assert.Equal(default, result.Json);
     }
 
-    // ── AsJsonData<T> on JsonData (struct) ────────────────────────────────────
+    // -- AsJsonData<T> on JsonData (struct) ------------------------------------
 
     [Fact]
     public void AsJsonData_JsonData_WithJsonNodeBacked_WrapsItself()
@@ -116,7 +116,7 @@ public class TypedJsonDataExtensionsTests
         Assert.IsAssignableFrom<IJsonDataWrapper>(result);
     }
 
-    // ── GetOrCreateJsonData<T> on JsonData ────────────────────────────────────
+    // -- GetOrCreateJsonData<T> on JsonData ------------------------------------
 
     [Fact]
     public void GetOrCreateJsonData_WhenPropertyMissing_CreatesObjectAndWraps()
@@ -156,7 +156,7 @@ public class TypedJsonDataExtensionsTests
         Assert.Throws<InvalidOperationException>(() => jsonData.GetOrCreateJsonData<TestKey>("child"));
     }
 
-    // ── GetOrCreateJsonDataArray<T> on JsonData ───────────────────────────────
+    // -- GetOrCreateJsonDataArray<T> on JsonData -------------------------------
 
     [Fact]
     public void GetOrCreateJsonDataArray_WhenPropertyMissing_CreatesArrayAndWraps()

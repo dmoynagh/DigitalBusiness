@@ -54,6 +54,16 @@ namespace DigitalBusiness.JsonDataWrappers
             _readOnly = readOnly || node is null || node is JsonValue;
         }
 
+        /// <summary>
+        /// Internal constructor that allows bypassing the <see cref="JsonValue"/>-is-always-readonly rule.
+        /// Used by conversion helpers (e.g., <c>ToJsonNodeJsonData</c>) that explicitly opt-in to a writable state.
+        /// </summary>
+        internal JsonData(JsonNode? node, bool readOnly, bool forceReadOnly)
+        {
+            Node = node;
+            _readOnly = forceReadOnly || readOnly;
+        }
+
         /// <summary>Wraps a <see cref="JsonElement"/>. Always readonly — JsonElement is an immutable BCL type.</summary>
         public JsonData(JsonElement element)
         {
@@ -84,7 +94,7 @@ namespace DigitalBusiness.JsonDataWrappers
         /// For Node-backed instances, reflects the value passed at construction.
         /// <para>Also true when there is no source at all (default/uninitialized), preventing accidental mutation.</para>
         /// </summary>
-        public readonly bool ReadOnly => _readOnly || (!IsNode && !IsElement);
+        public readonly bool ReadOnly => _readOnly;
 
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
@@ -7,7 +7,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataTests
 {
-    // ── Default constructor ───────────────────────────────────────────────────
+    // -- Default constructor ---------------------------------------------------
 
     [Fact]
     public void DefaultConstructor_SetsReadOnlyTrue()
@@ -33,7 +33,7 @@ public class JsonDataTests
         Assert.Null(sut.Element);
     }
 
-    // ── JsonData(JsonNode?) constructor ───────────────────────────────────────
+    // -- JsonData(JsonNode?) constructor ---------------------------------------
 
     [Fact]
     public void ConstructorNode_WithNullNode_IsReadOnly()
@@ -91,7 +91,7 @@ public class JsonDataTests
         Assert.Same(node, sut.Node);
     }
 
-    // ── JsonData(JsonNode?, bool) constructor ─────────────────────────────────
+    // -- JsonData(JsonNode?, bool) constructor ---------------------------------
 
     [Fact]
     public void ConstructorNodeReadOnly_WithNullNode_IsReadOnlyRegardlessOfFlag()
@@ -141,7 +141,7 @@ public class JsonDataTests
         Assert.Same(node, sut.Node);
     }
 
-    // ── JsonData(JsonElement) constructor ─────────────────────────────────────
+    // -- JsonData(JsonElement) constructor -------------------------------------
 
     [Fact]
     public void ConstructorElement_IsReadOnly()
@@ -177,7 +177,7 @@ public class JsonDataTests
         Assert.Null(sut.Node);
     }
 
-    // ── IJsonData.Json property ───────────────────────────────────────────────
+    // -- IJsonData.Json property -----------------------------------------------
 
     [Fact]
     public void Json_ExplicitInterface_ReturnsSelf()
@@ -210,7 +210,7 @@ public class JsonDataTests
         Assert.Equal(sut, iface.Json);
     }
 
-    // ── JsonData(JsonElement?) constructor ────────────────────────────────────
+    // -- JsonData(JsonElement?) constructor ------------------------------------
 
     [Fact]
     public void ConstructorNullableElement_WithNull_IsReadOnly()
@@ -270,7 +270,7 @@ public class JsonDataTests
         Assert.Null(sut.Node);
     }
 
-    // ── CreateNull ────────────────────────────────────────────────────────────
+    // -- CreateNull ------------------------------------------------------------
 
     [Fact]
     public void CreateNull_IsReadOnly()
@@ -304,7 +304,7 @@ public class JsonDataTests
         Assert.Equal(JsonValueKind.Null, sut.ValueKind);
     }
 
-    // ── ReadOnly property ─────────────────────────────────────────────────────
+    // -- ReadOnly property -----------------------------------------------------
 
     [Fact]
     public void ReadOnly_DefaultInstance_IsTrue()
@@ -357,7 +357,7 @@ public class JsonDataTests
         Assert.True(sut.ReadOnly);
     }
 
-    // ── ValueKind property ────────────────────────────────────────────────────
+    // -- ValueKind property ----------------------------------------------------
 
     [Fact]
     public void ValueKind_Uninitialized_ReturnsNull()
@@ -452,7 +452,7 @@ public class JsonDataTests
         Assert.Equal(JsonValueKind.Null, sut.ValueKind);
     }
 
-    // ── IsElement property ────────────────────────────────────────────────────
+    // -- IsElement property ----------------------------------------------------
 
     [Fact]
     public void IsElement_ElementBacked_IsTrue()
@@ -497,7 +497,7 @@ public class JsonDataTests
         Assert.False(sut.IsElement);
     }
 
-    // ── IsNode property ───────────────────────────────────────────────────────
+    // -- IsNode property -------------------------------------------------------
 
     [Fact]
     public void IsNode_NodeBackedJsonObject_IsTrue()
@@ -548,7 +548,7 @@ public class JsonDataTests
         Assert.False(sut.IsNode);
     }
 
-    // ── Clone method ──────────────────────────────────────────────────────────
+    // -- Clone method ----------------------------------------------------------
 
     [Fact]
     public void Clone_DefaultInstance_ReturnsNewDefaultInstance()
@@ -641,7 +641,7 @@ public class JsonDataTests
         Assert.Equal("value", clone.Node!["key"]!.GetValue<string>());
     }
 
-    // ── DeepEquals method ─────────────────────────────────────────────────────
+    // -- DeepEquals method -----------------------------------------------------
 
     [Fact]
     public void DeepEquals_TwoDefaultInstances_ReturnsTrue()

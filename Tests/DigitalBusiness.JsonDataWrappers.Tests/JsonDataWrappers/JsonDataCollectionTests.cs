@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
@@ -7,7 +7,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataCollectionTests
 {
-    // ── Create(IEnumerable<JsonNode>) ─────────────────────────────────────────
+    // -- Create(IEnumerable<JsonNode>) -----------------------------------------
 
     [Fact]
     public void Create_IEnumerableJsonNode_ReturnsNonNull()
@@ -22,7 +22,7 @@ public class JsonDataCollectionTests
         Assert.NotNull(collection);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Create_IEnumerableJsonNode_EnumeratesAllItems()
     {
         // Arrange
@@ -50,7 +50,7 @@ public class JsonDataCollectionTests
         Assert.Empty(items);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Create_IEnumerableJsonNode_ItemsHaveExpectedValues()
     {
         // Arrange
@@ -65,7 +65,7 @@ public class JsonDataCollectionTests
         Assert.Equal("world", (string?)items[1]);
     }
 
-    // ── Create(JsonArray) ─────────────────────────────────────────────────────
+    // -- Create(JsonArray) -----------------------------------------------------
 
     [Fact]
     public void Create_JsonArray_ReturnsNonNull()
@@ -80,7 +80,7 @@ public class JsonDataCollectionTests
         Assert.NotNull(collection);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Create_JsonArray_EnumeratesAllItems()
     {
         // Arrange
@@ -108,7 +108,7 @@ public class JsonDataCollectionTests
         Assert.Empty(items);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Create_JsonArray_ItemsHaveExpectedValues()
     {
         // Arrange
@@ -123,7 +123,7 @@ public class JsonDataCollectionTests
         Assert.Equal(99, (int)items[1]);
     }
 
-    // ── Create(JsonDocument, bool autoDispose) ────────────────────────────────
+    // -- Create(JsonDocument, bool autoDispose) --------------------------------
 
     [Fact]
     public void Create_JsonDocument_ReturnsNonNull()
@@ -197,7 +197,7 @@ public class JsonDataCollectionTests
         Assert.Throws<ObjectDisposedException>(() => document.RootElement.ValueKind);
     }
 
-    // ── Create(IEnumerable<JsonElement>) ─────────────────────────────────────
+    // -- Create(IEnumerable<JsonElement>) -------------------------------------
 
     [Fact]
     public void Create_IEnumerableJsonElement_ReturnsNonNull()
@@ -258,7 +258,7 @@ public class JsonDataCollectionTests
         Assert.Equal(8, (int)items[1]);
     }
 
-    // ── Create(JsonElement rootElement) ──────────────────────────────────────
+    // -- Create(JsonElement rootElement) --------------------------------------
 
     [Fact]
     public void Create_JsonElementRoot_ReturnsNonNull()
@@ -320,7 +320,7 @@ public class JsonDataCollectionTests
         Assert.Equal(6, (int)items[1]);
     }
 
-    // ── Create(string jsonData) ───────────────────────────────────────────────
+    // -- Create(string jsonData) -----------------------------------------------
 
     [Fact]
     public void Create_String_ReturnsNonNull()
@@ -366,7 +366,7 @@ public class JsonDataCollectionTests
         Assert.Equal(20, (int)items[1]);
     }
 
-    // ── IEnumerable.GetEnumerator() ───────────────────────────────────────────
+    // -- IEnumerable.GetEnumerator() -------------------------------------------
 
     [Fact]
     public void GetEnumerator_ViaIEnumerable_EnumeratesItems()
@@ -386,7 +386,7 @@ public class JsonDataCollectionTests
         Assert.Equal(3, items.Count);
     }
 
-    // ── Dispose / OnDispose ───────────────────────────────────────────────────
+    // -- Dispose / OnDispose ---------------------------------------------------
 
     [Fact]
     public void Dispose_CalledTwice_DoesNotThrow()
@@ -438,9 +438,9 @@ public class JsonDataCollectionTests
         Assert.Null(ex);
     }
 
-    // ── JsonDataJsonNodeCollection constructor / GetEnumerator ────────────────
+    // -- JsonDataJsonNodeCollection constructor / GetEnumerator ----------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonNodeCollection_Constructor_AssignsNodes_ViaGetEnumeratorReturnsSingleItem()
     {
         // Arrange - use a node parsed from JSON to avoid parent-ownership issues
@@ -454,7 +454,7 @@ public class JsonDataCollectionTests
         Assert.Single(items);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonNodeCollection_GetEnumerator_WithMultipleParsedNodes_ReturnsCorrectCount()
     {
         // Arrange
@@ -473,7 +473,7 @@ public class JsonDataCollectionTests
         Assert.Equal(3, items.Count);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonNodeCollection_GetEnumerator_ItemValues_AreCorrect()
     {
         // Arrange
@@ -492,9 +492,9 @@ public class JsonDataCollectionTests
         Assert.Equal(20, (int)items[1]);
     }
 
-    // ── JsonDataJsonArrayCollection constructor / GetEnumerator ───────────────
+    // -- JsonDataJsonArrayCollection constructor / GetEnumerator ---------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonArrayCollection_Constructor_AssignsArray_ViaGetEnumeratorReturnsSingleItem()
     {
         // Arrange - parse a JsonArray to avoid parent-ownership issues
@@ -508,7 +508,7 @@ public class JsonDataCollectionTests
         Assert.Single(items);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonArrayCollection_GetEnumerator_WithMultipleItems_ReturnsCorrectCount()
     {
         // Arrange
@@ -522,7 +522,7 @@ public class JsonDataCollectionTests
         Assert.Equal(3, items.Count);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void JsonDataJsonArrayCollection_GetEnumerator_ItemValues_AreCorrect()
     {
         // Arrange
@@ -537,7 +537,7 @@ public class JsonDataCollectionTests
         Assert.Equal(6, (int)items[1]);
     }
 
-    // ── JsonDataJsonDocumentCollection constructor (default autoDispose) ───────
+    // -- JsonDataJsonDocumentCollection constructor (default autoDispose) -------
 
     [Fact]
     public void JsonDataJsonDocumentCollection_Constructor_DefaultAutoDispose_DocumentNotDisposed()
@@ -570,7 +570,7 @@ public class JsonDataCollectionTests
         Assert.Equal(3, items.Count);
     }
 
-    // ── JsonDataJsonDocumentCollection.GetEnumerator (disposed path) ──────────
+    // -- JsonDataJsonDocumentCollection.GetEnumerator (disposed path) ----------
 
     [Fact]
     public void JsonDataJsonDocumentCollection_GetEnumerator_AfterDispose_ThrowsObjectDisposedException()
@@ -614,7 +614,7 @@ public class JsonDataCollectionTests
         Assert.Empty(items);
     }
 
-    // ── JsonDataJsonDocumentCollection.OnDispose ──────────────────────────────
+    // -- JsonDataJsonDocumentCollection.OnDispose ------------------------------
 
     [Fact]
     public void JsonDataJsonDocumentCollection_OnDispose_AutoDisposeFalse_DocumentRemainsUsable()
@@ -645,7 +645,7 @@ public class JsonDataCollectionTests
         Assert.Throws<ObjectDisposedException>(() => document.RootElement.ValueKind);
     }
 
-    // ── JsonDataJsonElementChildrenCollection constructor / GetEnumerator ──────
+    // -- JsonDataJsonElementChildrenCollection constructor / GetEnumerator ------
 
     [Fact]
     public void JsonDataJsonElementChildrenCollection_Constructor_StoresElement_GetEnumeratorReturnsItems()
@@ -693,7 +693,7 @@ public class JsonDataCollectionTests
         Assert.Equal(99, (int)items[1]);
     }
 
-    // ── JsonDataJsonElementCollection constructor / GetEnumerator ─────────────
+    // -- JsonDataJsonElementCollection constructor / GetEnumerator -------------
 
     [Fact]
     public void JsonDataJsonElementCollection_Constructor_StoresElements_GetEnumeratorReturnsItems()
@@ -740,7 +740,7 @@ public class JsonDataCollectionTests
         Assert.Equal(200, (int)items[1]);
     }
 
-    // ── JsonDataJsonElementCollection.GetEnumerator (targeted) ───────────────
+    // -- JsonDataJsonElementCollection.GetEnumerator (targeted) ---------------
 
     [Fact]
     public void JsonDataJsonElementCollection_GetEnumerator_SingleElement_ReturnsSingleItem()
@@ -774,15 +774,15 @@ public class JsonDataCollectionTests
         Assert.Equal(firstPass.Count, secondPass.Count);
     }
 
-    // ── JsonDataJsonStringCollection constructor ───────────────────────────────
+    // -- JsonDataJsonStringCollection constructor -------------------------------
 
     [Fact]
     public void JsonDataJsonStringCollection_Constructor_WithValidJsonString_DoesNotImmediatelyParseDocument()
     {
-        // Arrange & Act – create the collection but do NOT enumerate (document is lazy)
+        // Arrange & Act � create the collection but do NOT enumerate (document is lazy)
         using var collection = JsonDataCollection.Create("[1,2,3]");
 
-        // Assert – collection is non-null; no parse exception means no eager document creation
+        // Assert � collection is non-null; no parse exception means no eager document creation
         Assert.NotNull(collection);
     }
 
@@ -797,7 +797,7 @@ public class JsonDataCollectionTests
         Assert.Empty(items);
     }
 
-    // ── JsonDataJsonStringCollection.Document / CreateDocument ───────────────
+    // -- JsonDataJsonStringCollection.Document / CreateDocument ---------------
 
     [Fact]
     public void JsonDataJsonStringCollection_Document_LazilyCreated_EnumerationSucceedsOnFirstCall()
@@ -805,7 +805,7 @@ public class JsonDataCollectionTests
         // Arrange
         using var collection = JsonDataCollection.Create("[10,20,30]");
 
-        // Act – first enumeration triggers document creation
+        // Act � first enumeration triggers document creation
         var items = collection.ToList();
 
         // Assert
@@ -818,18 +818,18 @@ public class JsonDataCollectionTests
         // Arrange
         using var collection = JsonDataCollection.Create("[1,2]");
 
-        // Act – enumerate twice to confirm the cached document is reused
+        // Act � enumerate twice to confirm the cached document is reused
         var first = collection.ToList();
         var second = collection.ToList();
 
-        // Assert – same element count each time (would throw if document were re-created after null)
+        // Assert � same element count each time (would throw if document were re-created after null)
         Assert.Equal(first.Count, second.Count);
     }
 
     [Fact]
     public void JsonDataJsonStringCollection_CreateDocument_NullishJsonString_ParsesAsEmptyArray()
     {
-        // Arrange – we can observe the null-coalesce path by passing an empty string which is already empty array-safe;
+        // Arrange � we can observe the null-coalesce path by passing an empty string which is already empty array-safe;
         // The real null path inside CreateDocument (JsonString ?? string.Empty) is exercised when
         // GetEnumerator is called a second time after JsonString has been set to null internally.
         using var collection = JsonDataCollection.Create("[]");
@@ -843,7 +843,7 @@ public class JsonDataCollectionTests
         Assert.Empty(secondItems);
     }
 
-    // ── JsonDataJsonStringCollection.OnDispose ────────────────────────────────
+    // -- JsonDataJsonStringCollection.OnDispose --------------------------------
 
     [Fact]
     public void JsonDataJsonStringCollection_OnDispose_DocumentCreated_DisposesDocumentWithoutException()
@@ -862,7 +862,7 @@ public class JsonDataCollectionTests
     [Fact]
     public void JsonDataJsonStringCollection_OnDispose_DocumentNotCreated_NoExceptionThrown()
     {
-        // Arrange – dispose without ever enumerating (document never created)
+        // Arrange � dispose without ever enumerating (document never created)
         var collection = JsonDataCollection.Create("[1,2,3]");
 
         // Act
@@ -900,7 +900,7 @@ public class JsonDataCollectionTests
         Assert.Null(ex);
     }
 
-    // ── JsonDataJsonStringCollection.GetEnumerator (additional coverage) ──────
+    // -- JsonDataJsonStringCollection.GetEnumerator (additional coverage) ------
 
     [Fact]
     public void JsonDataJsonStringCollection_GetEnumerator_NotDisposed_ReturnsItems()
@@ -921,7 +921,7 @@ public class JsonDataCollectionTests
     [Fact]
     public void JsonDataJsonStringCollection_GetEnumerator_AfterDisposeWithoutDocumentCreation_ThrowsObjectDisposedException()
     {
-        // Arrange – dispose before any enumeration (document never created)
+        // Arrange � dispose before any enumeration (document never created)
         var collection = JsonDataCollection.Create("[1,2,3]");
         ((IDisposable)collection).Dispose();
 
@@ -929,7 +929,7 @@ public class JsonDataCollectionTests
         Assert.Throws<ObjectDisposedException>(() => collection.GetEnumerator());
     }
 
-    // ── IJsonDataCollection.AsJsonData<T>() extension ────────────────────────
+    // -- IJsonDataCollection.AsJsonData<T>() extension ------------------------
 
     private sealed class TestKey : IJsonDataKey { }
 
@@ -981,7 +981,7 @@ public class JsonDataCollectionTests
         // Act
         var typed = collection.AsJsonData<TestKey>().ToList();
 
-        // Assert – values can be read back via the JsonData underlying the typed wrapper
+        // Assert � values can be read back via the JsonData underlying the typed wrapper
         Assert.Equal(10, (int)typed[0].Json);
         Assert.Equal(20, (int)typed[1].Json);
     }

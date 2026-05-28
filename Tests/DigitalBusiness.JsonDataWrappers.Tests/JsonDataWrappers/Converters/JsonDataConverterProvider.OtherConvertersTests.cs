@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.Json;
 using DigitalBusiness.JsonDataWrappers;
@@ -11,8 +11,8 @@ public class JsonDataConverterProviderOtherConvertersTests
 {
     // -----------------------------------------------------------------------
     // Test enums
-    // EnumJsonPersistanceAttribute → PersistAsNumber returns true → JsonDataEnumStringConverter
-    // No attribute → PersistAsNumber returns false → JsonDataEnumNumberConverter
+    // EnumJsonPersistanceAttribute ? PersistAsNumber returns true ? JsonDataEnumStringConverter
+    // No attribute ? PersistAsNumber returns false ? JsonDataEnumNumberConverter
     // -----------------------------------------------------------------------
 
     [EnumJsonPersistance]
@@ -61,7 +61,7 @@ public class JsonDataConverterProviderOtherConvertersTests
     }
 
     // -----------------------------------------------------------------------
-    // JsonDataEnumStringConverter.TryGet — Element-backed
+    // JsonDataEnumStringConverter.TryGet � Element-backed
     // -----------------------------------------------------------------------
 
     [Fact]
@@ -98,7 +98,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.False(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumStringConverter_TryGet_ElementNumber_ReturnsTrueWithCastedValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<StringPersistedColor>();
@@ -133,7 +133,7 @@ public class JsonDataConverterProviderOtherConvertersTests
     }
 
     // -----------------------------------------------------------------------
-    // JsonDataEnumStringConverter.TryGet — Node-backed
+    // JsonDataEnumStringConverter.TryGet � Node-backed
     // -----------------------------------------------------------------------
 
     [Fact]
@@ -170,7 +170,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.False(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumStringConverter_TryGet_NodeNumber_ReturnsTrueWithCastedValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<StringPersistedColor>();
@@ -197,7 +197,7 @@ public class JsonDataConverterProviderOtherConvertersTests
     // JsonDataEnumNumberConverter.Create
     // -----------------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumNumberConverter_Create_ReturnsJsonDataWithNumericValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<NumberPersistedColor>();
@@ -209,7 +209,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.Equal(1L, result.Node!.GetValue<long>());
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumNumberConverter_Create_FirstValue_ReturnsZero()
     {
         var converter = JsonDataConverterProvider.GetConverter<NumberPersistedColor>();
@@ -220,10 +220,10 @@ public class JsonDataConverterProviderOtherConvertersTests
     }
 
     // -----------------------------------------------------------------------
-    // JsonDataEnumNumberConverter.TryGet — Element-backed
+    // JsonDataEnumNumberConverter.TryGet � Element-backed
     // -----------------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumNumberConverter_TryGet_ElementNumber_ReturnsTrueAndValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<NumberPersistedColor>();
@@ -292,10 +292,10 @@ public class JsonDataConverterProviderOtherConvertersTests
     }
 
     // -----------------------------------------------------------------------
-    // JsonDataEnumNumberConverter.TryGet — Node-backed
+    // JsonDataEnumNumberConverter.TryGet � Node-backed
     // -----------------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void EnumNumberConverter_TryGet_NodeNumber_ReturnsTrueAndValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<NumberPersistedColor>();
@@ -342,12 +342,12 @@ public class JsonDataConverterProviderOtherConvertersTests
     }
 
     // -----------------------------------------------------------------------
-    // JsonDataSerializationConverter.TryGet — Node-backed
+    // JsonDataSerializationConverter.TryGet � Node-backed
     // -----------------------------------------------------------------------
 
     private record SimpleRecord(string Name, int Age);
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_NodeWithValidObject_ReturnsTrueAndDeserializedValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -361,7 +361,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.Equal(30, value?.Age);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_NodeNull_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -372,7 +372,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.False(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_ElementWithValidObject_ReturnsTrueAndDeserializedValue()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -385,7 +385,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.Equal(25, value?.Age);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_ElementNull_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -396,7 +396,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.False(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_InvalidJson_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -408,7 +408,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.False(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_TryGet_NodeObjectDeserializesToNull_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -423,7 +423,7 @@ public class JsonDataConverterProviderOtherConvertersTests
     // JsonDataSerializationConverter.Create
     // -----------------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_Create_SimpleObject_ReturnsJsonDataWithSerializedNode()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord>();
@@ -436,7 +436,7 @@ public class JsonDataConverterProviderOtherConvertersTests
         Assert.Equal(30, result.Node!["Age"]!.GetValue<int>());
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SerializationConverter_Create_NullValue_ReturnsJsonDataWithNullNode()
     {
         var converter = JsonDataConverterProvider.GetConverter<SimpleRecord?>();

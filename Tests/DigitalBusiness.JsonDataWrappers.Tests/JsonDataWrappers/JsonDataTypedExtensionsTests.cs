@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
@@ -7,7 +7,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataTypedExtensionsTests
 {
-    // ── Create<T> ─────────────────────────────────────────────────────────────
+    // -- Create<T> -------------------------------------------------------------
 
     [Fact]
     public void Create_Int_ReturnsNonNullJsonData()
@@ -58,7 +58,7 @@ public class JsonDataTypedExtensionsTests
         Assert.True(result);
     }
 
-    // ── TryGet<T>(out T) ──────────────────────────────────────────────────────
+    // -- TryGet<T>(out T) ------------------------------------------------------
 
     [Fact]
     public void TryGet_Out_IntJsonData_ReturnsTrueAndValue()
@@ -130,7 +130,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Null(value);
     }
 
-    // ── TryGet<T>() (no out) ─────────────────────────────────────────────────
+    // -- TryGet<T>() (no out) -------------------------------------------------
 
     [Fact]
     public void TryGetNoOut_IntJsonData_ReturnsValue()
@@ -184,7 +184,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Null(result);
     }
 
-    // ── Get<T>() ──────────────────────────────────────────────────────────────
+    // -- Get<T>() --------------------------------------------------------------
 
     [Fact]
     public void Get_IntJsonData_ReturnsValue()
@@ -242,7 +242,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Get<string>());
     }
 
-    // ── Get<T>(string name) ───────────────────────────────────────────────────
+    // -- Get<T>(string name) ---------------------------------------------------
 
     [Fact]
     public void GetByName_ExistingIntProperty_ReturnsValue()
@@ -294,7 +294,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.Get<int>("val"));
     }
 
-    // ── TryGet<T>(string name) (no out) ───────────────────────────────────────
+    // -- TryGet<T>(string name) (no out) ---------------------------------------
 
     [Fact]
     public void TryGetByName_NoOut_ExistingIntProperty_ReturnsValue()
@@ -351,7 +351,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal("Bob", result);
     }
 
-    // ── TryGet<T>(string name, out T) ─────────────────────────────────────────
+    // -- TryGet<T>(string name, out T) -----------------------------------------
 
     [Fact]
     public void TryGetByName_Out_ExistingIntProperty_ReturnsTrueAndValue()
@@ -412,7 +412,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal(default, value);
     }
 
-    // ── Set<T>(string name, T? value) ─────────────────────────────────────────
+    // -- Set<T>(string name, T? value) -----------------------------------------
 
     [Fact]
     public void SetByName_NonNullValue_SetsProperty()
@@ -468,7 +468,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal("hello", data.Get<string>("key"));
     }
 
-    // ── Ensure<T>(string name, Func<T> defaultValue) ─────────────────────────
+    // -- Ensure<T>(string name, Func<T> defaultValue) -------------------------
 
     [Fact]
     public void Ensure_Func_PropertyExists_ReturnsExistingValue()
@@ -516,7 +516,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal(1, callCount);
     }
 
-    // ── Ensure<T>(string name, T defaultValue) ────────────────────────────────
+    // -- Ensure<T>(string name, T defaultValue) --------------------------------
 
     [Fact]
     public void Ensure_Value_PropertyExists_ReturnsExistingValue()
@@ -560,7 +560,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal("default", data.Get<string>("label"));
     }
 
-    // ── Get<T>(int index) ─────────────────────────────────────────────────────
+    // -- Get<T>(int index) -----------------------------------------------------
 
     [Fact]
     public void GetByIndex_ExistingIntElement_ReturnsValue()
@@ -600,7 +600,7 @@ public class JsonDataTypedExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.Get<int>(0));
     }
 
-    // ── TryGet<T>(int index) (no out) ─────────────────────────────────────────
+    // -- TryGet<T>(int index) (no out) -----------------------------------------
 
     [Fact]
     public void TryGetByIndex_NoOut_ExistingIntElement_ReturnsValue()
@@ -656,7 +656,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal(default, result);
     }
 
-    // ── TryGet<T>(int index, out T) ───────────────────────────────────────────
+    // -- TryGet<T>(int index, out T) -------------------------------------------
 
     [Fact]
     public void TryGetByIndex_Out_ExistingIntElement_ReturnsTrueAndValue()
@@ -731,7 +731,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal(default, value);
     }
 
-    // ── Set<T>(int index, T? value) ───────────────────────────────────────────
+    // -- Set<T>(int index, T? value) -------------------------------------------
 
     [Fact]
     public void SetByIndex_NonNullValue_SetsElement()
@@ -790,7 +790,7 @@ public class JsonDataTypedExtensionsTests
         Assert.Equal("new", data.Get<string>(0));
     }
 
-    // ── Add<T>(T value) ───────────────────────────────────────────────────────
+    // -- Add<T>(T value) -------------------------------------------------------
 
     [Fact]
     public void Add_Int_AppendsElement()
@@ -848,7 +848,7 @@ public class JsonDataTypedExtensionsTests
         Assert.True(data.Get<bool>(0));
     }
 
-    // ── Insert<T>(int index, T value) ─────────────────────────────────────────
+    // -- Insert<T>(int index, T value) -----------------------------------------
 
     [Fact]
     public void Insert_AtIndexZero_InsertsAtBeginning()

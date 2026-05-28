@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
@@ -10,7 +10,7 @@ public class JsonDataEnumExtensionsTests
 {
     private enum Color { Red, Green, Blue }
 
-    // ── CreateFromEnum (non-nullable) ─────────────────────────────────────────
+    // -- CreateFromEnum (non-nullable) -----------------------------------------
 
     [Fact]
     public void CreateFromEnum_ValidEnumValue_ReturnsJsonData()
@@ -22,7 +22,7 @@ public class JsonDataEnumExtensionsTests
         Assert.False(data.IsNull);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void CreateFromEnum_ValidEnumValue_CanBeReadBack()
     {
         // Arrange
@@ -35,7 +35,7 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Blue, result);
     }
 
-    // ── CreateFromEnum (nullable) ─────────────────────────────────────────────
+    // -- CreateFromEnum (nullable) ---------------------------------------------
 
     [Fact]
     public void CreateFromEnum_NullableWithValue_ReturnsJsonData()
@@ -50,7 +50,7 @@ public class JsonDataEnumExtensionsTests
         Assert.False(data.IsNull);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void CreateFromEnum_NullableWithValue_CanBeReadBack()
     {
         // Arrange
@@ -77,9 +77,9 @@ public class JsonDataEnumExtensionsTests
         Assert.True(data.IsNull);
     }
 
-    // ── GetEnum ───────────────────────────────────────────────────────────────
+    // -- GetEnum ---------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetEnum_ValidStringValue_ReturnsEnum()
     {
         // Arrange
@@ -102,9 +102,9 @@ public class JsonDataEnumExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.GetEnum<Color>());
     }
 
-    // ── TryGetEnum (returns nullable) ─────────────────────────────────────────
+    // -- TryGetEnum (returns nullable) -----------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnum_Nullable_ValidValue_ReturnsEnum()
     {
         // Arrange
@@ -128,9 +128,9 @@ public class JsonDataEnumExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.TryGetEnum<Color>());
     }
 
-    // ── TryGetEnum (out param) ────────────────────────────────────────────────
+    // -- TryGetEnum (out param) ------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnum_OutParam_ValidValue_ReturnsTrueAndEnum()
     {
         // Arrange
@@ -169,7 +169,7 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(default, value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnum_OutParam_ElementBackedValidEnum_ReturnsTrue()
     {
         // Arrange - create a JsonElement-backed JsonData with a valid enum string
@@ -199,9 +199,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(default, value);
     }
 
-    // ── GetEnum(string name) ──────────────────────────────────────────────────
+    // -- GetEnum(string name) --------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetEnumByName_ValidProperty_ReturnsEnum()
     {
         // Arrange
@@ -237,9 +237,9 @@ public class JsonDataEnumExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.GetEnum<Color>("color"));
     }
 
-    // ── TryGetEnum(string name) nullable return ───────────────────────────────
+    // -- TryGetEnum(string name) nullable return -------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumNullableByName_ValidProperty_ReturnsEnum()
     {
         // Arrange
@@ -253,7 +253,7 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Blue, result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumNullableByName_MissingProperty_ReturnsDefault()
     {
         // Arrange
@@ -267,9 +267,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Null(result);
     }
 
-    // ── TryGetEnum(string name, out TEnum) ────────────────────────────────────
+    // -- TryGetEnum(string name, out TEnum) ------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumOutByName_ValidProperty_ReturnsTrueAndEnum()
     {
         // Arrange
@@ -314,9 +314,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(default, value);
     }
 
-    // ── GetEnum(int index) ────────────────────────────────────────────────────
+    // -- GetEnum(int index) ----------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetEnumByIndex_ValidIndex_ReturnsEnum()
     {
         // Arrange
@@ -352,9 +352,9 @@ public class JsonDataEnumExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.GetEnum<Color>(0));
     }
 
-    // ── TryGetEnum(int index) nullable return ─────────────────────────────────
+    // -- TryGetEnum(int index) nullable return ---------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumNullableByIndex_ValidIndex_ReturnsEnum()
     {
         // Arrange
@@ -368,7 +368,7 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Green, result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumNullableByIndex_OutOfRange_ReturnsDefault()
     {
         // Arrange
@@ -382,9 +382,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Null(result);
     }
 
-    // ── TryGetEnum(int index, out TEnum) ──────────────────────────────────────
+    // -- TryGetEnum(int index, out TEnum) --------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGetEnumOutByIndex_ValidIndex_ReturnsTrueAndEnum()
     {
         // Arrange
@@ -429,9 +429,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(default, value);
     }
 
-    // ── SetEnum(string name, TEnum) ───────────────────────────────────────────
+    // -- SetEnum(string name, TEnum) -------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SetEnumByName_NonNullable_SetsValue()
     {
         // Arrange
@@ -447,7 +447,7 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Green, value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SetEnumByName_NonNullable_OverwritesExistingValue()
     {
         // Arrange
@@ -464,9 +464,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Blue, value);
     }
 
-    // ── SetEnum(string name, TEnum?) ──────────────────────────────────────────
+    // -- SetEnum(string name, TEnum?) ------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SetEnumByName_NullableWithValue_SetsValue()
     {
         // Arrange
@@ -499,9 +499,9 @@ public class JsonDataEnumExtensionsTests
         Assert.False(success);
     }
 
-    // ── SetEnum(int index, TEnum) ─────────────────────────────────────────────
+    // -- SetEnum(int index, TEnum) ---------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SetEnumByIndex_NonNullable_SetsValue()
     {
         // Arrange
@@ -517,9 +517,9 @@ public class JsonDataEnumExtensionsTests
         Assert.Equal(Color.Blue, value);
     }
 
-    // ── SetEnum(int index, TEnum?) ────────────────────────────────────────────
+    // -- SetEnum(int index, TEnum?) --------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void SetEnumByIndex_NullableWithValue_SetsValue()
     {
         // Arrange

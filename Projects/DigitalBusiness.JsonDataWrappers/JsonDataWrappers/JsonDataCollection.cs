@@ -87,7 +87,7 @@ namespace DigitalBusiness.JsonDataWrappers
             protected IEnumerable<JsonNode> JsonNodes { get; }
 
 
-            public override IEnumerator<JsonData> GetEnumerator()=>JsonNodes.Select(n=>JsonData.Create(n)).GetEnumerator();
+            public override IEnumerator<JsonData> GetEnumerator()=>JsonNodes.Select(n=>JsonData.Create(n, false)).GetEnumerator();
             
         }
         
@@ -100,7 +100,7 @@ namespace DigitalBusiness.JsonDataWrappers
 
             protected JsonArray Array { get; }
 
-            public override IEnumerator<JsonData> GetEnumerator() => Array.Select(n => JsonData.Create(n)).GetEnumerator();
+            public override IEnumerator<JsonData> GetEnumerator() => Array.Select(n => JsonData.Create(n, false)).GetEnumerator();
 
         }
 

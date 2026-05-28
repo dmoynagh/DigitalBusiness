@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers;
+using DigitalBusiness.JsonDataWrappers;
 using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -62,9 +62,9 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
         public static bool Equals(in  JsonElement? element1, in JsonElement? element2)
         {
             if (!element1.HasValue && !element2.HasValue) return true;
-            if (!element1.HasValue && element2!.Value.ValueKind == JsonValueKind.Null) return true; // One is null and the other is explicitly null
-            if (!element2.HasValue && element1!.Value.ValueKind == JsonValueKind.Null) return true; // One is null and the other is explicitly null
-            return Equals(element1!.Value, element2!.Value);
+            if (!element1.HasValue) return element2!.Value.ValueKind == JsonValueKind.Null;
+            if (!element2.HasValue) return element1!.Value.ValueKind == JsonValueKind.Null;
+            return Equals(element1.Value, element2.Value);
         }
 
         /// <summary>Delegates to <see cref="JsonNode.DeepEquals"/>.</summary>
@@ -158,7 +158,7 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
             return valueElement.ValueKind switch
             {
                 JsonValueKind.String => valueNode.GetValue<string>() == valueElement.GetString(),
-                JsonValueKind.Number => valueNode.GetValue<decimal>() == valueElement.GetDecimal(),
+                JsonValueKind.Number => valueNode.ToJsonString() == valueElement.GetRawText(),
                 JsonValueKind.Null=> true,
                 JsonValueKind.True => true,
                 JsonValueKind.False => true,            

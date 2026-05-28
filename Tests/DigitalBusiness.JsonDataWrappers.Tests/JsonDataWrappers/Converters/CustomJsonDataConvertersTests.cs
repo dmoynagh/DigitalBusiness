@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
@@ -7,7 +7,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class CustomJsonDataConvertersTests
 {
-    // ── Helper types ────────────────────────────────────────────────────────────
+    // -- Helper types ------------------------------------------------------------
 
     /// <summary>Marker type that has a direct converter registered via the test assembly.</summary>
     public struct TestDirectMarker { }
@@ -51,9 +51,9 @@ public class CustomJsonDataConvertersTests
     /// <summary>A type that intentionally has no converter or factory registered.</summary>
     public struct UnregisteredMarker { }
 
-    // ── Tests ───────────────────────────────────────────────────────────────────
+    // -- Tests -------------------------------------------------------------------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_DirectlyRegisteredType_ReturnsConverter()
     {
         // Act
@@ -64,7 +64,7 @@ public class CustomJsonDataConvertersTests
         Assert.IsAssignableFrom<IJsonDataConverter<TestDirectMarker>>(converter);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_FactoryHandledType_ReturnsConverter()
     {
         // Act
@@ -75,7 +75,7 @@ public class CustomJsonDataConvertersTests
         Assert.IsAssignableFrom<IJsonDataConverter<TestFactoryMarker>>(converter);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_UnregisteredTypeWithNoFactory_ReturnsNull()
     {
         // Act
@@ -85,7 +85,7 @@ public class CustomJsonDataConvertersTests
         Assert.Null(converter);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_DirectlyRegisteredType_ConverterIsCorrectInstance()
     {
         // Act
@@ -95,7 +95,7 @@ public class CustomJsonDataConvertersTests
         Assert.IsType<TestDirectMarkerConverter>(converter);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_FactoryHandledType_ConverterIsCorrectInstance()
     {
         // Act

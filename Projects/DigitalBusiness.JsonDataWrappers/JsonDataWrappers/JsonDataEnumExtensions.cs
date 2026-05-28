@@ -28,7 +28,12 @@ namespace DigitalBusiness.JsonDataWrappers
             public bool TryGetEnum<TEnum>([NotNullWhen(true)] out TEnum value) where TEnum : struct, Enum
             {
                 jsonData.ThrowIfNotValue();
-                return JsonDataEnumValueConverter<TEnum>.FromJsonData(jsonData, out value);
+                if (jsonData.IsNode && jsonData.Node is JsonValue jv)
+                    return JsonDataEnumValueConverter<TEnum>.FromJson(jv, out value);
+                if (jsonData.IsElement && jsonData.Element.HasValue)
+                    return JsonDataEnumValueConverter<TEnum>.FromJson(jsonData.Element.Value, out value);
+                value = default;
+                return false;
             }
 
             /// <summary>Creates a <see cref="JsonData"/> wrapping an enum value serialized as its JSON string representation.</summary>
@@ -45,24 +50,52 @@ namespace DigitalBusiness.JsonDataWrappers
             
 
             public TEnum GetEnum<TEnum>(string name) where TEnum : struct, Enum => jsonData.Get(name).GetEnum<TEnum>();
-            public TEnum? TryGetEnum<TEnum>(string name) where TEnum : struct, Enum => jsonData.TryGetEnum<TEnum>(out var result) ? result : default;
-            public  bool TryGetEnum<TEnum>(string name, [NotNullWhen(true)] out TEnum value) where TEnum : struct, Enum
+            public TEnum? TryGetEnum<TEnum>(string name) where TEnum : struct, Enum
             {
-                if (jsonData.TryGet(name, out var childNode) && childNode.TryGetEnum<TEnum>(out value))
+                if (jsonData.TryGet(name, out var child) && child.IsValue)
                 {
-                    return true;
+                    if (child.IsNode && child.Node is JsonValue jv)
+                        return JsonDataEnumValueConverter<TEnum>.FromJson(jv, out var r) ? r : default(TEnum?);
+                    return JsonDataEnumValueConverter<TEnum>.FromJsonData(child, out var r2) ? r2 : default(TEnum?);
+                }
+                return default;
+            }
+            public bool TryGetEnum<TEnum>(string name, [NotNullWhen(true)] out TEnum value) where TEnum : struct, Enum
+            {
+                if (jsonData.TryGet(name, out var childNode))
+                {
+                    if (childNode.IsValue)
+                    {
+                        if (childNode.IsNode && childNode.Node is JsonValue jv)
+                            return JsonDataEnumValueConverter<TEnum>.FromJson(jv, out value);
+                        return JsonDataEnumValueConverter<TEnum>.FromJsonData(childNode, out value);
+                    }
                 }
                 value = default;
                 return false;
             }
 
             public TEnum GetEnum<TEnum>(int index) where TEnum : struct, Enum => jsonData.Get(index).GetEnum<TEnum>();
-            public TEnum? TryGetEnum<TEnum>(int index) where TEnum : struct, Enum => jsonData.TryGetEnum<TEnum>(out var result) ? result : default;
+            public TEnum? TryGetEnum<TEnum>(int index) where TEnum : struct, Enum
+            {
+                if (jsonData.TryGet(index, out var child) && child.IsValue)
+                {
+                    if (child.IsNode && child.Node is JsonValue jv)
+                        return JsonDataEnumValueConverter<TEnum>.FromJson(jv, out var r) ? r : default(TEnum?);
+                    return JsonDataEnumValueConverter<TEnum>.FromJsonData(child, out var r2) ? r2 : default(TEnum?);
+                }
+                return default;
+            }
             public bool TryGetEnum<TEnum>(int index, [NotNullWhen(true)] out TEnum value) where TEnum : struct, Enum
             {
-                if (jsonData.TryGet(index, out var childNode) && childNode.TryGetEnum<TEnum>(out value))
+                if (jsonData.TryGet(index, out var childNode))
                 {
-                    return true;
+                    if (childNode.IsValue)
+                    {
+                        if (childNode.IsNode && childNode.Node is JsonValue jv)
+                            return JsonDataEnumValueConverter<TEnum>.FromJson(jv, out value);
+                        return JsonDataEnumValueConverter<TEnum>.FromJsonData(childNode, out value);
+                    }
                 }
                 value = default;
                 return false;

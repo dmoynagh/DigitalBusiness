@@ -85,7 +85,13 @@ namespace DigitalBusiness.JsonDataWrappers
             }
 
 
-            public JsonDataArray<T> GetArray<T>(int index) => jsonData.TryGetArray<T>(index) ?? throw JsonDataExceptionHelper.GetTypedIndexException<JsonDataArray<T>>(index, jsonData);
+            public JsonDataArray<T> GetArray<T>(int index)
+            {
+                if (jsonData.TryGetArray<T>(index, out var array)) return array;
+                if (!jsonData.IsArray || index < 0 || index >= jsonData.Count)
+                    throw new InvalidOperationException($"Index '{index}' is out of range.");
+                throw JsonDataExceptionHelper.GetTypedIndexException<JsonDataArray<T>>(index, jsonData);
+            }
             public JsonDataArray<T>? TryGetArray<T>(int index) => jsonData.TryGetArray<T>(index, out var array) ? array : null;
 
             public bool TryGetArray<T>(int index, [MaybeNullWhen(false)] out JsonDataArray<T> array)

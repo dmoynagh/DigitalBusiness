@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
@@ -8,7 +8,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataHelperTests
 {
-    // ── CreateNodeFromElement ────────────────────────────────────────────────
+    // -- CreateNodeFromElement ------------------------------------------------
 
     [Fact]
     public void CreateNodeFromElement_StringElement_ReturnsJsonValueWithSameString()
@@ -65,7 +65,7 @@ public class JsonDataHelperTests
         Assert.Throws<InvalidOperationException>(() => JsonDataHelper.CreateNodeFromElement(element));
     }
 
-    // ── GetRootNode ──────────────────────────────────────────────────────────
+    // -- GetRootNode ----------------------------------------------------------
 
     [Fact]
     public void GetRootNode_NodeWithNoParent_ReturnsSameNode()
@@ -112,7 +112,7 @@ public class JsonDataHelperTests
         Assert.Same(root, result);
     }
 
-    // ── HasCommonRoot ────────────────────────────────────────────────────────
+    // -- HasCommonRoot --------------------------------------------------------
 
     [Fact]
     public void HasCommonRoot_TwoNodesInSameTree_ReturnsTrue()
@@ -176,7 +176,7 @@ public class JsonDataHelperTests
         Assert.False(result);
     }
 
-    // ── GetNodeToAdd(JsonNode, JsonNode) ─────────────────────────────────────
+    // -- GetNodeToAdd(JsonNode, JsonNode) -------------------------------------
 
     [Fact]
     public void GetNodeToAdd_NodeWithNoParent_ReturnsSameNode()
@@ -230,7 +230,7 @@ public class JsonDataHelperTests
         Assert.Equal(5, result.GetValue<int>());
     }
 
-    // ── GetNodeToAdd(JsonData, JsonNode) ─────────────────────────────────────
+    // -- GetNodeToAdd(JsonData, JsonNode) -------------------------------------
 
     [Fact]
     public void GetNodeToAddJsonData_NullJsonData_ReturnsNull()
@@ -295,7 +295,7 @@ public class JsonDataHelperTests
         Assert.Throws<InvalidOperationException>(() => JsonDataHelper.GetNodeToAdd(addValue, addToNode));
     }
 
-    // ── GetPropertyNames ─────────────────────────────────────────────────────
+    // -- GetPropertyNames -----------------------------------------------------
 
     [Fact]
     public void GetPropertyNames_ElementBackedObject_ReturnsPropertyNames()
@@ -399,7 +399,7 @@ public class JsonDataHelperTests
         Assert.Empty(names);
     }
 
-    // ── GetArrayItems ─────────────────────────────────────────────────────────
+    // -- GetArrayItems ---------------------------------------------------------
 
     [Fact]
     public void GetArrayItems_ElementBackedArray_ReturnsItems()

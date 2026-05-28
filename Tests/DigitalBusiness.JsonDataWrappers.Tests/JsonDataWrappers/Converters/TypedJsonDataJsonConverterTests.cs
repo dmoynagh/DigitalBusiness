@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
@@ -18,7 +18,7 @@ public class TypedJsonDataJsonConverterTests
         return options;
     }
 
-    // ── Read ──────────────────────────────────────────────────────────────────
+    // -- Read ------------------------------------------------------------------
 
     [Fact]
     public void Read_SimpleObject_ReturnsJsonDataWithElementBacked()
@@ -96,7 +96,7 @@ public class TypedJsonDataJsonConverterTests
         Assert.Equal(JsonValueKind.String, result.Json.Element!.Value.ValueKind);
     }
 
-    // ── Write ─────────────────────────────────────────────────────────────────
+    // -- Write -----------------------------------------------------------------
 
     [Fact]
     public void Write_ElementBacked_RoundTripsCorrectly()

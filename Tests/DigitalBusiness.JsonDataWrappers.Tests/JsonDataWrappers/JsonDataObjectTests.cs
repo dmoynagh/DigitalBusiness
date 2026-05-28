@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
 
@@ -16,7 +16,7 @@ public class JsonDataObjectTests
         }
     }
 
-    // ── IJsonDataWrapper.Json getter ──────────────────────────────────────────
+    // -- IJsonDataWrapper.Json getter ------------------------------------------
 
     [Fact]
     public void IJsonDataWrapperJson_Get_ReturnsInitializedValue()
@@ -46,7 +46,7 @@ public class JsonDataObjectTests
         Assert.Equal(default(JsonData), result);
     }
 
-    // ── IJsonDataWrapper.Json init ────────────────────────────────────────────
+    // -- IJsonDataWrapper.Json init --------------------------------------------
 
     [Fact]
     public void IJsonDataWrapperJson_Init_SetsJsonProperty()
@@ -62,7 +62,7 @@ public class JsonDataObjectTests
         Assert.Equal(json, ((IJsonDataWrapper)obj).Json);
     }
 
-    // ── IJsonData.Json getter ─────────────────────────────────────────────────
+    // -- IJsonData.Json getter -------------------------------------------------
 
     [Fact]
     public void IJsonDataJson_Get_ReturnsSameValueAsIJsonDataWrapperJson()

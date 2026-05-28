@@ -51,8 +51,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// <summary>Creates an uninitialized (null) readonly instance.</summary>
             public static JsonData Create() => new JsonData();
             /// <summary>Creates a Node-backed instance. Defaults to writable unless <paramref name="readOnly"/> is true.</summary>
-            public static JsonData Create(JsonNode? source, bool readOnly=false) => new JsonData(source,readOnly);
-            /// <summary>Creates an Element-backed (always readonly) instance.</summary>
+            public static JsonData Create(JsonNode? source, bool readOnly=false) => new JsonData(source,readOnly);            /// <summary>Creates an Element-backed (always readonly) instance.</summary>
             public static JsonData Create(JsonElement source) => new JsonData(source);
             /// <summary>Creates an Element-backed (always readonly) instance from a nullable element.</summary>
             public static JsonData Create(JsonElement? source) => new JsonData(source);
@@ -91,16 +90,19 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
                 else if (jsonData.IsElement)
                 {
-                    return JsonData.Create(jsonData.Element.Value.ToJsonNode(), readOnly.GetValueOrDefault(false));
+                    bool ro = readOnly.GetValueOrDefault(false);
+                    return new JsonData(jsonData.Element.Value.ToJsonNode(), ro, false);
                 }
                 else
                 {
-                    return JsonData.Create(JsonValue.Create((string?)null), readOnly.GetValueOrDefault(false));
+                    bool ro = readOnly.GetValueOrDefault(false);
+                    var nullNode = JsonNode.Parse("null") ?? (JsonNode)JsonValue.Create<int?>(null)!;
+                    return new JsonData(nullNode, ro, false);
                 }
             }
 
             /// <summary>Returns a writable Node-backed copy of this instance. Shorthand for <c>ToJsonNodeJsonData(readOnly: false)</c>.</summary>
-            public JsonData ToEditableJsonData() => jsonData.ToJsonNodeJsonData(true);
+            public JsonData ToEditableJsonData() => jsonData.ToJsonNodeJsonData(false);
 
         
 

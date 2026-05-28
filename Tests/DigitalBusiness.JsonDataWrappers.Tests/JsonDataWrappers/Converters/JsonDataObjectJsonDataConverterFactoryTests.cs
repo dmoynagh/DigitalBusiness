@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
@@ -14,7 +14,7 @@ public class JsonDataObjectJsonDataConverterFactoryTests
         public JsonData Json { get; init; }
     }
 
-    // An abstract IJsonDataObject â€” should NOT be convertible
+    // An abstract IJsonDataObject — should NOT be convertible
     private abstract class AbstractJsonDataObject : IJsonDataObject
     {
         public JsonData Json { get; init; }
@@ -119,7 +119,7 @@ public class JsonDataObjectJsonDataConverterFactoryTests
     public void TryGet_NullJsonData_ReturnsFalseAndDefaultValue()
     {
         var converter = new JsonDataObjectJsonDataConverter<TestJsonDataObject>();
-        var nullJson = new JsonData(); // default â€” IsNull is true
+        var nullJson = new JsonData(); // default — IsNull is true
 
         var success = converter.TryGet(nullJson, out var value);
 

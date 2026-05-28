@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers;
+using DigitalBusiness.JsonDataWrappers;
 using Moq;
 using System;
 using System.Text.Json.Nodes;
@@ -7,12 +7,12 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class TypedJsonDataArrayExtensionsTests
 {
-    // ── Helpers ─────────────────────────────────────────────────────────────
+    // -- Helpers -------------------------------------------------------------
 
     private static JsonData ArrayJsonData() => new JsonData(new JsonArray());
     private static JsonData NonArrayJsonData() => new JsonData(new JsonObject());
 
-    // ── IJsonDataWrapper.AsJsonDataArray<T>() ───────────────────────────────
+    // -- IJsonDataWrapper.AsJsonDataArray<T>() -------------------------------
 
     [Fact]
     public void AsJsonDataArray_OnWrapper_WithArrayJson_ReturnsJsonDataArrayWithSameJson()
@@ -56,7 +56,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<ArgumentException>(() => mock.Object.AsJsonDataArray<string>());
     }
 
-    // ── IJsonDataWrapper.AsJsonData() ───────────────────────────────────────
+    // -- IJsonDataWrapper.AsJsonData() ---------------------------------------
 
     [Fact]
     public void AsJsonData_OnWrapper_ReturnsWrapperJson()
@@ -88,7 +88,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Equal(jsonData, result);
     }
 
-    // ── JsonData.AsJsonDataArray<T>() ────────────────────────────────────────
+    // -- JsonData.AsJsonDataArray<T>() ----------------------------------------
 
     [Fact]
     public void AsJsonDataArray_OnJsonData_WithArrayJson_ReturnsJsonDataArrayWithSameJson()
@@ -113,7 +113,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<ArgumentException>(() => nonArrayJson.AsJsonDataArray<string>());
     }
 
-    // ── JsonData.GetArray<T>() ───────────────────────────────────────────────
+    // -- JsonData.GetArray<T>() -----------------------------------------------
 
     [Fact]
     public void GetArray_OnArrayJson_ReturnsJsonDataArray()
@@ -138,7 +138,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => nonArrayJson.GetArray<string>());
     }
 
-    // ── JsonData.TryGetArray<T>() ────────────────────────────────────────────
+    // -- JsonData.TryGetArray<T>() --------------------------------------------
 
     [Fact]
     public void TryGetArray_OnArrayJson_ReturnsJsonDataArray()
@@ -167,7 +167,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Null(result);
     }
 
-    // ── JsonData.TryGetArray<T>(out array) ──────────────────────────────────
+    // -- JsonData.TryGetArray<T>(out array) ----------------------------------
 
     [Fact]
     public void TryGetArrayOut_OnArrayJson_ReturnsTrueAndArray()
@@ -197,7 +197,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Equal(default, array);
     }
 
-    // ── JsonData.GetArray<T>(string name) ───────────────────────────────────
+    // -- JsonData.GetArray<T>(string name) -----------------------------------
 
     [Fact]
     public void GetArrayByName_WhenPropertyExistsAndIsArray_ReturnsJsonDataArray()
@@ -235,7 +235,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => parent.GetArray<string>("items"));
     }
 
-    // ── JsonData.TryGetArray<T>(string name) ────────────────────────────────
+    // -- JsonData.TryGetArray<T>(string name) --------------------------------
 
     [Fact]
     public void TryGetArrayByName_WhenPropertyExistsAndIsArray_ReturnsArray()
@@ -280,7 +280,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Null(result);
     }
 
-    // ── JsonData.TryGetArray<T>(string name, out array) ─────────────────────
+    // -- JsonData.TryGetArray<T>(string name, out array) ---------------------
 
     [Fact]
     public void TryGetArrayByNameOut_WhenPropertyExistsAndIsArray_ReturnsTrueAndArray()
@@ -327,7 +327,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Equal(default, array);
     }
 
-    // ── JsonData.Set<T>(string name, JsonDataArray<T>?) ─────────────────────
+    // -- JsonData.Set<T>(string name, JsonDataArray<T>?) ---------------------
 
     [Fact]
     public void Set_WithNonNullArray_SetsPropertyOnJsonData()
@@ -371,7 +371,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Null(exception);
     }
 
-    // ── JsonData.GetOrCreateArray<T>(string name) ───────────────────────────
+    // -- JsonData.GetOrCreateArray<T>(string name) ---------------------------
 
     [Fact]
     public void GetOrCreateArray_WhenPropertyExistsAndIsArray_ReturnsExistingArray()
@@ -424,7 +424,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => parent.GetOrCreateArray<string>("items"));
     }
 
-    // ── JsonData.GetArray<T>(int index) ─────────────────────────────────────
+    // -- JsonData.GetArray<T>(int index) -------------------------------------
 
     [Fact]
     public void GetArrayByIndex_WhenIndexExistsAndIsArray_ReturnsJsonDataArray()
@@ -462,7 +462,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Throws<InvalidOperationException>(() => parent.GetArray<string>(0));
     }
 
-    // ── JsonData.TryGetArray<T>(int index) ──────────────────────────────────
+    // -- JsonData.TryGetArray<T>(int index) ----------------------------------
 
     [Fact]
     public void TryGetArrayByIndex_WhenIndexExistsAndIsArray_ReturnsArray()
@@ -507,7 +507,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Null(result);
     }
 
-    // ── JsonData.TryGetArray<T>(int index, out array) ───────────────────────
+    // -- JsonData.TryGetArray<T>(int index, out array) -----------------------
 
     [Fact]
     public void TryGetArrayByIndexOut_WhenIndexExistsAndIsArray_ReturnsTrueAndArray()
@@ -554,7 +554,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.Equal(default, array);
     }
 
-    // ── JsonData.Set<T>(int index, JsonDataArray<T>?) ───────────────────────
+    // -- JsonData.Set<T>(int index, JsonDataArray<T>?) -----------------------
 
     [Fact]
     public void SetByIndex_WithNonNullArray_SetsElementAtIndex()
@@ -587,7 +587,7 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.False(parent.TryGetArray<string>(0, out _));
     }
 
-    // ── JsonData.EnsureArray<T>(int index) ──────────────────────────────────
+    // -- JsonData.EnsureArray<T>(int index) ----------------------------------
 
     [Fact]
     public void EnsureArrayByIndex_WhenIndexExistsAndIsArray_ReturnsExistingArray()

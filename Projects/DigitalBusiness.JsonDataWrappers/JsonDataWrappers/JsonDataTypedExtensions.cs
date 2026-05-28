@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers.Converters;
+using DigitalBusiness.JsonDataWrappers.Converters;
 using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace DigitalBusiness.JsonDataWrappers
             {
                 if (value == null) { jsonData.Remove(name); return; }
 
-                var newNode = JsonData.Create<T>(value);
+                JsonData? newNode = JsonData.Create<T>(value);
                 jsonData.Set(name, newNode);
             }
 
@@ -104,19 +104,19 @@ namespace DigitalBusiness.JsonDataWrappers
             {
                 if (value == null) { jsonData.RemoveAt(index); return; }
 
-                var newNode = JsonData.Create<T>(value);
+                JsonData? newNode = JsonData.Create<T>(value);
                 jsonData.Set(index, newNode);
             }
 
             public void Add<T>(T value)
             {
-                var newNode = JsonData.Create<T>(value);
+                JsonData? newNode = JsonData.Create<T>(value);
                 jsonData.Add(newNode);
             }
 
             public void Insert<T>(int index, T value)
             {
-                var newNode = JsonData.Create<T>(value);
+                JsonData? newNode = JsonData.Create<T>(value);
                 jsonData.Insert(index, newNode);
             }
 

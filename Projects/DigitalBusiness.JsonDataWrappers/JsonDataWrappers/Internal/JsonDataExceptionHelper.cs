@@ -29,7 +29,7 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
         public static Exception GetTypedPropertyException<T>(string propertyName, JsonData objectJsonData)
         {
             if (objectJsonData.IsNull) return NullException();
-            if(objectJsonData.ContainsProperty(propertyName)) return JsonDataPropertyNotExist(propertyName);
+            if(!objectJsonData.ContainsProperty(propertyName)) return JsonDataPropertyNotExist(propertyName);
             return new InvalidOperationException($"Cannot get value of type {typeof(T).FullName} from property '{propertyName}' with ValueKind {objectJsonData[propertyName]?.ValueKind.ToString() ?? "null"}.");
         }
 
@@ -37,14 +37,14 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
         public static Exception GetTypedIndexException<T>(int index, JsonData arrayJsonData)
         {
             if (arrayJsonData.IsNull) return NullException();
-            if (arrayJsonData.IsArray) return JsonDataArrayExpectedException();
 
-            if (index < 0 || index > arrayJsonData.Count) return JsonDataArrayIndexOutOfRangeException(index);
+            if (index < 0 || index >= arrayJsonData.Count) return JsonDataArrayIndexOutOfRangeException(index);
 
-            return new InvalidOperationException($"Cannot get value of type {typeof(T).FullName} from index '{index}' with ValueKind {arrayJsonData[index]?.ValueKind.ToString() ?? "null"}.");
+            var kindStr = arrayJsonData.TryGet(index, out var item) ? item.ValueKind.ToString() : "Unknown";
+            return new InvalidOperationException($"Cannot get value of type {typeof(T).FullName} from index '{index}' with ValueKind {kindStr}.");
         }
 
-        public static Exception JsonDataArrayIndexOutOfRangeException(int index) => new IndexOutOfRangeException($"Index '{index}' is out of range. .");
+        public static Exception JsonDataArrayIndexOutOfRangeException(int index) => new IndexOutOfRangeException($"Index '{index}' is out of range.");
 
         public static Exception JsonDataObjectExpectedException()=> new InvalidOperationException("JsonData is not an object.");
         public static Exception JsonDataArrayExpectedException() => new InvalidOperationException("JsonData is not an object.");

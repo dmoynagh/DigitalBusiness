@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
@@ -13,7 +13,7 @@ public class JsonDataConverterProviderTests
     {
     }
 
-    // ── Primitive types ──────────────────────────────────────────────────────
+    // -- Primitive types ------------------------------------------------------
 
     [Fact]
     public void GetConverter_String_ReturnsNonNullConverter()
@@ -64,7 +64,7 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(converter);
     }
 
-    // ── Nullable primitives ─────────────────────────────────────────────────
+    // -- Nullable primitives -------------------------------------------------
 
     [Fact]
     public void GetConverter_NullableInt_ReturnsNonNullConverter()
@@ -80,7 +80,7 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(converter);
     }
 
-    // ── System.Text.Json types ──────────────────────────────────────────────
+    // -- System.Text.Json types ----------------------------------------------
 
     [Fact]
     public void GetConverter_JsonElement_ReturnsNonNullConverter()
@@ -124,7 +124,7 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(converter);
     }
 
-    // ── Defined (Guid, DateTimeOffset) ──────────────────────────────────────
+    // -- Defined (Guid, DateTimeOffset) --------------------------------------
 
     [Fact]
     public void GetConverter_Guid_ReturnsNonNullConverter()
@@ -140,7 +140,7 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(converter);
     }
 
-    // ── Enum ────────────────────────────────────────────────────────────────
+    // -- Enum ----------------------------------------------------------------
 
     [Fact]
     public void GetConverter_Enum_ReturnsNonNullConverter()
@@ -149,7 +149,7 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(converter);
     }
 
-    // ── JsonData ────────────────────────────────────────────────────────────
+    // -- JsonData ------------------------------------------------------------
 
     [Fact]
     public void GetConverter_JsonData_ReturnsNonNullConverter()
@@ -171,7 +171,7 @@ public class JsonDataConverterProviderTests
         Assert.Equal(jsonData, value);
     }
 
-    // ── IJsonDataWrapper (concrete JsonDataObject) ───────────────────────────
+    // -- IJsonDataWrapper (concrete JsonDataObject) ---------------------------
 
     [Fact]
     public void GetConverter_ConcreteJsonDataObject_ReturnsNonNullConverter()
@@ -192,16 +192,16 @@ public class JsonDataConverterProviderTests
         Assert.NotNull(value);
     }
 
-    // ── Fallback: unknown type returns non-null (UndefinedConverter) ─────────
+    // -- Fallback: unknown type returns non-null (UndefinedConverter) ---------
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_UnknownType_ReturnsNonNullConverter()
     {
         var converter = JsonDataConverterProvider.GetConverter<Uri>();
         Assert.NotNull(converter);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void GetConverter_UnknownType_ConverterThrowsOnTryGet()
     {
         var jsonData = new JsonData(JsonValue.Create("x"));
@@ -213,7 +213,7 @@ public class JsonDataConverterProviderTests
         });
     }
 
-    // ── Return type correctness ──────────────────────────────────────────────
+    // -- Return type correctness ----------------------------------------------
 
     [Fact]
     public void GetConverter_String_ConverterImplementsGenericInterface()

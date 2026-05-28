@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using Xunit;
 
@@ -8,7 +8,7 @@ public class JsonDataOfTTests
 {
     private sealed class TestKey : IJsonDataKey { }
 
-    // ── Constructor ───────────────────────────────────────────────────────────
+    // -- Constructor -----------------------------------------------------------
 
     [Fact]
     public void Constructor_WithDefaultJsonData_StoresJson()
@@ -37,7 +37,7 @@ public class JsonDataOfTTests
         Assert.Equal(json, typed.Json);
     }
 
-    // ── From ──────────────────────────────────────────────────────────────────
+    // -- From ------------------------------------------------------------------
 
     [Fact]
     public void From_WithDefaultJsonData_ReturnsTypedWrapperWithSameJson()

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
@@ -244,7 +244,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(default(byte), value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ByteConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<byte>();
@@ -604,7 +604,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(default(ushort), value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void UShortConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<ushort>();
@@ -720,7 +720,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(-100000, value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void IntConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<int>();
@@ -836,7 +836,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(default(uint), value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void UIntConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<uint>();
@@ -952,7 +952,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(-9876543210L, value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void LongConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<long>();
@@ -1068,7 +1068,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(default(ulong), value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void ULongConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<ulong>();
@@ -1172,7 +1172,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(3.14f, value, 5);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void FloatConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<float>();
@@ -1276,7 +1276,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(3.14159, value, 10);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void DoubleConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<double>();
@@ -1380,7 +1380,7 @@ public class JsonDataConverterProviderPrimitiveNodeConvertersTests
         Assert.Equal(123.456m, value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void DecimalConverter_TryGet_ElementIsString_ReturnsFalse()
     {
         var converter = JsonDataConverterProvider.GetConverter<decimal>();

@@ -1,91 +1,79 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Text;
+using System.Reflection;
 
 namespace DigitalBusiness.JsonDataWrappers.Converters
 {
     public static class CustomJsonDataConverters
     {
+        private static readonly ConcurrentDictionary<Type, IJsonDataConverter> _converters = new();
+        private static readonly List<IJsonDataConverterFactory> _factories = new();
+        private static readonly object _lock = new();
+        private static readonly HashSet<Assembly> _scannedAssemblies = new();
+
         static CustomJsonDataConverters()
         {
-            var converters = LoadConverters();
-            JsonDataConverters = converters.JsonDataConverters;
-            JsonDataConverterFactories = converters.JsonDataConverterFactories;
-            
+            ScanAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            AppDomain.CurrentDomain.AssemblyLoad += (_, args) => ScanAssemblies([args.LoadedAssembly]);
         }
 
-        private static readonly ImmutableDictionary<Type, IJsonDataConverter> JsonDataConverters;
-        private static readonly ImmutableList<IJsonDataConverterFactory> JsonDataConverterFactories;
-
-        private static (ImmutableDictionary<Type, IJsonDataConverter> JsonDataConverters, ImmutableList<IJsonDataConverterFactory> JsonDataConverterFactories) LoadConverters()
+        private static void ScanAssemblies(IEnumerable<Assembly> assemblies)
         {
-            Dictionary<Type, IJsonDataConverter> converters = new Dictionary<Type, IJsonDataConverter>();
-            var factories = new List<IJsonDataConverterFactory>();
-
             var converterFactoryType = typeof(IJsonDataConverterFactory);
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
+            lock (_lock)
             {
-                foreach (var type in assembly.GetExportedTypes())
+                foreach (var assembly in assemblies)
                 {
-                    if (!type.IsValueType && !type.IsInterface && !type.IsAbstract && typeof(IJsonDataConverter).IsAssignableFrom(type))
+                    if (!_scannedAssemblies.Add(assembly))
+                        continue;
+
+                    foreach (var type in assembly.GetExportedTypes())
                     {
+                        if (type.IsValueType || type.IsInterface || type.IsAbstract || type.ContainsGenericParameters)
+                            continue;
 
-                        var converterInterface = type.GetInterfaces()
-                            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IJsonDataConverter<>));
-
-                        if (converterInterface != null)
+                        if (typeof(IJsonDataConverter).IsAssignableFrom(type))
                         {
-                            var genericArgs = converterInterface.GetGenericArguments();
-                            if (genericArgs.Length == 1)
+                            var converterInterface = type.GetInterfaces()
+                                .FirstOrDefault(i => i.IsGenericType &&
+                                    i.GetGenericTypeDefinition() == typeof(IJsonDataConverter<>));
+
+                            if (converterInterface?.GetGenericArguments() is [var converterTargetType])
                             {
-                                var converterType = genericArgs[0];
-                                var converterInstance = Activator.CreateInstance(type) as IJsonDataConverter;
-                                if (converterInstance != null)
-                                    converters.Add(converterType, converterInstance);
+                                if (Activator.CreateInstance(type) is IJsonDataConverter instance)
+                                    _converters.TryAdd(converterTargetType, instance);
                             }
                         }
-                    }
-                    else if (!type.IsValueType && !type.IsInterface && !type.IsAbstract && converterFactoryType.IsAssignableFrom(type))
-                    {
-                        var factoryInstance = Activator.CreateInstance(type) as IJsonDataConverterFactory;
-                        if (factoryInstance != null)
-                            factories.Add(factoryInstance);
+                        else if (converterFactoryType.IsAssignableFrom(type))
+                        {
+                            if (Activator.CreateInstance(type) is IJsonDataConverterFactory factory)
+                                _factories.Add(factory);
+                        }
                     }
                 }
             }
-
-            return (converters.ToImmutableDictionary(), factories.ToImmutableList());
         }
-        
+
         public static IJsonDataConverter<T>? GetConverter<T>()
         {
-            if (JsonDataConverters.TryGetValue(typeof(T), out var converter))
-            {
+            if (_converters.TryGetValue(typeof(T), out var converter))
                 return converter as IJsonDataConverter<T>;
-            }
-            else
-            {
-                var typeToConvert = typeof(T);
 
-                foreach (var factory in JsonDataConverterFactories)
+            var typeToConvert = typeof(T);
+
+            lock (_lock)
+            {
+                foreach (var factory in _factories)
                 {
-                    if (factory.CanConvert(typeToConvert))
-                    {
-                        var factoryConverter = factory.CreateConverter(typeToConvert);
-                        if (factoryConverter is IJsonDataConverter<T> typedConverter)
-                        {
-                            return typedConverter;
-                        }
-                    }                    
+                    if (factory.CanConvert(typeToConvert) &&
+                        factory.CreateConverter(typeToConvert) is IJsonDataConverter<T> typedConverter)
+                        return typedConverter;
                 }
             }
+
             return null;
         }
-      
-
     }
 }

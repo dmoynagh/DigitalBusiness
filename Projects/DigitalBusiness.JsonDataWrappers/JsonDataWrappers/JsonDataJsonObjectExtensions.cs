@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers.Internal;
+using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -24,7 +24,7 @@ namespace DigitalBusiness.JsonDataWrappers
             public static JsonData CreateObject() => new JsonData(new JsonObject());
 
             public JsonData AsObject() => jsonData.IsObject ? jsonData : throw new InvalidOperationException("JsonData is not an object.");
-            public JsonData? TryAsObject()=> jsonData.IsObject ? jsonData : default;
+            public JsonData? TryAsObject() => jsonData.IsObject ? jsonData : (JsonData?)null;
 
             public bool ContainsProperty(string key)
             {
@@ -72,7 +72,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
             }
 
-            public JsonData? TryGet(string key) => jsonData.TryGet(key, out var result) ? result : default;
+            public JsonData? TryGet(string key) => jsonData.TryGet(key, out var result) ? result : (JsonData?)null;
 
             public bool TryGet(string key,[MaybeNullWhen(false)] out JsonData value)
             {
@@ -123,7 +123,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 ArgumentException.ThrowIfNullOrWhiteSpace(name);
                 if (jsonData.TryGet(name, out var existingValue))
                 {
-                    existingValue.ThrowIfNotObject();
+                    existingValue.ThrowIfNotArray();
                     return existingValue;
                 }
                 else

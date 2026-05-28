@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Internal;
@@ -61,7 +61,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in a, in b));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementAndNodeSameValue_ReturnsTrue()
     {
         var a = ElementJsonData("42");
@@ -69,7 +69,7 @@ public class JsonDataEqualityTests
         Assert.True(JsonDataEquality.Equals(in a, in b));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementAndNodeDifferentValue_ReturnsFalse()
     {
         var a = ElementJsonData("42");
@@ -77,7 +77,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in a, in b));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_NodeAndElementSameValue_ReturnsTrue()
     {
         var a = IntJsonData(42);
@@ -85,7 +85,7 @@ public class JsonDataEqualityTests
         Assert.True(JsonDataEquality.Equals(in a, in b));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_NodeAndElementDifferentValue_ReturnsFalse()
     {
         var a = IntJsonData(42);
@@ -271,7 +271,7 @@ public class JsonDataEqualityTests
         Assert.True(JsonDataEquality.Equals(in e1, in e2));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_NullableElements_E1NoValue_E2NonNull_ReturnsFalse()
     {
         JsonElement? e1 = null;
@@ -279,7 +279,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in e1, in e2));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_NullableElements_E2NoValue_E1NonNull_ReturnsFalse()
     {
         JsonElement? e1 = JsonDocument.Parse("42").RootElement;
@@ -357,7 +357,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals((JsonNode?)null, in e));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_NodeValueElementMatchingValue_ReturnsTrue()
     {
         JsonNode? node = JsonValue.Create(42);
@@ -398,7 +398,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in e, node));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementNullableHasValue_NodeMatches_ReturnsTrue()
     {
         JsonElement? e = JsonDocument.Parse("42").RootElement;
@@ -406,7 +406,7 @@ public class JsonDataEqualityTests
         Assert.True(JsonDataEquality.Equals(in e, node));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementNullableHasValue_NodeDiffers_ReturnsFalse()
     {
         JsonElement? e = JsonDocument.Parse("42").RootElement;
@@ -439,7 +439,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in e, (JsonNode?)null));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementNonNullable_NodeNullExplicit_ReturnsFalse()
     {
         var e = JsonDocument.Parse("42").RootElement;
@@ -447,7 +447,7 @@ public class JsonDataEqualityTests
         Assert.False(JsonDataEquality.Equals(in e, node));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void Equals_ElementNonNullable_NodeMatches_ReturnsTrue()
     {
         var e = JsonDocument.Parse("42").RootElement;

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,7 +27,7 @@ namespace DigitalBusiness.JsonDataWrappers
             public static JsonData CreateArray() => new JsonData(new JsonArray());
 
             public JsonData AsArray() => jsonData.IsArray ? jsonData : throw new InvalidOperationException("Node is not an array.");
-            public JsonData? TryAsArray() => jsonData.IsArray ? jsonData : default;
+            public JsonData? TryAsArray() => jsonData.IsArray ? jsonData : (JsonData?)null;
 
 
             //public int Count => jsonData.IsArray ?
@@ -82,7 +82,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 else
                 {
                     var newNode = JsonData.CreateObject();
-                    jsonData.Set(index, newNode);
+                    jsonData.Add(newNode);
                     return newNode;
                 }
             }
@@ -97,7 +97,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 else
                 {
                     var newNode = JsonData.CreateArray();
-                    jsonData.Set(index, newNode);
+                    jsonData.Add(newNode);
                     return newNode;
                 }
             }
@@ -164,7 +164,17 @@ namespace DigitalBusiness.JsonDataWrappers
                 jsonData.ThrowIfReadOnly();
 
                 var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
-                jsonData.Node![index] = addNode;
+                if (jsonData.Node is JsonArray jsonArray)
+                {
+                    // Fill with nulls if index is beyond current length
+                    while (jsonArray.Count <= index)
+                        jsonArray.Add((JsonNode?)null);
+                    jsonArray[index] = addNode;
+                }
+                else
+                {
+                    jsonData.Node![index] = addNode;
+                }
             }
 
       

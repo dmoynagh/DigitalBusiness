@@ -36,7 +36,7 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
             public JsonData Create(T value)
             {
                 var strValue = value.ToString();
-                return new JsonData(strValue);
+                return new JsonData(JsonValue.Create(strValue));
             }
 
             public bool TryGet(in JsonData jsonData, out T value)
@@ -59,7 +59,7 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                                 try
                                 {
                                     var numValue = jsonData.Element.Value.GetInt64();
-                                    value = (T)(object)numValue;
+                                    value = (T)Enum.ToObject(typeof(T), numValue);
                                     return true;
                                 }
                                 catch { }
@@ -81,8 +81,8 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                             case JsonValueKind.Number:
                                 try
                                 {
-                                    var numValue = jsonValue.GetValue<long>();
-                                    value = (T)(object)numValue;
+                                    var numValue = Convert.ToInt64(jsonValue.GetValue<object>());
+                                    value = (T)Enum.ToObject(typeof(T), numValue);
                                     return true;
                                 }
                                 catch { }
@@ -94,14 +94,14 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                 return false;
             }
 
-           
+
         }
 
         private class JsonDataEnumNumberConverter<T> : IJsonDataConverter<T> where T : struct, Enum
         {
             public JsonData Create(T value)
             {
-                var numValue = (long)(object)value;
+                var numValue = Convert.ToInt64(value);
                 return new JsonData(JsonValue.Create(numValue));
             }
 
@@ -117,7 +117,7 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                                 try
                                 {
                                     var numValue = jsonData.Element.Value.GetInt64();
-                                    value = (T)(object)numValue;
+                                    value = (T)Enum.ToObject(typeof(T), numValue);
                                     return true;
                                 }
                                 catch { }
@@ -139,8 +139,8 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                             case JsonValueKind.Number:
                                 try
                                 {
-                                    var numValue = jsonValue.GetValue<long>();
-                                    value = (T)(object)numValue;
+                                    var numValue = Convert.ToInt64(jsonValue.GetValue<object>());
+                                    value = (T)Enum.ToObject(typeof(T), numValue);
                                     return true;
                                 }
                                 catch { }
@@ -164,7 +164,18 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 
 
 
-        private static IJsonDataConverter<T>? GetSerializationConverter<T>()=> new JsonDataSerializationConverter<T>();        
+        private static IJsonDataConverter<T>? GetSerializationConverter<T>()
+        {
+            var type = typeof(T);
+            // Only use serialization for user-defined class/struct types, not BCL types
+            if ((type.IsClass || (type.IsValueType && !type.IsEnum && !type.IsPrimitive))
+                && type.Assembly != typeof(string).Assembly
+                && type.Assembly != typeof(Uri).Assembly)
+            {
+                return new JsonDataSerializationConverter<T>();
+            }
+            return null;
+        }
 
         private class JsonDataSerializationConverter<T> : IJsonDataConverter<T>
         {

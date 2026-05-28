@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -10,7 +10,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests;
 
 public class JsonDataJsonObjectExtensionsTests
 {
-    // ── IsObject ─────────────────────────────────────────────────────────────
+    // -- IsObject -------------------------------------------------------------
 
     [Fact]
     public void IsObject_WithJsonObjectNode_ReturnsTrue()
@@ -71,7 +71,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(data.IsObject);
     }
 
-    // ── ThrowIfNotObject ──────────────────────────────────────────────────────
+    // -- ThrowIfNotObject ------------------------------------------------------
 
     [Fact]
     public void ThrowIfNotObject_WhenIsObject_DoesNotThrow()
@@ -94,7 +94,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.ThrowIfNotObject());
     }
 
-    // ── CreateObject ──────────────────────────────────────────────────────────
+    // -- CreateObject ----------------------------------------------------------
 
     [Fact]
     public void CreateObject_ReturnsJsonDataThatIsObject()
@@ -111,7 +111,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.NotSame(a.Node, b.Node);
     }
 
-    // ── AsObject ──────────────────────────────────────────────────────────────
+    // -- AsObject --------------------------------------------------------------
 
     [Fact]
     public void AsObject_WhenIsObject_ReturnsSameJsonData()
@@ -135,7 +135,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.AsObject());
     }
 
-    // ── TryAsObject ───────────────────────────────────────────────────────────
+    // -- TryAsObject -----------------------------------------------------------
 
     [Fact]
     public void TryAsObject_WhenIsObject_ReturnsJsonData()
@@ -146,7 +146,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Equal(data, result.Value);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryAsObject_WhenNotObject_ReturnsNull()
     {
         var data = new JsonData(new JsonArray());
@@ -154,7 +154,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Null(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryAsObject_WithDefault_ReturnsNull()
     {
         var data = new JsonData();
@@ -162,7 +162,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Null(result);
     }
 
-    // ── ContainsProperty ──────────────────────────────────────────────────────
+    // -- ContainsProperty ------------------------------------------------------
 
     [Fact]
     public void ContainsProperty_NullKey_ThrowsArgumentException()
@@ -239,7 +239,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(data.ContainsProperty("foo"));
     }
 
-    // ── HasProperty ───────────────────────────────────────────────────────────
+    // -- HasProperty -----------------------------------------------------------
 
     [Fact]
     public void HasProperty_ExistingKey_ReturnsTrue()
@@ -257,7 +257,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(data.HasProperty("y"));
     }
 
-    // ── PropertyHasValue ──────────────────────────────────────────────────────
+    // -- PropertyHasValue ------------------------------------------------------
 
     [Fact]
     public void PropertyHasValue_NullKey_ThrowsArgumentException()
@@ -336,7 +336,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(data.PropertyHasValue("foo"));
     }
 
-    // ── Get ───────────────────────────────────────────────────────────────────
+    // -- Get -------------------------------------------------------------------
 
     [Fact]
     public void Get_NullName_ThrowsArgumentException()
@@ -393,7 +393,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.ThrowsAny<Exception>(() => data.Get("foo"));
     }
 
-    // ── TryGet (string key) → JsonData? ──────────────────────────────────────
+    // -- TryGet (string key) ? JsonData? --------------------------------------
 
     [Fact]
     public void TryGet_JsonObjectNodeExistingKey_ReturnsJsonData()
@@ -404,7 +404,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.NotNull(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGet_JsonObjectNodeMissingKey_ReturnsNull()
     {
         var node = new JsonObject();
@@ -422,7 +422,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.NotNull(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGet_JsonElementObjectMissingKey_ReturnsNull()
     {
         var element = JsonDocument.Parse("{}").RootElement;
@@ -431,7 +431,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Null(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGet_DefaultJsonData_ReturnsNull()
     {
         var data = new JsonData();
@@ -439,7 +439,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Null(result);
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [Fact]
     public void TryGet_NotAnObject_ReturnsNull()
     {
         var data = new JsonData(new JsonArray());
@@ -447,7 +447,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Null(result);
     }
 
-    // ── TryGet (string key, out JsonData) ─────────────────────────────────────
+    // -- TryGet (string key, out JsonData) -------------------------------------
 
     [Fact]
     public void TryGet_Out_NullKey_ThrowsArgumentNullException()
@@ -528,7 +528,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(found);
     }
 
-    // ── GetOrCreateObject ─────────────────────────────────────────────────────
+    // -- GetOrCreateObject -----------------------------------------------------
 
     [Fact]
     public void GetOrCreateObject_NullName_ThrowsArgumentNullException()
@@ -572,7 +572,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.GetOrCreateObject("child"));
     }
 
-    // ── GetOrCreateArray ──────────────────────────────────────────────────────
+    // -- GetOrCreateArray ------------------------------------------------------
 
     [Fact]
     public void GetOrCreateArray_NullName_ThrowsArgumentNullException()
@@ -606,7 +606,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Throws<InvalidOperationException>(() => data.GetOrCreateArray("items"));
     }
 
-    // ── Set ───────────────────────────────────────────────────────────────────
+    // -- Set -------------------------------------------------------------------
 
     [Fact]
     public void Set_ReadOnlyData_ThrowsInvalidOperationException()
@@ -649,7 +649,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.Equal(2, v.Node!.GetValue<int>());
     }
 
-    // ── Remove ────────────────────────────────────────────────────────────────
+    // -- Remove ----------------------------------------------------------------
 
     [Fact]
     public void Remove_ReadOnlyData_ThrowsInvalidOperationException()
@@ -683,7 +683,7 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(result);
     }
 
-    // ── PropertyNames ─────────────────────────────────────────────────────────
+    // -- PropertyNames ---------------------------------------------------------
 
     [Fact]
     public void PropertyNames_JsonObjectNodeWithProperties_ReturnsAllPropertyNames()
