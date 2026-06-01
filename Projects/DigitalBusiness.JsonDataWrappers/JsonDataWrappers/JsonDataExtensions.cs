@@ -192,5 +192,10 @@ namespace DigitalBusiness.JsonDataWrappers
         }
 
       
+        extension(JsonNode node)
+        {
+            public JsonData AsJsonData() => JsonData.Create(node);  
+
+        }
     }
 }
