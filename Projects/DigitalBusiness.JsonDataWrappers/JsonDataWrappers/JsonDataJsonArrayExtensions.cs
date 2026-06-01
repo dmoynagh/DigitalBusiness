@@ -35,11 +35,6 @@ namespace DigitalBusiness.JsonDataWrappers
             public JsonData? TryAsArray() => jsonData.IsArray ? jsonData : (JsonData?)null;
 
 
-            //public int Count => jsonData.IsArray ?
-            //    (jsonData.Element.HasValue ? jsonData.Element.Value.GetArrayLength() :
-            //    (jsonData.Node is JsonArray jsonArray ? jsonArray.Count : 0)) : throw new InvalidOperationException("Node is not an array.");
-
-
             /// <summary>Gets the item at the given index. Throws if out of range or not an array.</summary>
             public JsonData Get(int index)
             {
