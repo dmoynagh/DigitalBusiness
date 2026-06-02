@@ -6,12 +6,6 @@
     /// </summary>
     public static class TypedJsonDataExtensions
     {
-        extension(IJsonDataWrapper wrapper)
-        {
-            /// <summary>Casts this wrapper's <see cref="JsonData"/> to a typed <see cref="JsonData{T}"/>.</summary>
-            public JsonData<T> AsJsonData<T>() where T : IJsonDataKey => new JsonData<T> { Json = wrapper.Json };
-        }
-
         extension(IJsonData jsonData)
         {
             /// <summary>Wraps the underlying <see cref="JsonData"/> as a typed <see cref="JsonData{T}"/>.</summary>

@@ -22,9 +22,6 @@ namespace DigitalBusiness.JsonDataWrappers
             /// <summary>Throws if this instance is not a JSON array. Returns true if it is (allows use in guard expressions).</summary>
             public bool ThrowIfNotArray() { if (!jsonData.IsArray) throw new InvalidOperationException("Node is not an array."); else return true; }
 
-            /// <summary>Returns this instance asserted as an array, or throws if it is not.</summary>
-            public JsonData EnsureArray() => jsonData.IsArray ? jsonData : throw new InvalidOperationException("Node is not an array.");
-
             /// <summary>Creates a new writable Node-backed JSON array instance.</summary>
             public static JsonData CreateArray() => new JsonData(new JsonArray());
 

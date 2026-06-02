@@ -97,58 +97,7 @@ public class JsonDataJsonArrayExtensionsTests
         Assert.True(data.ThrowIfNotArray());
     }
 
-    // -- EnsureArray ----------------------------------------------------------
-
-    [Fact]
-    public void EnsureArray_WhenArray_ReturnsSameJsonData()
-    {
-        var data = new JsonData(new JsonArray());
-        var result = data.EnsureArray();
-        Assert.Equal(data, result);
-    }
-
-    [Fact]
-    public void EnsureArray_WhenNotArray_ThrowsInvalidOperationException()
-    {
-        var data = new JsonData(new JsonObject());
-        Assert.Throws<InvalidOperationException>(() => data.EnsureArray());
-    }
-
-    [Fact]
-    public void EnsureArray_WhenNotArray_ExceptionMessageCorrect()
-    {
-        var data = new JsonData(new JsonObject());
-        var ex = Assert.Throws<InvalidOperationException>(() => data.EnsureArray());
-        Assert.Equal("Node is not an array.", ex.Message);
-    }
-
-    [Fact]
-    public void EnsureArray_WithArrayJsonElement_ReturnsJsonData()
-    {
-        var element = JsonDocument.Parse("[]").RootElement;
-        var data = new JsonData(element);
-        var result = data.EnsureArray();
-        Assert.True(result.IsArray);
-    }
-
-    // -- CreateArray ----------------------------------------------------------
-
-    [Fact]
-    public void CreateArray_ReturnsJsonDataThatIsArray()
-    {
-        var result = JsonData.CreateArray();
-        Assert.True(result.IsArray);
-    }
-
-    [Fact]
-    public void CreateArray_ReturnsNewInstanceEachCall()
-    {
-        var first = JsonData.CreateArray();
-        var second = JsonData.CreateArray();
-        Assert.NotEqual(first, second);
-    }
-
-    // -- AsArray ---------------------------------------------------------------
+    // -- AsArray ----------------------------------------------------------
 
     [Fact]
     public void AsArray_WhenArray_ReturnsSameJsonData()
@@ -187,6 +136,23 @@ public class JsonDataJsonArrayExtensionsTests
     {
         var data = new JsonData((JsonNode?)null);
         Assert.Throws<InvalidOperationException>(() => data.AsArray());
+    }
+
+    // -- CreateArray ----------------------------------------------------------
+
+    [Fact]
+    public void CreateArray_ReturnsJsonDataThatIsArray()
+    {
+        var result = JsonData.CreateArray();
+        Assert.True(result.IsArray);
+    }
+
+    [Fact]
+    public void CreateArray_ReturnsNewInstanceEachCall()
+    {
+        var first = JsonData.CreateArray();
+        var second = JsonData.CreateArray();
+        Assert.NotEqual(first, second);
     }
 
     // -- TryAsArray ------------------------------------------------------------

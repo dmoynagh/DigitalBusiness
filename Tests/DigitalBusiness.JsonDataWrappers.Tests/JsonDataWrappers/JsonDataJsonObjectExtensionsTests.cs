@@ -239,24 +239,6 @@ public class JsonDataJsonObjectExtensionsTests
         Assert.False(data.ContainsProperty("foo"));
     }
 
-    // -- HasProperty -----------------------------------------------------------
-
-    [Fact]
-    public void HasProperty_ExistingKey_ReturnsTrue()
-    {
-        var node = new JsonObject { ["x"] = JsonValue.Create("hello") };
-        var data = new JsonData(node);
-        Assert.True(data.HasProperty("x"));
-    }
-
-    [Fact]
-    public void HasProperty_MissingKey_ReturnsFalse()
-    {
-        var node = new JsonObject { ["x"] = JsonValue.Create("hello") };
-        var data = new JsonData(node);
-        Assert.False(data.HasProperty("y"));
-    }
-
     // -- PropertyHasValue ------------------------------------------------------
 
     [Fact]
@@ -342,7 +324,7 @@ public class JsonDataJsonObjectExtensionsTests
     public void Get_NullName_ThrowsArgumentException()
     {
         var data = new JsonData(new JsonObject());
-        Assert.Throws<ArgumentNullException>(() => data.Get(null!));
+        Assert.Throws<ArgumentNullException>(() => data.Get((string)null!));
     }
 
     [Fact]
@@ -453,7 +435,7 @@ public class JsonDataJsonObjectExtensionsTests
     public void TryGet_Out_NullKey_ThrowsArgumentNullException()
     {
         var data = new JsonData(new JsonObject());
-        Assert.Throws<ArgumentNullException>(() => data.TryGet(null!, out _));
+        Assert.Throws<ArgumentNullException>(() => data.TryGet((string)null!, out _));
     }
 
     [Fact]

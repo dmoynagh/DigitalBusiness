@@ -68,25 +68,7 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
 
-            //public T GetOrCreateValue<T>(string propertyName, T newValue)=> jsonData.GetOrCreateValue<T>(propertyName, () => newValue);
-            //public T GetOrCreateValue<T>(string propertyName, Func<T> valueFactory)
-            //{
-            //    if (jsonData.TryGet<T>(propertyName, out var result))
-            //    {
-            //        return result;
-            //    }
-            //    else
-            //    {
-            //        var newValue = valueFactory();
-
-            //        jsonData.Set<T>(propertyName, newValue);
-            //        return newValue;
-            //    }
-            //}
-
-
-
-            //Typed JsonData json array 
+            //Typed JsonData json array
 
             public T Get<T>(int index) => jsonData.Get(index).Get<T>();
             public T? TryGet<T>(int index) => jsonData.TryGet<T>(index, out var result) ? result : default;

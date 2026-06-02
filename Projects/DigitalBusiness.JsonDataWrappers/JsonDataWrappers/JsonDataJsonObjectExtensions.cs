@@ -41,9 +41,6 @@ namespace DigitalBusiness.JsonDataWrappers
                 return false;
             }
 
-            /// <summary>Alias for <see cref="ContainsProperty"/>.</summary>
-            public bool HasProperty(string key)=>jsonData.ContainsProperty(key);
-
             /// <summary>Returns true if the property exists and its value is not null or undefined.</summary>
             public bool PropertyHasValue(string key)
             {

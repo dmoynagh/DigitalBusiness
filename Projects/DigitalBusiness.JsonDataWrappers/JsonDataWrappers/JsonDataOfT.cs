@@ -34,9 +34,6 @@ namespace DigitalBusiness.JsonDataWrappers
         /// <summary>Implicitly unwraps to <see cref="JsonData"/> for use with untyped APIs.</summary>
         public static implicit operator JsonData(JsonData<TJsonDataKey> json) => json.Json;
 
-        /// <summary>Explicitly wraps a <see cref="JsonData"/> as this typed key. Use <see cref="From"/> for clarity.</summary>
-        public static explicit operator JsonData<TJsonDataKey>(JsonData json) => new JsonData<TJsonDataKey>(json);
-
         private string DebugDisplay =>
         $"[{typeof(TJsonDataKey).Name}] " +
         $"[{(Json.IsNode ? "Node" : Json.IsElement ? "Element" : "Empty")}]" +
