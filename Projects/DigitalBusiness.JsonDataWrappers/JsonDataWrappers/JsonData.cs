@@ -1,4 +1,4 @@
-ï»¿
+
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Converters;
 using DigitalBusiness.JsonDataWrappers.Internal;
@@ -16,7 +16,7 @@ namespace DigitalBusiness.JsonDataWrappers
     /// A lightweight readonly struct that wraps a JSON value from either a <see cref="JsonElement"/> (always readonly)
     /// or a <see cref="JsonNode"/> (read or write). Provides a unified API over both sources.
     /// <para>
-    /// Structs are used deliberately â€” instances are created and discarded frequently, avoiding heap allocations.
+    /// Structs are used deliberately — instances are created and discarded frequently, avoiding heap allocations.
     /// Use <see cref="JsonData{T}"/> to attach a typed key and gain domain-specific extension methods.
     /// </para>
     /// </summary>
@@ -37,7 +37,7 @@ namespace DigitalBusiness.JsonDataWrappers
         /// </summary>
         public JsonData(JsonNode? node) : this(node, false) { }
 
-        /// <summary>Wraps a <see cref="JsonElement"/>. Always readonly â€” JsonElement is an immutable BCL type.</summary>
+        /// <summary>Wraps a <see cref="JsonElement"/>. Always readonly — JsonElement is an immutable BCL type.</summary>
         public JsonData(JsonElement element)
         {
             _readOnly = true;
@@ -110,7 +110,13 @@ namespace DigitalBusiness.JsonDataWrappers
         /// <summary>Compares the JSON content of two instances for structural equality, regardless of source type.</summary>
         public bool DeepEquals(in JsonData other)=> JsonDataEquality.Equals(this, other);
 
-        /// <summary>Implicitly wraps a <see cref="JsonNode"/> â€” enables direct assignment without explicit construction.</summary>
+        /// <summary>Compares the JSON content of two instances for structural equality, treating
+        /// numbers by parsed decimal value rather than exact text (e.g. 1 and 1.0 compare equal).
+        /// Falls back to raw-text comparison for numbers outside decimal's range. For BCL-matching,
+        /// exact-text comparison, use DeepEquals instead.</summary>
+        public bool DeepSemanticEquals(in JsonData other) => JsonDataEquality.SemanticEquals(this, other);
+
+        /// <summary>Implicitly wraps a <see cref="JsonNode"/> — enables direct assignment without explicit construction.</summary>
         public static implicit operator JsonData(JsonNode? node) => new JsonData(node);
         /// <summary>Implicitly wraps a <see cref="JsonElement"/>.</summary>
         public static implicit operator JsonData(JsonElement element) => new JsonData(element);

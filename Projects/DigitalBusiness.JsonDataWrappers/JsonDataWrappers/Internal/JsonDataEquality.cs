@@ -171,5 +171,89 @@ namespace DigitalBusiness.JsonDataWrappers.Internal
 
 
 
-    }
+    
+        // ------------------------------------------------------------------
+        // Semantic (numeric-tolerant) equality - used by DeepSemanticEquals.
+        // Unlike Equals(...) above, this never delegates to the BCL DeepEquals methods
+        // (which have no numeric-comparison-mode parameter) - every source combination,
+        // including same-source (Element/Element, Node/Node), is walked manually here.
+        // ------------------------------------------------------------------
+
+        /// <summary>Compares two JsonData instances for structural equality, treating
+        /// numbers by parsed decimal value rather than exact text. Regardless of source type.</summary>
+        public static bool SemanticEquals(in JsonData a, in JsonData b)
+        {
+            if (a.IsNull && b.IsNull) return true;
+            if (a.IsNull || b.IsNull) return false;
+
+            var kindA = a.ValueKind;
+            var kindB = b.ValueKind;
+            if (kindA != kindB) return false;
+
+            return kindA switch
+            {
+                JsonValueKind.Object => SemanticObjectEquals(a, b),
+                JsonValueKind.Array => SemanticArrayEquals(a, b),
+                JsonValueKind.Number => JsonNumberComparison.AreEqual(GetRawNumberText(a), GetRawNumberText(b)),
+                _ => Equals(a, b),
+            };
+        }
+
+        /// <summary>Treats a null (no-value) b as equal to a null JsonData.</summary>
+        public static bool SemanticEquals(in JsonData a, in JsonData? b)
+        {
+            if (!b.HasValue) return a.IsNull;
+            return SemanticEquals(a, b.Value);
+        }
+
+        /// <summary>Treats a null (no-value) a as equal to a null JsonData.</summary>
+        public static bool SemanticEquals(in JsonData? a, in JsonData b)
+        {
+            if (!a.HasValue) return b.IsNull;
+            return SemanticEquals(a.Value, b);
+        }
+
+        /// <summary>Compares two nullable JsonData instances. Two no-value instances are equal.</summary>
+        public static bool SemanticEquals(in JsonData? a, in JsonData? b)
+        {
+            if (!a.HasValue)
+            {
+                if (!b.HasValue) return true;
+                return b.Value.IsNull;
+            }
+            if (!b.HasValue) return a.Value.IsNull;
+            return SemanticEquals(a.Value, b.Value);
+        }
+
+        private static bool SemanticObjectEquals(in JsonData a, in JsonData b)
+        {
+            var propsB = new Dictionary<string, JsonData>();
+            foreach (var (name, value) in b.Properties)
+                propsB[name] = value;
+
+            int countA = 0;
+            foreach (var (name, valueA) in a.Properties)
+            {
+                countA++;
+                if (!propsB.TryGetValue(name, out var valueB)) return false;
+                if (!SemanticEquals(valueA, valueB)) return false;
+            }
+            return countA == propsB.Count;
+        }
+
+        private static bool SemanticArrayEquals(in JsonData a, in JsonData b)
+        {
+            using var itemsA = a.Items.GetEnumerator();
+            using var itemsB = b.Items.GetEnumerator();
+            while (itemsA.MoveNext())
+            {
+                if (!itemsB.MoveNext()) return false;
+                if (!SemanticEquals(itemsA.Current, itemsB.Current)) return false;
+            }
+            return !itemsB.MoveNext();
+        }
+
+        private static string GetRawNumberText(in JsonData jsonData) =>
+            jsonData.Element.HasValue ? jsonData.Element.Value.GetRawText() : jsonData.Node!.ToJsonString();
+}
 }

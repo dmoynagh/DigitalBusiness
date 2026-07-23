@@ -162,6 +162,10 @@ namespace DigitalBusiness.JsonDataWrappers
 
             /// <summary>Enumerates all property names in this JSON object.</summary>
             public IEnumerable<string> PropertyNames => JsonDataHelper.GetPropertyNames(jsonData);
+
+            /// <summary>Enumerates all (name, value) pairs in this JSON object. Child values inherit
+            /// this instance's readonly state for Node-backed sources, matching PropertyNames.</summary>
+            public IEnumerable<(string Name, JsonData Value)> Properties => JsonDataHelper.GetProperties(jsonData);
       
         }
 
