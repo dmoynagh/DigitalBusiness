@@ -25,7 +25,9 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
 
             //if (converter is null) converter = GetTypedJsonDataArrayWrapperConverter<T>();
 
-            if (converter is null) converter = CustomJsonDataConverters.GetConverter<T>();
+            if (converter is null) converter = JsonDataConverters.GetConverter<T>();
+
+            if (converter is null) converter = GetJsonConverterAttributeConverter<T>();
 
             if (converter is null) converter = GetSerializationConverter<T>();
             return converter ?? new UndefinedConverter<T>();

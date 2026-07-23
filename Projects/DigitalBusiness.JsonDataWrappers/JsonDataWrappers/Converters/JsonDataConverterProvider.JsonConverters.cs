@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace DigitalBusiness.JsonDataWrappers.Converters
 {
@@ -27,6 +29,65 @@ namespace DigitalBusiness.JsonDataWrappers.Converters
                 return new JsonValueConverter() as IJsonDataConverter<T>;
 
             return null;
+        }
+
+        /// <summary>
+        /// Adapts a <see cref="JsonConverterAttribute"/>-specified <see cref="JsonConverter{T}"/> as an
+        /// <see cref="IJsonDataConverter{T}"/>. Only consulted when no explicit registration exists via
+        /// <see cref="JsonDataConverters"/> — explicit registration always wins over this fallback.
+        /// </summary>
+        private static IJsonDataConverter<T>? GetJsonConverterAttributeConverter<T>()
+        {
+            var type = typeof(T);
+            var attribute = type.GetCustomAttribute<JsonConverterAttribute>();
+            if (attribute?.ConverterType is null) return null;
+
+            if (Activator.CreateInstance(attribute.ConverterType) is not JsonConverter<T> converter)
+                return null;
+
+            return new JsonConverterAttributeAdapter<T>(converter);
+        }
+
+        private sealed class JsonConverterAttributeAdapter<T> : IJsonDataConverter<T>
+        {
+            private readonly JsonConverter<T> _converter;
+
+            public JsonConverterAttributeAdapter(JsonConverter<T> converter) => _converter = converter;
+
+            public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out T value)
+            {
+                try
+                {
+                    if (jsonData.IsNull) { value = default; return false; }
+
+                    var json = jsonData.IsNode ? jsonData.Node!.ToJsonString() : jsonData.Element!.Value.GetRawText();
+                    var reader = new Utf8JsonReader(System.Text.Encoding.UTF8.GetBytes(json));
+                    reader.Read();
+                    var result = _converter.Read(ref reader, typeof(T), JsonSerializerOptions.Default);
+                    if (result is not null)
+                    {
+                        value = result;
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // fall through to false
+                }
+                value = default;
+                return false;
+            }
+
+            public JsonData Create(T value)
+            {
+                using var stream = new System.IO.MemoryStream();
+                using (var writer = new Utf8JsonWriter(stream))
+                {
+                    _converter.Write(writer, value, JsonSerializerOptions.Default);
+                }
+                var element = JsonSerializer.Deserialize<JsonElement>(stream.ToArray());
+                return new JsonData(element);
+            }
         }
 
 

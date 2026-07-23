@@ -523,17 +523,17 @@ public class JsonDataExtensionsTests
         Assert.True(data.ReadOnly);
     }
 
-    // -- ToJsonElementJsonData -------------------------------------------------
+    // -- ToElementBacked -------------------------------------------------
 
     [Fact]
-    public void ToJsonElementJsonData_ElementBacked_ReturnsElementBackedClone()
+    public void ToElementBacked_ElementBacked_ReturnsElementBackedClone()
     {
         // Arrange
         var element = JsonDocument.Parse("42").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToJsonElementJsonData();
+        var result = data.ToElementBacked();
 
         // Assert
         Assert.True(result.IsElement);
@@ -541,28 +541,28 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToJsonElementJsonData_ElementBacked_IsReadOnly()
+    public void ToElementBacked_ElementBacked_IsReadOnly()
     {
         // Arrange
         var element = JsonDocument.Parse("\"hello\"").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToJsonElementJsonData();
+        var result = data.ToElementBacked();
 
         // Assert
         Assert.True(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonElementJsonData_NodeBacked_ReturnsElementBacked()
+    public void ToElementBacked_NodeBacked_ReturnsElementBacked()
     {
         // Arrange
         var node = JsonNode.Parse("{\"x\":1}")!;
         var data = new JsonData(node);
 
         // Act
-        var result = data.ToJsonElementJsonData();
+        var result = data.ToElementBacked();
 
         // Assert
         Assert.True(result.IsElement);
@@ -570,30 +570,30 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToJsonElementJsonData_Uninitialized_ReturnsNullElement()
+    public void ToElementBacked_Uninitialized_ReturnsNullElement()
     {
         // Arrange
         var data = new JsonData();
 
         // Act
-        var result = data.ToJsonElementJsonData();
+        var result = data.ToElementBacked();
 
         // Assert
         Assert.True(result.IsElement);
         Assert.Equal(JsonValueKind.Null, result.Element!.Value.ValueKind);
     }
 
-    // -- ToJsonNodeJsonData ----------------------------------------------------
+    // -- ToNodeBacked ----------------------------------------------------
 
     [Fact]
-    public void ToJsonNodeJsonData_NodeBacked_ReturnsNodeBackedDeepClone()
+    public void ToNodeBacked_NodeBacked_ReturnsNodeBackedDeepClone()
     {
         // Arrange
         var node = JsonNode.Parse("{\"a\":1}")!;
         var data = new JsonData(node);
 
         // Act
-        var result = data.ToJsonNodeJsonData();
+        var result = data.ToNodeBacked();
 
         // Assert
         Assert.True(result.IsNode);
@@ -602,56 +602,56 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_NodeBacked_PreservesReadOnlyWhenNotOverridden()
+    public void ToNodeBacked_NodeBacked_PreservesReadOnlyWhenNotOverridden()
     {
         // Arrange
         var node = new JsonObject();
         var data = new JsonData(node);
 
         // Act
-        var result = data.ToJsonNodeJsonData();
+        var result = data.ToNodeBacked();
 
         // Assert
         Assert.False(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_NodeBacked_ReadOnlyOverrideTrue()
+    public void ToNodeBacked_NodeBacked_ReadOnlyOverrideTrue()
     {
         // Arrange
         var node = new JsonObject();
         var data = new JsonData(node);
 
         // Act
-        var result = data.ToJsonNodeJsonData(readOnly: true);
+        var result = data.ToNodeBacked(readOnly: true);
 
         // Assert
         Assert.True(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_NodeBacked_ReadOnlyOverrideFalse()
+    public void ToNodeBacked_NodeBacked_ReadOnlyOverrideFalse()
     {
         // Arrange
         var node = new JsonObject();
         var data = JsonData.CreateReadOnly(node);
 
         // Act
-        var result = data.ToJsonNodeJsonData(readOnly: false);
+        var result = data.ToNodeBacked(readOnly: false);
 
         // Assert
         Assert.False(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_ElementBacked_ReturnsNodeBacked()
+    public void ToNodeBacked_ElementBacked_ReturnsNodeBacked()
     {
         // Arrange
         var element = JsonDocument.Parse("{\"b\":2}").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToJsonNodeJsonData();
+        var result = data.ToNodeBacked();
 
         // Assert
         Assert.True(result.IsNode);
@@ -659,41 +659,41 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_ElementBacked_DefaultReadOnlyFalse()
+    public void ToNodeBacked_ElementBacked_DefaultReadOnlyFalse()
     {
         // Arrange — use an object so JsonValue readonly-promotion does not apply
         var element = JsonDocument.Parse("{}").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToJsonNodeJsonData();
+        var result = data.ToNodeBacked();
 
         // Assert
         Assert.False(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_ElementBacked_ReadOnlyOverrideTrue()
+    public void ToNodeBacked_ElementBacked_ReadOnlyOverrideTrue()
     {
         // Arrange
         var element = JsonDocument.Parse("1").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToJsonNodeJsonData(readOnly: true);
+        var result = data.ToNodeBacked(readOnly: true);
 
         // Assert
         Assert.True(result.ReadOnly);
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_Uninitialized_ReturnsNullNodeBacked()
+    public void ToNodeBacked_Uninitialized_ReturnsNullNodeBacked()
     {
         // Arrange
         var data = new JsonData();
 
         // Act
-        var result = data.ToJsonNodeJsonData();
+        var result = data.ToNodeBacked();
 
         // Assert — null nodes are always readonly by the readonly-promotion rule
         Assert.True(result.IsNode || result.IsNull);
@@ -701,29 +701,29 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToJsonNodeJsonData_Uninitialized_ReadOnlyOverrideTrue()
+    public void ToNodeBacked_Uninitialized_ReadOnlyOverrideTrue()
     {
         // Arrange
         var data = new JsonData();
 
         // Act
-        var result = data.ToJsonNodeJsonData(readOnly: true);
+        var result = data.ToNodeBacked(readOnly: true);
 
         // Assert
         Assert.True(result.ReadOnly);
     }
 
-    // -- ToEditableJsonData ----------------------------------------------------
+    // -- ToEditable ----------------------------------------------------
 
     [Fact]
-    public void ToEditableJsonData_NodeBacked_ReturnsWritableNodeBacked()
+    public void ToEditable_NodeBacked_ReturnsWritableNodeBacked()
     {
         // Arrange
         var node = new JsonObject();
         var data = JsonData.CreateReadOnly(node);
 
         // Act
-        var result = data.ToEditableJsonData();
+        var result = data.ToEditable();
 
         // Assert
         Assert.True(result.IsNode);
@@ -731,14 +731,14 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToEditableJsonData_ElementBacked_ReturnsWritableNodeBacked()
+    public void ToEditable_ElementBacked_ReturnsWritableNodeBacked()
     {
         // Arrange — use an object so JsonValue readonly-promotion does not apply
         var element = JsonDocument.Parse("{\"x\":1}").RootElement;
         var data = new JsonData(element);
 
         // Act
-        var result = data.ToEditableJsonData();
+        var result = data.ToEditable();
 
         // Assert
         Assert.True(result.IsNode);
@@ -746,13 +746,13 @@ public class JsonDataExtensionsTests
     }
 
     [Fact]
-    public void ToEditableJsonData_Uninitialized_ReturnsReadOnly()
+    public void ToEditable_Uninitialized_ReturnsReadOnly()
     {
         // Arrange
         var data = new JsonData();
 
         // Act
-        var result = data.ToEditableJsonData();
+        var result = data.ToEditable();
 
         // Assert — null nodes are always readonly (readonly-promotion rule)
         Assert.True(result.ReadOnly);

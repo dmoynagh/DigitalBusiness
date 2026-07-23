@@ -5,14 +5,14 @@ using DigitalBusiness.JsonDataWrappers.Converters;
 
 namespace DigitalBusiness.JsonDataWrappers.Tests;
 
-public class CustomJsonDataConvertersTests
+public class JsonDataConvertersTests
 {
     // -- Helper types ------------------------------------------------------------
 
     /// <summary>Marker type that has a direct converter registered via the test assembly.</summary>
     public struct TestDirectMarker { }
 
-    /// <summary>Direct converter auto-discovered from this assembly by CustomJsonDataConverters.</summary>
+    /// <summary>Direct converter auto-discovered from this assembly by JsonDataConverters.</summary>
     public sealed class TestDirectMarkerConverter : IJsonDataConverter<TestDirectMarker>
     {
         public bool TryGet(in JsonData jsonData, [MaybeNullWhen(false)] out TestDirectMarker value)
@@ -54,54 +54,43 @@ public class CustomJsonDataConvertersTests
     // -- Tests -------------------------------------------------------------------
 
     [Fact]
-    public void GetConverter_DirectlyRegisteredType_ReturnsConverter()
-    {
-        // Act
-        var converter = CustomJsonDataConverters.GetConverter<TestDirectMarker>();
-
-        // Assert
-        Assert.NotNull(converter);
-        Assert.IsAssignableFrom<IJsonDataConverter<TestDirectMarker>>(converter);
-    }
-
-    [Fact]
-    public void GetConverter_FactoryHandledType_ReturnsConverter()
-    {
-        // Act
-        var converter = CustomJsonDataConverters.GetConverter<TestFactoryMarker>();
-
-        // Assert
-        Assert.NotNull(converter);
-        Assert.IsAssignableFrom<IJsonDataConverter<TestFactoryMarker>>(converter);
-    }
-
-    [Fact]
     public void GetConverter_UnregisteredTypeWithNoFactory_ReturnsNull()
     {
         // Act
-        var converter = CustomJsonDataConverters.GetConverter<UnregisteredMarker>();
+        var converter = JsonDataConverters.GetConverter<UnregisteredMarker>();
 
         // Assert
         Assert.Null(converter);
     }
 
     [Fact]
-    public void GetConverter_DirectlyRegisteredType_ConverterIsCorrectInstance()
+    public void Register_ThenGetConverter_ReturnsRegisteredConverter()
     {
-        // Act
-        var converter = CustomJsonDataConverters.GetConverter<TestDirectMarker>();
+        var converter = new TestDirectMarkerConverter();
+        JsonDataConverters.Register<TestDirectMarker>(converter);
 
-        // Assert
-        Assert.IsType<TestDirectMarkerConverter>(converter);
+        var result = JsonDataConverters.GetConverter<TestDirectMarker>();
+
+        Assert.Same(converter, result);
     }
 
     [Fact]
-    public void GetConverter_FactoryHandledType_ConverterIsCorrectInstance()
+    public void Register_DuplicateType_Throws()
     {
-        // Act
-        var converter = CustomJsonDataConverters.GetConverter<TestFactoryMarker>();
+        JsonDataConverters.Register<TestFactoryMarker>(new TestFactoryMarkerConverter());
 
-        // Assert
-        Assert.IsType<TestFactoryMarkerConverter>(converter);
+        Assert.Throws<InvalidOperationException>(() =>
+            JsonDataConverters.Register<TestFactoryMarker>(new TestFactoryMarkerConverter()));
+    }
+
+    [Fact]
+    public void Register_FactoryHandledType_ReturnsConverter()
+    {
+        JsonDataConverters.Register(new TestFactoryMarkerFactory());
+
+        var converter = JsonDataConverters.GetConverter<TestFactoryMarker>();
+
+        Assert.NotNull(converter);
+        Assert.IsAssignableFrom<IJsonDataConverter<TestFactoryMarker>>(converter);
     }
 }

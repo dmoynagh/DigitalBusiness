@@ -1,4 +1,4 @@
-﻿using DigitalBusiness.JsonDataWrappers.Internal;
+using DigitalBusiness.JsonDataWrappers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -115,7 +115,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 jsonData.Set(index, newNode);
             }
 
-            public JsonDataArray<T> EnsureArray<T>(int index)
+            public JsonDataArray<T> GetOrCreateArray<T>(int index)
             {
                 if (jsonData.TryGetArray<T>(index, out var array))
                 {

@@ -11,4 +11,8 @@
     <ProjectReference Include="..\DigitalBusiness\DigitalBusiness.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Json\Compare\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-ï»¿using DigitalBusiness.Json.JsonElements;
+using DigitalBusiness.Json.JsonElements;
 using DigitalBusiness.Json.JsonNodes;
 using DigitalBusiness.JsonDataWrappers;
 using DigitalBusiness.JsonDataWrappers.Internal;
@@ -20,7 +20,7 @@ namespace DigitalBusiness.JsonDataWrappers
         {
             /// <summary>
             /// True if this represents a JSON null value, or if the wrapper is uninitialised (no source set).
-            /// Note: when the source is a JsonNode, these two states are indistinguishable â€” JsonNode uses null
+            /// Note: when the source is a JsonNode, these two states are indistinguishable — JsonNode uses null
             /// to represent JSON null. Only JsonElement backed instances can distinguish explicit null from uninitialised.
             /// </summary>
             public bool IsNull => (jsonData.Node is null && !jsonData.Element.HasValue) ||
@@ -29,6 +29,15 @@ namespace DigitalBusiness.JsonDataWrappers
 
             /// <summary>True if the value kind is <see cref="JsonValueKind.Undefined"/>.</summary>
             public bool IsUndefined => jsonData.ValueKind == JsonValueKind.Undefined;
+
+            /// <summary>
+            /// True if there is no source at all — distinct from an explicit JSON null. See also <see cref="IsNull"/>.
+            /// Only meaningful for Element-backed instances: a missing <see cref="JsonElement"/> (no <c>HasValue</c>) is
+            /// distinguishable from <see cref="JsonValueKind.Null"/>. Node-backed instances cannot distinguish this
+            /// (<see cref="JsonNode"/> uses a null reference to represent both states) — always returns false for
+            /// Node-backed instances; documented limitation, not a bug to fix here.
+            /// </summary>
+            public bool IsUnset => !jsonData.Element.HasValue && jsonData.Node is null;
 
 
             /// <summary>Throws if this instance is readonly. Call before any mutating operation.</summary>
@@ -42,6 +51,13 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
             /// <summary>Returns a readonly view. If already readonly, returns itself with no allocation.</summary>
+            /// <remarks>
+            /// This is a guard against accidental mutation, not a security boundary — a caller holding
+            /// the original writable JsonNode-backed instance can still mutate the underlying tree even
+            /// after another caller obtains a read-only view via this method (both views share the same
+            /// node graph). Anything diffed, audited, or persisted as a committed snapshot should be
+            /// Element-backed, not merely readonly-flagged Node-backed, to get a genuinely independent copy.
+            /// </remarks>
             public JsonData AsReadOnly() => jsonData.ReadOnly ? jsonData : JsonData.CreateReadOnly(jsonData.Node);
 
             /// <summary>The raw underlying source: the boxed <see cref="JsonElement"/> or the <see cref="JsonNode"/>. Null for uninitialized instances.</summary>
@@ -63,7 +79,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// <summary>
             /// Returns a readonly-flagged instance wrapping the given <see cref="JsonNode"/>.
             /// Unlike the public constructor, this does not apply the automatic readonly promotion for <see cref="JsonValue"/> nodes
-            /// â€” use when you explicitly need a frozen view of a mutable node tree.
+            /// — use when you explicitly need a frozen view of a mutable node tree.
             /// For a readonly view of an existing <see cref="JsonData"/> instance, use <c>AsReadOnly()</c>.
             /// </summary>
             public static JsonData CreateReadOnly(JsonNode? node) => new JsonData(node, readOnly: true);
@@ -90,7 +106,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// Returns an Element-backed copy of this instance.
             /// Converts Node-backed data by serializing to a JsonElement. Uninitialized returns a null element.
             /// </summary>
-            public JsonData ToJsonElementJsonData()
+            public JsonData ToElementBacked()
             {
                 if (jsonData.IsElement) 
                 {
@@ -111,7 +127,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// Converts Element-backed data by deserializing to a JsonNode.
             /// <paramref name="readOnly"/> overrides the readonly state; if null, preserves the original state.
             /// </summary>
-            public JsonData ToJsonNodeJsonData(bool? readOnly = null)
+            public JsonData ToNodeBacked(bool? readOnly = null)
             {
                 if (jsonData.IsNode)
                 {
@@ -130,8 +146,8 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
             }
 
-            /// <summary>Returns a writable Node-backed copy of this instance. Shorthand for <c>ToJsonNodeJsonData(readOnly: false)</c>.</summary>
-            public JsonData ToEditableJsonData() => jsonData.ToJsonNodeJsonData(false);
+            /// <summary>Returns a writable Node-backed copy of this instance. Shorthand for <c>ToNodeBacked(readOnly: false)</c>.</summary>
+            public JsonData ToEditable() => jsonData.ToNodeBacked(false);
 
         
 

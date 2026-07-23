@@ -95,7 +95,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// the final property or index to <paramref name="value"/>.
             /// Throws if any parent segment is missing. Use <see cref="SetDeep"/> to create missing intermediates.
             /// </summary>
-            public void Set(JsonPath path, JsonData? value)
+            public void Set(JsonPath path, JsonData value)
             {
                 (JsonData parent, JsonPathSegment last) = jsonData.ResolveParent(path);
                 if (last.IsIndex)
@@ -142,9 +142,17 @@ namespace DigitalBusiness.JsonDataWrappers
                 JsonData parent = ResolveOrCreateParent(jsonData, path);
                 JsonPathSegment last = path[path.Length - 1];
                 if (last.IsIndex)
+                {
                     parent.Set(last.Index, value);
+                }
+                else if (value.HasValue)
+                {
+                    parent.Set(last.Property, value.Value);
+                }
                 else
-                    parent.Set(last.Property, value);
+                {
+                    parent.Remove(last.Property);
+                }
             }
 
             /// <summary>

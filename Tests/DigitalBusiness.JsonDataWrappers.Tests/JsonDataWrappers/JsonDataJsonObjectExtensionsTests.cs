@@ -613,11 +613,23 @@ public class JsonDataJsonObjectExtensionsTests
     }
 
     [Fact]
-    public void Set_NullValue_RemovesKey()
+    public void Set_ExplicitJsonNull_WritesNullProperty()
     {
         var node = new JsonObject { ["name"] = JsonValue.Create("Bob") };
         var data = new JsonData(node);
-        data.Set("name", null);
+        data.Set("name", JsonData.CreateNull());
+        Assert.True(data.ContainsProperty("name"));
+        Assert.True(data.TryGet("name", out var v));
+        Assert.True(v.IsNull);
+        Assert.Null(node["name"]);
+    }
+
+    [Fact]
+    public void Remove_RemovesProperty()
+    {
+        var node = new JsonObject { ["name"] = JsonValue.Create("Bob") };
+        var data = new JsonData(node);
+        data.Remove("name");
         Assert.False(data.ContainsProperty("name"));
     }
 

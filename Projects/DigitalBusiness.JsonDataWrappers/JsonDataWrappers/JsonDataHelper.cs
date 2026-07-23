@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -25,7 +25,7 @@ namespace DigitalBusiness.JsonDataWrappers
             return current;
         }
 
-        /// <summary>Returns true if both nodes share the same root — i.e. they are part of the same node tree.</summary>
+        /// <summary>Returns true if both nodes share the same root � i.e. they are part of the same node tree.</summary>
         public static bool HasCommonRoot(JsonNode nodeA, JsonNode nodeB)=> GetRootNode(nodeA) == GetRootNode(nodeB);
 
 
@@ -90,6 +90,23 @@ namespace DigitalBusiness.JsonDataWrappers
             }
         }
 
-
+        /// <summary>Enumerates (name, value) pairs from an object-kind <see cref="JsonData"/>, regardless of source type.</summary>
+        public static IEnumerable<(string Name, JsonData Value)> GetProperties(JsonData jsonData)
+        {
+            if (jsonData.Element.HasValue && jsonData.Element.Value.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var property in jsonData.Element.Value.EnumerateObject())
+                {
+                    yield return (property.Name, new JsonData(property.Value));
+                }
+            }
+            else if (jsonData.Node != null && jsonData.Node is JsonObject jsonObj)
+            {
+                foreach (var kvp in jsonObj)
+                {
+                    yield return (kvp.Key, new JsonData(kvp.Value, jsonData.ReadOnly));
+                }
+            }
         }
+    }
 }

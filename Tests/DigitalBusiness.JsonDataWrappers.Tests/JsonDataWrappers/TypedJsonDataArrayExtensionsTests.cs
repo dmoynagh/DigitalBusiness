@@ -587,10 +587,10 @@ public class TypedJsonDataArrayExtensionsTests
         Assert.False(parent.TryGetArray<string>(0, out _));
     }
 
-    // -- JsonData.EnsureArray<T>(int index) ----------------------------------
+    // -- JsonData.GetOrCreateArray<T>(int index) ----------------------------------
 
     [Fact]
-    public void EnsureArrayByIndex_WhenIndexExistsAndIsArray_ReturnsExistingArray()
+    public void GetOrCreateArrayByIndex_WhenIndexExistsAndIsArray_ReturnsExistingArray()
     {
         // Arrange
         var parent = ArrayJsonData();
@@ -598,7 +598,7 @@ public class TypedJsonDataArrayExtensionsTests
         parent.Add(child);
 
         // Act
-        var result = parent.EnsureArray<string>(0);
+        var result = parent.GetOrCreateArray<string>(0);
 
         // Assert
         Assert.True(result.Json.IsArray);
@@ -606,13 +606,13 @@ public class TypedJsonDataArrayExtensionsTests
     }
 
     [Fact]
-    public void EnsureArrayByIndex_WhenIndexMissing_CreatesAndReturnsNewArray()
+    public void GetOrCreateArrayByIndex_WhenIndexMissing_CreatesAndReturnsNewArray()
     {
         // Arrange
         var parent = ArrayJsonData();
 
         // Act
-        var result = parent.EnsureArray<string>(0);
+        var result = parent.GetOrCreateArray<string>(0);
 
         // Assert
         Assert.True(result.Json.IsArray);
@@ -620,23 +620,23 @@ public class TypedJsonDataArrayExtensionsTests
     }
 
     [Fact]
-    public void EnsureArrayByIndex_WhenReadOnlyAndIndexMissing_ThrowsInvalidOperationException()
+    public void GetOrCreateArrayByIndex_WhenReadOnlyAndIndexMissing_ThrowsInvalidOperationException()
     {
         // Arrange
         var parent = JsonData.CreateReadOnly(new System.Text.Json.Nodes.JsonArray());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => parent.EnsureArray<string>(0));
+        Assert.Throws<InvalidOperationException>(() => parent.GetOrCreateArray<string>(0));
     }
 
     [Fact]
-    public void EnsureArrayByIndex_WhenIndexExistsButNotArray_ThrowsInvalidOperationException()
+    public void GetOrCreateArrayByIndex_WhenIndexExistsButNotArray_ThrowsInvalidOperationException()
     {
         // Arrange
         var parent = ArrayJsonData();
         parent.Add(NonArrayJsonData());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => parent.EnsureArray<string>(0));
+        Assert.Throws<InvalidOperationException>(() => parent.GetOrCreateArray<string>(0));
     }
 }

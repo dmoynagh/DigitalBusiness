@@ -141,21 +141,15 @@ namespace DigitalBusiness.JsonDataWrappers
 
 
 
-            /// <summary>Sets the named property. A null value removes the property. Requires a writable instance.</summary>
-            public void Set(string key, JsonData? value)               
+            /// <summary>Sets the named property, always writing a value — including an explicit JSON null. Requires a writable instance.
+            /// Removal is via <see cref="Remove(string)"/> only, never implied by passing a null-valued <see cref="JsonData"/>.</summary>
+            public void Set(string key, JsonData value)               
             {
                 jsonData.ThrowIfReadOnly(); 
                 jsonData.ThrowIfNotObject();
 
-                var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
-                if(addNode is not null)
-                {
-                    jsonData.Node![key] = addNode;
-                }
-                else
-                {
-                    jsonData.Remove(key);
-                }                
+                var addNode = JsonDataHelper.GetNodeToAdd(value, jsonData.Node!);
+                jsonData.Node![key] = addNode;
             }
 
             /// <summary>Removes the named property. Requires a writable instance.</summary>

@@ -47,7 +47,7 @@ namespace DigitalBusiness.JsonDataWrappers
             {
                 if (value == null) { jsonData.Remove(name); return; }
 
-                JsonData? newNode = JsonData.Create<T>(value);
+                JsonData newNode = JsonData.Create<T>(value);
                 jsonData.Set(name, newNode);
             }
 

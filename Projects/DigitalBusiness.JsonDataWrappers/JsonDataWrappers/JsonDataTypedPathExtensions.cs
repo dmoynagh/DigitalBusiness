@@ -63,7 +63,16 @@ namespace DigitalBusiness.JsonDataWrappers
             public void Set<T>(JsonPath path, T? value)
             {
                 (JsonData parent, JsonPathSegment last) = jsonData.ResolveParent(path);
-                JsonData? newNode = value is null ? (JsonData?)null : JsonData.Create<T>(value);
+                if (value is null)
+                {
+                    if (last.IsIndex)
+                        parent.RemoveAt(last.Index);
+                    else
+                        parent.Remove(last.Property);
+                    return;
+                }
+
+                JsonData newNode = JsonData.Create<T>(value);
                 if (last.IsIndex)
                     parent.Set(last.Index, newNode);
                 else
@@ -82,7 +91,13 @@ namespace DigitalBusiness.JsonDataWrappers
             /// </summary>
             public void SetDeep<T>(JsonPath path, T? value)
             {
-                JsonData? newNode = value is null ? (JsonData?)null : JsonData.Create<T>(value);
+                if (value is null)
+                {
+                    jsonData.Remove(path);
+                    return;
+                }
+
+                JsonData newNode = JsonData.Create<T>(value);
                 jsonData.SetDeep(path, newNode);
             }
 
