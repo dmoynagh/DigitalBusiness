@@ -1,6 +1,7 @@
 using DigitalBusiness.Json.JsonPaths;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Nodes;
 
 namespace DigitalBusiness.JsonDataWrappers.Diff
 {
@@ -27,12 +28,12 @@ namespace DigitalBusiness.JsonDataWrappers.Diff
 
         /// <summary>
         /// Converts this diff into a <see cref="JsonPatch"/> suitable for <see cref="JsonMerge.Apply"/>,
-        /// using the given merge <paramref name="semantics"/> (v1 or v2) to decide how deletions and
-        /// explicit-null values are represented. Any array with at least one changed/added/removed index
+        /// using <see cref="JsonMerge.DeleteMarker"/>/<see cref="JsonMerge.SetNullMarker"/> to represent
+        /// deletions and explicit-null values. Any array with at least one changed/added/removed index
         /// is collapsed into a single whole-array-replacement patch entry at the array's own path,
         /// matching the merge model's "arrays replace entirely" semantics.
         /// </summary>
-        public JsonPatch ToPatch(IJsonMergeSemantics semantics)
+        public JsonPatch ToPatch()
         {
             var patchRoot = JsonData.CreateObject();
             var handledArrayPaths = new HashSet<string>();
@@ -49,7 +50,7 @@ namespace DigitalBusiness.JsonDataWrappers.Diff
                     if (_target.TryGet(arrayPath, out var newArrayValue))
                         SetPatchValue(patchRoot, arrayPath, newArrayValue.Clone());
                     else
-                        SetPatchValue(patchRoot, arrayPath, semantics.CreateDeleteMarker());
+                        SetPatchValue(patchRoot, arrayPath, CreateDeleteMarker());
 
                     continue;
                 }
@@ -57,18 +58,22 @@ namespace DigitalBusiness.JsonDataWrappers.Diff
                 switch (entry.Kind)
                 {
                     case JsonDiffKind.Removed:
-                        SetPatchValue(patchRoot, entry.Path, semantics.CreateDeleteMarker());
+                        SetPatchValue(patchRoot, entry.Path, CreateDeleteMarker());
                         break;
                     case JsonDiffKind.Added:
                     case JsonDiffKind.Changed:
                         var newValue = entry.NewValue!.Value;
-                        SetPatchValue(patchRoot, entry.Path, newValue.IsNull ? semantics.CreateSetNullMarker() : newValue.Clone());
+                        SetPatchValue(patchRoot, entry.Path, newValue.IsNull ? CreateSetNullMarker() : newValue.Clone());
                         break;
                 }
             }
 
             return new JsonPatch(patchRoot);
         }
+
+        private static JsonData CreateDeleteMarker() => new JsonData((JsonNode?)JsonValue.Create(JsonMerge.DeleteMarker));
+
+        private static JsonData CreateSetNullMarker() => new JsonData((JsonNode?)JsonValue.Create(JsonMerge.SetNullMarker));
 
         private static void SetPatchValue(in JsonData patchRoot, JsonPath path, JsonData value)
         {

@@ -71,54 +71,40 @@ namespace DigitalBusiness.JsonDataWrappers.Tests.Diff
         }
 
         [Fact]
-        public void ToPatch_ThenMerge_ReproducesTarget_V2()
+        public void ToPatch_ThenMerge_ReproducesTarget()
         {
             var baseline = Parse("""{"a":1,"b":{"x":1,"y":2},"c":[1,2],"d":"remove-me"}""");
             var target = Parse("""{"a":1,"b":{"x":1,"y":9},"c":[1,2,3],"e":"added"}""");
 
             var diff = JsonDiff.Diff(baseline, target);
-            var patch = diff.ToPatch(JsonMergeSemanticsV2.Instance);
+            var patch = diff.ToPatch();
 
-            var merged = JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV2.Instance });
-
-            Assert.True(merged.DeepEquals(target));
-        }
-
-        [Fact]
-        public void ToPatch_ThenMerge_ReproducesTarget_V1()
-        {
-            var baseline = Parse("""{"a":1,"b":2}""");
-            var target = Parse("""{"a":1,"c":3}""");
-
-            var diff = JsonDiff.Diff(baseline, target);
-            var patch = diff.ToPatch(JsonMergeSemanticsV1.Instance);
-
-            var merged = JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV1.Instance });
+            var merged = JsonMerge.Apply(baseline, patch);
 
             Assert.True(merged.DeepEquals(target));
         }
 
         [Fact]
-        public void Merge_DeleteMarkerV2_RemovesProperty()
+        public void Merge_DeleteMarker_RemovesProperty()
         {
             var baseline = Parse("""{"a":1,"b":2}""");
             var patchJson = Parse("""{"b":"$$delete"}""");
             var patch = new JsonPatch(patchJson);
 
-            var merged = JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV2.Instance });
+            var merged = JsonMerge.Apply(baseline, patch);
 
             Assert.False(merged.ContainsProperty("b"));
             Assert.True(merged.ContainsProperty("a"));
         }
 
         [Fact]
-        public void Merge_SetNullMarkerV2_SetsExplicitNull()
+        public void Merge_SetNullMarker_SetsExplicitNull()
         {
             var baseline = Parse("""{"a":1}""");
             var patchJson = Parse("""{"a":null}""");
             var patch = new JsonPatch(patchJson);
 
-            var merged = JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV2.Instance });
+            var merged = JsonMerge.Apply(baseline, patch);
 
             Assert.True(merged.ContainsProperty("a"));
             Assert.True(merged.Get("a").IsNull);
@@ -131,7 +117,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests.Diff
             var patchJson = Parse("""{"a":{"y":9}}""");
             var patch = new JsonPatch(patchJson);
 
-            var merged = JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV2.Instance });
+            var merged = JsonMerge.Apply(baseline, patch);
 
             Assert.Equal(1, merged.Get("a").Get("x").Get<int>());
             Assert.Equal(9, merged.Get("a").Get("y").Get<int>());
@@ -144,7 +130,7 @@ namespace DigitalBusiness.JsonDataWrappers.Tests.Diff
             var patchJson = Parse("""{"a":2}""");
             var patch = new JsonPatch(patchJson);
 
-            JsonMerge.Apply(baseline, patch, new JsonMergeOptions { Semantics = JsonMergeSemanticsV2.Instance });
+            JsonMerge.Apply(baseline, patch);
 
             Assert.Equal(1, baseline.Get("a").Get<int>());
         }
