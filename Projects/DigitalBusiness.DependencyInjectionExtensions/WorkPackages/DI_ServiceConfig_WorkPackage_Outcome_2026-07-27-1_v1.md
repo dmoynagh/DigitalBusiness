@@ -27,6 +27,13 @@ clean (0 errors); this package's own 8 tests pass in isolation and inside the fu
 solution-wide `dotnet test` aborts due to a pre-existing, unrelated stack-overflow bug in
 `DigitalBusiness.JsonDataWrappers` — flagged separately, not fixed here (out of scope).
 
+**Addendum (external review follow-up):** an independent review of the branch diff (GPT-5.3
+Codex, run via Visual Studio's git chat) surfaced a real gap — `GetOrAddConfig<T>` didn't guard
+against `factory` returning `null` — which has now been fixed, plus 5 new tests covering it and
+the existing `ArgumentNullException` guards, which had no direct test coverage before. See §3/§4
+for the two behaviors the review also raised that were deliberately *not* changed (they match
+the Implementation doc's own given code) and are recorded as open design questions instead.
+
 ---
 
 ## 2. Task-by-task deviations
@@ -80,6 +87,21 @@ solution-wide `dotnet test` aborts due to a pre-existing, unrelated stack-overfl
   (`ImplementationInstance` over factory-delegate, single `T` over `T, TKey`, wrapper-type over
   bare `T`) doesn't conflict with anything in the repo — confirmed via a repo-wide grep for
   `ServiceConfig`, which returned no prior hits.
+- **Factory-returns-null gap (found by external review, fixed).** `GetOrAddConfig<T>` called
+  `factory()` and wrapped the result directly into `new ServiceConfig<T>(value)` with no null
+  check. `T : class` expresses non-null intent but nothing enforced it at runtime — a factory
+  returning `null` would have silently produced a `ServiceConfig<T>` whose `Value` is `null`.
+  Fixed with `ArgumentNullException.ThrowIfNull(value, nameof(factory))` immediately after the
+  factory call, matching the existing guard style in the same method. New test:
+  `GetOrAddConfig_FactoryReturnsNull_Throws`.
+- **Two behaviors the external review flagged were deliberately left unchanged** — both match
+  the Implementation doc's own given code, so changing them would be a design decision, not a
+  bug fix. Recorded as open questions in §4 rather than resolved silently.
+- **One external-review finding was checked and is incorrect.** It flagged `folder-structure.txt`
+  as scope creep against this package. `git log main..HEAD -- folder-structure.txt` shows it was
+  touched by the pre-existing `1a9cd5a "wip"` commit already on this branch before this package's
+  work started, not by anything in `0337962` or this addendum. No action taken; noted here so the
+  record is accurate if this Outcome is read alongside that review.
 
 ---
 
@@ -102,19 +124,36 @@ solution-wide `dotnet test` aborts due to a pre-existing, unrelated stack-overfl
   directly in the `extension(...)` block style to match the repo's actual convention and save
   this deviation note each time — candidate for a documentation-methodology or template tweak,
   not a code change.
+- **Duplicate-registration precedence (candidate for `DI_WorkRegister_v11.md`/Design doc):**
+  `GetOrAddConfig`'s linear scan returns the *first* matching `ServiceConfig<T>` descriptor
+  (registration order) if more than one somehow exists. That's the opposite of the repo's stated
+  "last registration wins" override convention (CLAUDE.md). Arguably correct here — the point of
+  get-or-create is one canonical instance, not an overridable registration — but it's non-obvious
+  and this package didn't get an explicit design answer on whether "first wins" is the intended,
+  permanent contract or coincidental. Left unchanged (matches Implementation doc's given code);
+  surfaced via external review, not something this package's own tests exercised.
+- **`HasConfig<T>`/`GetConfig<T>` shape mismatch on non-instance registrations (candidate for
+  Design doc or Guide, once written):** if a consumer registers `ServiceConfig<T>` directly via
+  ordinary DI (bypassing `GetOrAddConfig` — e.g. a type-based or factory-based registration),
+  `HasConfig<T>` (checks `ServiceType` only) can return `true` while `GetConfig<T>` (requires
+  `ImplementationInstance is ServiceConfig<T>`) returns `null`. Both methods match the
+  Implementation doc's given shape exactly. Worth a documented caveat in the eventual
+  `ServiceConfig` Guide section (WR-39) that `ServiceConfig<T>` is meant to be registered only
+  via `GetOrAddConfig`, not by hand.
 
 ---
 
 ## 5. Verification status
 
-- [x] Full solution build: **Passed.** `dotnet build Solutions\DigitalBusiness.slnx` — 0
-      errors, 226 warnings, all pre-existing `CS1591` missing-doc-comment warnings in
-      `DigitalBusiness.JsonDataWrappers` (unrelated to this package; that project already had
-      `GenerateDocumentationFile` enabled before this WP).
+- [x] Full solution build: **Passed**, re-verified after the addendum.
+      `dotnet build Solutions\DigitalBusiness.slnx` — 0 errors, 226 warnings, all pre-existing
+      `CS1591` missing-doc-comment warnings in `DigitalBusiness.JsonDataWrappers` (unrelated to
+      this package; that project already had `GenerateDocumentationFile` enabled before this WP).
 - [~] Full test suite: **Partial / blocked by a pre-existing, unrelated bug.**
-      `DigitalBusiness.DependencyInjectionExtensions.Tests` (this package's tests): 8/8 passed,
-      both run alone and inside the full solution run. `DigitalBusiness.Extensibility.Tests`:
-      30/30 passed. A solution-wide `dotnet test Solutions\DigitalBusiness.slnx` aborts with
+      `DigitalBusiness.DependencyInjectionExtensions.Tests` (this package's tests): **13/13
+      passed**, re-verified after the addendum (8 original + 5 added for null-guard/factory-null
+      coverage). `DigitalBusiness.Extensibility.Tests`: 30/30 passed. A solution-wide
+      `dotnet test Solutions\DigitalBusiness.slnx` aborts with
       "Test host process crashed: Stack overflow" originating in `DigitalBusiness.
       JsonDataWrappers`'s `JsonDataTypedPathExtensions.SetDeep`; reproduced 3/3 times running
       `DigitalBusiness.JsonDataWrappers.Tests` in isolation, with a different number of tests

@@ -22,6 +22,7 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceConfig
             /// <typeparam name="T">The configuration or shared-state type.</typeparam>
             /// <param name="factory">Invoked to create the value if none is attached yet.</param>
             /// <returns>The existing or newly created <typeparamref name="T"/> value.</returns>
+            /// <exception cref="ArgumentNullException"><paramref name="factory"/> returned <see langword="null"/>.</exception>
             public T GetOrAddConfig<T>(Func<T> factory) where T : class
             {
                 ArgumentNullException.ThrowIfNull(services);
@@ -37,6 +38,7 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceConfig
                 }
 
                 var value = factory();
+                ArgumentNullException.ThrowIfNull(value, nameof(factory));
                 services.Add(ServiceDescriptor.Singleton(
                     typeof(ServiceConfig<T>),
                     new ServiceConfig<T>(value)));

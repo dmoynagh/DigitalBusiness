@@ -95,6 +95,46 @@ public class ServiceConfigExtensionsTests
     }
 
     [Fact]
+    public void GetOrAddConfig_NullServices_Throws()
+    {
+        IServiceCollection services = null!;
+
+        Assert.Throws<ArgumentNullException>(() => services.GetOrAddConfig(() => new FirstConfig()));
+    }
+
+    [Fact]
+    public void GetOrAddConfig_NullFactory_Throws()
+    {
+        var services = new ServiceCollection();
+
+        Assert.Throws<ArgumentNullException>(() => services.GetOrAddConfig<FirstConfig>(null!));
+    }
+
+    [Fact]
+    public void GetOrAddConfig_FactoryReturnsNull_Throws()
+    {
+        var services = new ServiceCollection();
+
+        Assert.Throws<ArgumentNullException>(() => services.GetOrAddConfig<FirstConfig>(() => null!));
+    }
+
+    [Fact]
+    public void GetConfig_NullServices_Throws()
+    {
+        IServiceCollection services = null!;
+
+        Assert.Throws<ArgumentNullException>(() => services.GetConfig<FirstConfig>());
+    }
+
+    [Fact]
+    public void HasConfig_NullServices_Throws()
+    {
+        IServiceCollection services = null!;
+
+        Assert.Throws<ArgumentNullException>(() => services.HasConfig<FirstConfig>());
+    }
+
+    [Fact]
     public void DistinctConfigTypes_DoNotCollide()
     {
         var services = new ServiceCollection();
