@@ -135,6 +135,40 @@ public class ServiceConfigExtensionsTests
     }
 
     [Fact]
+    public void MultipleRegistrations_GetOrAddConfig_ReturnsFirstRegisteredDescriptor()
+    {
+        // Pins down current, documented behavior (Outcome §4): the linear scan in
+        // GetOrAddConfig/GetConfig returns the *first* matching descriptor, i.e.
+        // registration order wins, not last-registration-wins. Both descriptors are added
+        // directly (bypassing GetOrAddConfig) to simulate an unusual double registration.
+        IServiceCollection services = new ServiceCollection();
+        services.Add(ServiceDescriptor.Singleton(
+            typeof(ServiceConfig<FirstConfig>), new ServiceConfig<FirstConfig>(new FirstConfig { Value = 1 })));
+        services.Add(ServiceDescriptor.Singleton(
+            typeof(ServiceConfig<FirstConfig>), new ServiceConfig<FirstConfig>(new FirstConfig { Value = 2 })));
+
+        var result = services.GetOrAddConfig<FirstConfig>(() =>
+            throw new InvalidOperationException("Factory should not run when a descriptor already exists."));
+
+        Assert.Equal(1, result.Value);
+    }
+
+    [Fact]
+    public void HasConfig_TrueButGetConfig_Null_WhenRegisteredWithoutAnInstance()
+    {
+        // Pins down current, documented behavior (Outcome §4): HasConfig checks ServiceType
+        // only, so a ServiceConfig<T> registered by hand (bypassing GetOrAddConfig) via a
+        // non-instance descriptor satisfies HasConfig but not GetConfig, whose
+        // ImplementationInstance check finds nothing.
+        IServiceCollection services = new ServiceCollection();
+        services.Add(ServiceDescriptor.Singleton(
+            typeof(ServiceConfig<FirstConfig>), _ => throw new NotSupportedException("Never invoked.")));
+
+        Assert.True(services.HasConfig<FirstConfig>());
+        Assert.Null(services.GetConfig<FirstConfig>());
+    }
+
+    [Fact]
     public void DistinctConfigTypes_DoNotCollide()
     {
         var services = new ServiceCollection();

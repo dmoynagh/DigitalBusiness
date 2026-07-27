@@ -34,6 +34,11 @@ the existing `ArgumentNullException` guards, which had no direct test coverage b
 for the two behaviors the review also raised that were deliberately *not* changed (they match
 the Implementation doc's own given code) and are recorded as open design questions instead.
 
+**Addendum 2 (test coverage for the two documented-only behaviors):** on request, added 2 more
+tests that pin down (without changing) the two behaviors §4 records as open questions —
+`MultipleRegistrations_GetOrAddConfig_ReturnsFirstRegisteredDescriptor` and
+`HasConfig_TrueButGetConfig_Null_WhenRegisteredWithoutAnInstance`. 15/15 tests now pass.
+
 ---
 
 ## 2. Task-by-task deviations
@@ -131,7 +136,9 @@ the Implementation doc's own given code) and are recorded as open design questio
   get-or-create is one canonical instance, not an overridable registration — but it's non-obvious
   and this package didn't get an explicit design answer on whether "first wins" is the intended,
   permanent contract or coincidental. Left unchanged (matches Implementation doc's given code);
-  surfaced via external review, not something this package's own tests exercised.
+  surfaced via external review. Now covered by
+  `MultipleRegistrations_GetOrAddConfig_ReturnsFirstRegisteredDescriptor`, which pins down
+  current behavior so a future refactor can't silently change it without a failing test.
 - **`HasConfig<T>`/`GetConfig<T>` shape mismatch on non-instance registrations (candidate for
   Design doc or Guide, once written):** if a consumer registers `ServiceConfig<T>` directly via
   ordinary DI (bypassing `GetOrAddConfig` — e.g. a type-based or factory-based registration),
@@ -139,7 +146,9 @@ the Implementation doc's own given code) and are recorded as open design questio
   `ImplementationInstance is ServiceConfig<T>`) returns `null`. Both methods match the
   Implementation doc's given shape exactly. Worth a documented caveat in the eventual
   `ServiceConfig` Guide section (WR-39) that `ServiceConfig<T>` is meant to be registered only
-  via `GetOrAddConfig`, not by hand.
+  via `GetOrAddConfig`, not by hand. Now covered by
+  `HasConfig_TrueButGetConfig_Null_WhenRegisteredWithoutAnInstance`, which pins down current
+  behavior so a future refactor can't silently change it without a failing test.
 
 ---
 
@@ -150,9 +159,10 @@ the Implementation doc's own given code) and are recorded as open design questio
       `CS1591` missing-doc-comment warnings in `DigitalBusiness.JsonDataWrappers` (unrelated to
       this package; that project already had `GenerateDocumentationFile` enabled before this WP).
 - [~] Full test suite: **Partial / blocked by a pre-existing, unrelated bug.**
-      `DigitalBusiness.DependencyInjectionExtensions.Tests` (this package's tests): **13/13
-      passed**, re-verified after the addendum (8 original + 5 added for null-guard/factory-null
-      coverage). `DigitalBusiness.Extensibility.Tests`: 30/30 passed. A solution-wide
+      `DigitalBusiness.DependencyInjectionExtensions.Tests` (this package's tests): **15/15
+      passed**, re-verified after both addenda (8 original + 5 for null-guard/factory-null
+      coverage + 2 pinning down the documented precedence/shape-mismatch behaviors).
+      `DigitalBusiness.Extensibility.Tests`: 30/30 passed. A solution-wide
       `dotnet test Solutions\DigitalBusiness.slnx` aborts with
       "Test host process crashed: Stack overflow" originating in `DigitalBusiness.
       JsonDataWrappers`'s `JsonDataTypedPathExtensions.SetDeep`; reproduced 3/3 times running
