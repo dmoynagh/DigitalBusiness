@@ -1,12 +1,12 @@
 <Solution>
   <Folder Name="/Tests/">
-    <Project Path="../Tests/DigitalBusiness.DependencyInjection.Tests/DigitalBusiness.DependencyInjection.Tests.csproj" Id="a9b900b8-3f11-4d01-9ba4-c19b60f6789d" />
+    <Project Path="../Tests/DigitalBusiness.DependencyInjectionExtensions.Tests/DigitalBusiness.DependencyInjectionExtensions.Tests.csproj" Id="9ad4aadf-0b15-439b-99c3-a0adcf950c00" />
     <Project Path="../Tests/DigitalBusiness.Extensibility.Tests/DigitalBusiness.Extensibility.Tests.csproj" />
     <Project Path="../Tests/DigitalBusiness.Json.Tests/DigitalBusiness.Json.Tests.csproj" />
     <Project Path="../Tests/DigitalBusiness.JsonDataWrappers.Tests/DigitalBusiness.JsonDataWrappers.Tests.csproj" />
     <Project Path="../Tests/DigtitalBusiness.Tests/DigtitalBusiness.Tests.csproj" />
   </Folder>
-  <Project Path="../Projects/DigitalBusiness.DependencyInjection/DigitalBusiness.DependencyInjection.csproj" Id="70fa3b8c-50d3-46b6-bd78-454094362d00" />
+  <Project Path="../Projects/DigitalBusiness.DependencyInjectionExtensions/DigitalBusiness.DependencyInjectionExtensions.csproj" Id="2528601e-1101-4119-a427-9ae5e1fea3eb" />
   <Project Path="../Projects/DigitalBusiness.Extensibility/DigitalBusiness.Extensibility.csproj" />
   <Project Path="../Projects/DigitalBusiness.Json/DigitalBusiness.Json.csproj" />
   <Project Path="../Projects/DigitalBusiness.JsonDataWrappers/DigitalBusiness.JsonDataWrappers.csproj" />
