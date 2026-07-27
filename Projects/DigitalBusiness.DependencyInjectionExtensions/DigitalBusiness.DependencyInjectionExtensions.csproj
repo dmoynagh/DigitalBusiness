@@ -15,8 +15,4 @@
     <InternalsVisibleTo Include="DigitalBusiness.DependencyInjectionExtensions.Tests" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WorkPackages\Completed\" />
-  </ItemGroup>
-
 </Project>
