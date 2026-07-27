@@ -61,13 +61,13 @@ Implement `ServiceConfig<T>` and its access surface — the entirety of what
 
 ## 2. Code tasks
 
-- [ ] **WR-31a** — `ServiceConfig<T>` sealed wrapper class (`Value` property,
+- [x] **WR-31a** — `ServiceConfig<T>` sealed wrapper class (`Value` property,
       constructor taking `T`).
-- [ ] **WR-31b** — `GetOrAddConfig<T>(this IServiceCollection, Func<T> factory)` — get-or-
+- [x] **WR-31b** — `GetOrAddConfig<T>(this IServiceCollection, Func<T> factory)` — get-or-
       create semantics, registering via `ImplementationInstance`.
-- [ ] **WR-31c** — `GetConfig<T>(this IServiceCollection)` — read-only peek, `null` if
+- [x] **WR-31c** — `GetConfig<T>(this IServiceCollection)` — read-only peek, `null` if
       absent, creates nothing.
-- [ ] **WR-31d** — `HasConfig<T>(this IServiceCollection)` — presence-only check.
+- [x] **WR-31d** — `HasConfig<T>(this IServiceCollection)` — presence-only check.
 
 (Split into four sub-items purely for tracking granularity within this package; all four
 are one cohesive unit of work and should be built and tested together, not sequenced.)
@@ -85,21 +85,45 @@ think it'd genuinely be cheap to write now instead.
 
 ## 4. Definition of Done
 
-- [ ] Full solution build succeeds.
-- [ ] Full test suite passes.
-- [ ] Tests cover: first-call creation via `GetOrAddConfig`, repeat-call returning the same
+- [x] Full solution build succeeds.
+- [x] Full test suite passes — with one caveat: see Notes/Issues below. This package's own
+      test project (`DigitalBusiness.DependencyInjectionExtensions.Tests`, 8/8) passes both
+      in isolation and inside the full solution run. A solution-wide `dotnet test` aborts
+      with a stack overflow, but it is pre-existing, unrelated to this package, and
+      reproduces in `DigitalBusiness.JsonDataWrappers.Tests` alone with zero files from this
+      package on the call stack.
+- [x] Tests cover: first-call creation via `GetOrAddConfig`, repeat-call returning the same
       instance without re-invoking the factory, `GetConfig` returning `null` when absent
       and the right value when present, `HasConfig` true/false correctly, and two distinct
       `T` types not colliding with each other.
-- [ ] Every public type/member carries a real `///` XML doc summary.
-- [ ] The Outcome document is fully filled in.
-- [ ] Verification commands (Implementation doc §4) have actually been run.
+- [x] Every public type/member carries a real `///` XML doc summary.
+- [x] The Outcome document is fully filled in.
+- [x] Verification commands (Implementation doc §4) have actually been run.
 
 ---
 
 ## 5. Notes/Issues
 
-*(Populated during dev-side work as it happens.)*
+- Both `Projects\DigitalBusiness.DependencyInjectionExtensions.csproj` and `Tests\
+  DigitalBusiness.DependencyInjectionExtensions.Tests.csproj` were missing wiring the
+  Implementation doc assumed existed: no `Microsoft.Extensions.DependencyInjection*` package
+  references anywhere, no `ProjectReference` from the test project to the source project, and
+  the test project still had its default `UnitTest1.cs` scaffold. All added/removed as part of
+  this package — see Outcome §2/§3.
+- Implementation doc §2's code shape uses classic `this IServiceCollection services`
+  extension-method syntax; the repo's actual dominant convention (18 files across
+  `Extensibility`/`JsonDataWrappers`, including the closest analog `HandlerStartupExtensions.
+  cs`) uses the newer `extension(IServiceCollection services) { ... }` block syntax instead.
+  Used the block syntax — doc's own caveat permits adjusting file shape to match repo
+  convention.
+- **Full-suite blocker (pre-existing, out of scope):** `dotnet test Solutions\DigitalBusiness.
+  slnx` aborts with "Test host process crashed: Stack overflow" from unbounded recursion in
+  `JsonDataTypedPathExtensions.SetDeep` (`DigitalBusiness.JsonDataWrappers`). Reproduces
+  running `DigitalBusiness.JsonDataWrappers.Tests` alone, repeatedly, with a different number
+  of tests completing before the crash each time (56, 184, ...) — a real recursion bug, not a
+  single flaky test. Confirmed via `git status`/`git diff` that nothing in this package's
+  changes touches `JsonDataWrappers`. Flagged as a separate out-of-scope task rather than fixed
+  here, per the WorkPackages README scope rule.
 
 ---
 
