@@ -10,10 +10,12 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceBuildExtensions
     /// its <c>T</c> — bookkeeping that has no business surviving into the built container.
     /// </summary>
     /// <remarks>
-    /// Does not remove <see cref="BuildPipelineConfig"/>'s own descriptor — that removal is a
-    /// separate, hardcoded, unconditional step performed by <see cref="BuildPipelineFactory{TContainerBuilder}"/>
-    /// itself, so a consumer disabling cleanup for an unrelated reason can never accidentally
-    /// also preserve it.
+    /// The scan above matches every <c>T</c>, so it incidentally removes
+    /// <see cref="BuildPipelineConfig"/>'s own descriptor too when this action runs. That's
+    /// harmless: <see cref="BuildPipelineFactory{TContainerBuilder}"/> also removes it itself,
+    /// separately, hardcoded and unconditionally, regardless of whether this action already did
+    /// — so a consumer disabling cleanup (or removing this action) for an unrelated reason can
+    /// never accidentally leave it behind.
     /// </remarks>
     internal sealed class RemoveOtherServiceConfigsCleanupAction : ICleanupAction
     {

@@ -23,7 +23,10 @@ overload split (§2, §3) — needed because the doc's own sample didn't compile
 `PackageReference`s the project didn't have were added. Full solution build succeeds; the full
 test suite passes except for the `DigitalBusiness.JsonDataWrappers.Tests` project, which was
 excluded from this package's verification run due to a known, pre-existing, unrelated
-stack-overflow bug.
+stack-overflow bug. An independent second-pass review (GPT-5.3 Codex, per this project's
+dual-AI review approach) subsequently surfaced four implementation-quality defects — a
+misleading XML doc comment, a first-descriptor-only removal, a missing before-`CreateBuilder`
+guard, and an unguarded list mutation during iteration — all fixed; see §3 item 5.
 
 ## 2. Task-by-task deviations
 
@@ -104,6 +107,34 @@ stack-overflow bug.
    CLAUDE.md's fallback instruction to run the full suite when a package gives no valid
    project-specific filter.
 
+5. **Second-pass review (GPT-5.3 Codex) found four implementation-quality defects, all fixed
+   before this doc was finalized:**
+   - `RemoveOtherServiceConfigsCleanupAction`'s XML `<remarks>` repeated the Implementation doc's
+     incorrect claim (item 2 above) instead of describing what the shipped code actually does —
+     misleading for any consumer reading the generated docs. Corrected to state plainly that the
+     scan does incidentally match `ServiceConfig<BuildPipelineConfig>` too, and that the guarantee
+     rests on `BuildPipelineFactory`'s own unconditional step regardless.
+   - `BuildPipelineFactory.CreateServiceProvider`'s own `ServiceConfig<BuildPipelineConfig>`
+     removal used `FirstOrDefault` + single `Remove` — only removed one matching descriptor. If a
+     duplicate were ever registered by hand (bypassing `GetOrAddConfig`), a stale descriptor could
+     survive into the built container. Changed to `Where(...).ToList()` + remove-all, matching the
+     exact pattern `RemoveOtherServiceConfigsCleanupAction` already uses for consistency.
+   - `CreateServiceProvider` called before `CreateBuilder` hit an uninitialized `_services` field
+     and would have thrown an unhelpful `NullReferenceException`. Added an explicit
+     `InvalidOperationException` guard with a clear message, matching this Topic's own
+     `AddPreBuildAction`/`AddCleanupAction` precedent for misuse errors.
+   - Iterating `PreBuildActions`/`CleanupActions` directly meant an action that registered another
+     action mid-run (a plausible pattern for building a pipeline dynamically) would throw
+     `InvalidOperationException: Collection was modified`. Now snapshots each list via `.ToList()`
+     before iterating; an action added mid-pass is captured for a future run rather than crashing
+     or being retroactively executed in the same pass.
+
+   All four are covered by new tests (`CreateServiceProvider_BeforeCreateBuilder_Throws`,
+   `CreateServiceProvider_DuplicateBuildPipelineConfigDescriptors_RemovesAll`,
+   `CreateServiceProvider_ActionAddsAnotherActionDuringIteration_DoesNotThrow`, plus the existing
+   `RemoveOtherServiceConfigsCleanupActionTests` coverage). None of these changed any behavior this
+   package's earlier tests already asserted — full suite still green (see §5).
+
 ## 4. New open questions or follow-up work
 
 - Should `DI_ServiceBuildExtensions_Implementation` (or the Design doc, if it also contains this
@@ -135,9 +166,10 @@ stack-overflow bug.
 - **Build:** `dotnet build Solutions\DigitalBusiness.slnx` — succeeded, 0 errors (231 pre-existing
   warnings, all in `DigitalBusiness.JsonDataWrappers`, unrelated to this package).
 - **Test:** `dotnet test Solutions\DigitalBusiness.slnx --filter "FullyQualifiedName!~DigitalBusiness.JsonDataWrappers.Tests"`
-  — all included projects passed: `DigitalBusiness.DependencyInjectionExtensions.Tests` 46/46
-  (15 pre-existing `ServiceConfig` tests + 31 new `ServiceBuildExtensions` tests),
-  `DigitalBusiness.Extensibility.Tests` 30/30. `DigitalBusiness.JsonDataWrappers.Tests` excluded
+  — all included projects passed: `DigitalBusiness.DependencyInjectionExtensions.Tests` 49/49
+  (15 pre-existing `ServiceConfig` tests + 34 `ServiceBuildExtensions` tests, including the 3 added
+  after the second-pass review — §3 item 5), `DigitalBusiness.Extensibility.Tests` 30/30.
+  `DigitalBusiness.JsonDataWrappers.Tests` excluded
   per the known pre-existing `SetDeep` stack-overflow issue (`task_4a72522a`) — a single-test
   filter did not avoid the crash, so the whole project was excluded as the workaround; not a
   regression introduced by this package.
@@ -159,8 +191,11 @@ stack-overflow bug.
       suggested build order note now that `ServiceBuildExtensions` has shipped
 - [ ] `DI_ServiceBuildExtensions_Design_v2.md` → v3: update the `BuildPipelineFactory`/
       `UseServiceBuildExtensions` code sample to the required-`inner`, split-overload shape
-      (§3 item 1), and correct `RemoveOtherServiceConfigsCleanupAction`'s documented behavior
-      re: `ServiceConfig<BuildPipelineConfig>` (§3 item 2)
+      (§3 item 1); correct `RemoveOtherServiceConfigsCleanupAction`'s documented behavior
+      re: `ServiceConfig<BuildPipelineConfig>` (§3 item 2); and fold in the four hardening fixes
+      from the second-pass review (remove-all not first-match, before-`CreateBuilder` guard,
+      snapshot-before-iterate) as documented expected behavior, not just incidental code choices
+      (§3 item 5)
 - [ ] `DI_ServiceBuildExtensions_Decisions_v2.md` → v3: record the overload-split resolution
       (§3 item 1) as a new Decision, matching the pattern of `ServiceConfig`'s Decisions 6–7
 - [ ] `DI_Index_v17.md` → v18: reflect new document versions, archive this package's family

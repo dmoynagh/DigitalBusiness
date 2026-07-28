@@ -16,6 +16,11 @@ public class BuildPipelineFactoryTests
         public void Execute(IServiceCollection services) => log.Add(name);
     }
 
+    private sealed class DelegatingPreBuildAction(Action<IServiceCollection> execute) : IPreBuildAction
+    {
+        public void Execute(IServiceCollection services) => execute(services);
+    }
+
     private sealed class RecordingInnerFactory : IServiceProviderFactory<IServiceCollection>
     {
         public IServiceCollection? BuilderServices { get; private set; }
@@ -135,5 +140,52 @@ public class BuildPipelineFactoryTests
         factory.CreateServiceProvider(services);
 
         Assert.False(services.HasConfig<BuildPipelineConfig>());
+    }
+
+    [Fact]
+    public void CreateServiceProvider_BeforeCreateBuilder_Throws()
+    {
+        var factory = new BuildPipelineFactory<IServiceCollection>(new RecordingInnerFactory());
+
+        Assert.Throws<InvalidOperationException>(() => factory.CreateServiceProvider(new ServiceCollection()));
+    }
+
+    [Fact]
+    public void CreateServiceProvider_DuplicateBuildPipelineConfigDescriptors_RemovesAll()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddBuildPipeline();
+        // Simulate a duplicate registration bypassing GetOrAddConfig (e.g. manual tampering).
+        services.Add(ServiceDescriptor.Singleton(
+            typeof(ServiceConfig<BuildPipelineConfig>),
+            new ServiceConfig<BuildPipelineConfig>(new BuildPipelineConfig())));
+        var factory = new BuildPipelineFactory<IServiceCollection>(new RecordingInnerFactory());
+        factory.CreateBuilder(services);
+
+        factory.CreateServiceProvider(services);
+
+        Assert.DoesNotContain(services, d => d.ServiceType == typeof(ServiceConfig<BuildPipelineConfig>));
+    }
+
+    [Fact]
+    public void CreateServiceProvider_ActionAddsAnotherActionDuringIteration_DoesNotThrow()
+    {
+        var log = new List<string>();
+        var services = new ServiceCollection();
+        services.AddBuildPipeline();
+        services.AddPreBuildAction(new DelegatingPreBuildAction(s =>
+        {
+            log.Add("pre1");
+            s.AddPreBuildAction(new RecordingPreBuildAction(log, "added-during-iteration"));
+        }));
+        var factory = new BuildPipelineFactory<IServiceCollection>(new RecordingInnerFactory());
+        factory.CreateBuilder(services);
+
+        var exception = Record.Exception(() => factory.CreateServiceProvider(services));
+
+        Assert.Null(exception);
+        // The action added mid-iteration is captured for a future run, not retroactively
+        // executed in this one — this pass already snapshotted the list it's iterating.
+        Assert.Equal(["pre1"], log);
     }
 }

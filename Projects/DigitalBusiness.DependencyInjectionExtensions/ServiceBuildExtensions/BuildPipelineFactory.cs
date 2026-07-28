@@ -39,24 +39,34 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceBuildExtensions
         }
 
         /// <inheritdoc/>
+        /// <exception cref="InvalidOperationException"><see cref="CreateBuilder"/> has not been called yet.</exception>
         public IServiceProvider CreateServiceProvider(TContainerBuilder containerBuilder)
         {
+            if (_services is null)
+                throw new InvalidOperationException(
+                    "CreateBuilder(IServiceCollection) must be called before CreateServiceProvider.");
+
             var config = _services.GetConfig<BuildPipelineConfig>();
             if (config is not null)
             {
+                // Snapshot before iterating: an action must be free to register further actions
+                // without corrupting this pass's enumeration.
                 if (config.RunPreBuildActions)
-                    foreach (var action in config.PreBuildActions)
+                    foreach (var action in config.PreBuildActions.ToList())
                         action.Execute(_services);
 
                 if (config.RunCleanupActions)
-                    foreach (var action in config.CleanupActions)
+                    foreach (var action in config.CleanupActions.ToList())
                         action.Execute(_services);
 
                 // Hardcoded and unconditional — not a toggleable cleanup action, so disabling
                 // cleanup for an unrelated reason can never also preserve this bookkeeping.
-                var descriptor = _services.FirstOrDefault(
-                    d => d.ServiceType == typeof(ServiceConfig<BuildPipelineConfig>));
-                if (descriptor is not null)
+                // Removes every matching descriptor, not just the first, in case duplicates were
+                // ever registered by hand (bypassing GetOrAddConfig).
+                var toRemove = _services
+                    .Where(d => d.ServiceType == typeof(ServiceConfig<BuildPipelineConfig>))
+                    .ToList();
+                foreach (var descriptor in toRemove)
                     _services.Remove(descriptor);
             }
 

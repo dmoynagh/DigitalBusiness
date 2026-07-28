@@ -163,6 +163,13 @@ Outcome rather than guessing.
   bug (`task_4a72522a`) still crashes the test host; a single-test filter (`SetDeepTyped`) was
   not sufficient to avoid it, so the whole `DigitalBusiness.JsonDataWrappers.Tests` project was
   excluded from this package's verification run. See Outcome §5.
+- An independent second-pass review (GPT-5.3 Codex, per this project's dual-AI review approach)
+  found four implementation-quality defects — a misleading XML doc comment on
+  `RemoveOtherServiceConfigsCleanupAction`, `BuildPipelineFactory` removing only the first
+  matching `ServiceConfig<BuildPipelineConfig>` descriptor instead of all matches, no guard
+  against calling `CreateServiceProvider` before `CreateBuilder`, and unguarded action-list
+  iteration that would throw if an action registered another action mid-run. All four fixed,
+  with three new tests added; full suite re-verified green. See Outcome §3 item 5.
 
 ## 7. Outcome reporting
 
