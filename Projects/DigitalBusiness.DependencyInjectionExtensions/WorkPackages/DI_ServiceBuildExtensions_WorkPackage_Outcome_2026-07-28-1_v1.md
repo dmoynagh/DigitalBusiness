@@ -135,6 +135,19 @@ guard, and an unguarded list mutation during iteration — all fixed; see §3 it
    `RemoveOtherServiceConfigsCleanupActionTests` coverage). None of these changed any behavior this
    package's earlier tests already asserted — full suite still green (see §5).
 
+   A follow-up pass from the same reviewer accepted three of the four as fully resolved, but held
+   one nit open: `BuildPipelineFactory`'s removal still used a "hand-rolled" scan rather than the
+   Implementation doc's stated preference to remove "via the descriptor found through `GetConfig<T>`'s
+   own lookup." `GetConfig<T>` returns a *value*, not a descriptor, so there's no existing public API
+   to literally reuse — but the underlying match predicate (`ServiceType == typeof(ServiceConfig<T>)`)
+   was still duplicated between `HasConfig<T>` and `BuildPipelineFactory`'s inline scan. Extracted it
+   into one internal `ServiceConfigExtensions.FindConfigDescriptors<T>()` helper, now used by both
+   `HasConfig<T>` and `BuildPipelineFactory.CreateServiceProvider` — so the removal genuinely shares
+   its lookup with `ServiceConfigExtensions` rather than duplicating the scan logic separately. This
+   is a small addition to the already-shipped `ServiceConfig` Topic (internal-only, no public API
+   change), made in direct service of this package's own task rather than unrelated scope creep. Full
+   suite re-verified green after this change (see §5).
+
 ## 4. New open questions or follow-up work
 
 - Should `DI_ServiceBuildExtensions_Implementation` (or the Design doc, if it also contains this

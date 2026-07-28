@@ -170,6 +170,11 @@ Outcome rather than guessing.
   against calling `CreateServiceProvider` before `CreateBuilder`, and unguarded action-list
   iteration that would throw if an action registered another action mid-run. All four fixed,
   with three new tests added; full suite re-verified green. See Outcome §3 item 5.
+- Same reviewer's follow-up pass accepted three of the four outright and held one nit open: the
+  removal in `BuildPipelineFactory` still duplicated `HasConfig<T>`'s match predicate inline
+  instead of sharing it. Extracted an internal `ServiceConfigExtensions.FindConfigDescriptors<T>()`
+  helper, now used by both. Small, internal-only touch to the already-shipped `ServiceConfig`
+  Topic, in direct service of this package. See Outcome §3 item 5.
 
 ## 7. Outcome reporting
 

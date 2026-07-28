@@ -62,11 +62,9 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceBuildExtensions
                 // Hardcoded and unconditional — not a toggleable cleanup action, so disabling
                 // cleanup for an unrelated reason can never also preserve this bookkeeping.
                 // Removes every matching descriptor, not just the first, in case duplicates were
-                // ever registered by hand (bypassing GetOrAddConfig).
-                var toRemove = _services
-                    .Where(d => d.ServiceType == typeof(ServiceConfig<BuildPipelineConfig>))
-                    .ToList();
-                foreach (var descriptor in toRemove)
+                // ever registered by hand (bypassing GetOrAddConfig). Uses the same lookup
+                // ServiceConfigExtensions itself uses, rather than a separately hand-rolled scan.
+                foreach (var descriptor in _services.FindConfigDescriptors<BuildPipelineConfig>().ToList())
                     _services.Remove(descriptor);
             }
 
