@@ -98,7 +98,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 }
 
                 JsonData newNode = JsonData.Create<T>(value);
-                jsonData.SetDeep(path, newNode);
+                JsonDataPathExtensions.SetDeepCore(jsonData, path, newNode);
             }
 
             // ----------------------------------------------------------------

@@ -137,23 +137,7 @@ namespace DigitalBusiness.JsonDataWrappers
             /// readonly or Element-backed (deep mutation requires a writable Node-backed root).
             /// </para>
             /// </summary>
-            public void SetDeep(JsonPath path, JsonData? value)
-            {
-                JsonData parent = ResolveOrCreateParent(jsonData, path);
-                JsonPathSegment last = path[path.Length - 1];
-                if (last.IsIndex)
-                {
-                    parent.Set(last.Index, value);
-                }
-                else if (value.HasValue)
-                {
-                    parent.Set(last.Property, value.Value);
-                }
-                else
-                {
-                    parent.Remove(last.Property);
-                }
-            }
+            public void SetDeep(JsonPath path, JsonData? value) => SetDeepCore(jsonData, path, value);
 
             /// <summary>
             /// Navigates to <paramref name="path"/>, creating any missing intermediate nodes,
@@ -194,6 +178,33 @@ namespace DigitalBusiness.JsonDataWrappers
 
                 JsonData parent = jsonData.Get(path.Slice(0, path.Length - 1));
                 return (parent, path[path.Length - 1]);
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // Internal helper — plain static method (not inside the extension
+        // block) so JsonDataTypedPathExtensions.SetDeep<T> can invoke it by
+        // fully-qualified name instead of the ambiguous unqualified
+        // `jsonData.SetDeep(...)`, which would otherwise bind back to that
+        // class's own generic overload (T inferred as JsonData, since
+        // JsonData is a readonly struct) and recurse infinitely.
+        // ----------------------------------------------------------------
+
+        internal static void SetDeepCore(JsonData jsonData, JsonPath path, JsonData? value)
+        {
+            JsonData parent = ResolveOrCreateParent(jsonData, path);
+            JsonPathSegment last = path[path.Length - 1];
+            if (last.IsIndex)
+            {
+                parent.Set(last.Index, value);
+            }
+            else if (value.HasValue)
+            {
+                parent.Set(last.Property, value.Value);
+            }
+            else
+            {
+                parent.Remove(last.Property);
             }
         }
 

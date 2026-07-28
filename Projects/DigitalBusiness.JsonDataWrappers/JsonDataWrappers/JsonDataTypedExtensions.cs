@@ -48,7 +48,7 @@ namespace DigitalBusiness.JsonDataWrappers
                 if (value == null) { jsonData.Remove(name); return; }
 
                 JsonData newNode = JsonData.Create<T>(value);
-                jsonData.Set(name, newNode);
+                JsonDataJsonObjectExtensions.SetCore(jsonData, name, newNode);
             }
 
           
@@ -87,19 +87,19 @@ namespace DigitalBusiness.JsonDataWrappers
                 if (value == null) { jsonData.RemoveAt(index); return; }
 
                 JsonData? newNode = JsonData.Create<T>(value);
-                jsonData.Set(index, newNode);
+                JsonDataJsonArrayExtensions.SetCore(jsonData, index, newNode);
             }
 
             public void Add<T>(T value)
             {
                 JsonData? newNode = JsonData.Create<T>(value);
-                jsonData.Add(newNode);
+                JsonDataJsonArrayExtensions.AddCore(jsonData, newNode);
             }
 
             public void Insert<T>(int index, T value)
             {
                 JsonData? newNode = JsonData.Create<T>(value);
-                jsonData.Insert(index, newNode);
+                JsonDataJsonArrayExtensions.InsertCore(jsonData, index, newNode);
             }
 
 
