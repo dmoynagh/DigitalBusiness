@@ -153,9 +153,11 @@ Outcome rather than guessing.
   default-`inner` cast doesn't compile safely (unchecked cast, throws for any
   `TContainerBuilder` other than `IServiceCollection`); the doc itself flagged this as
   unresolved and delegated the resolution here. See Outcome §3/§4.
-- `ServiceConfigExtensions` has no `RemoveConfig<T>`; used a direct `services.Remove(descriptor)`
-  scan in `BuildPipelineFactory` instead, per the Implementation doc's own §9a-sanctioned
-  fallback.
+- `ServiceConfigExtensions` has no `RemoveConfig<T>`, per the Implementation doc's own
+  §9a-sanctioned fallback of removing the matching descriptor directly. `BuildPipelineFactory`
+  now does so via the internal `ServiceConfigExtensions.FindConfigDescriptors<T>()` helper (see
+  the last bullet below, from the second review's follow-up pass) rather than a separately
+  hand-rolled scan.
 - The Implementation doc's Verification commands section names
   `DigitalBusiness.DependencyInjectionExtensions.sln`, which does not exist anywhere in this
   repo; used `Solutions\DigitalBusiness.slnx` (the full repo solution) instead, per CLAUDE.md.
