@@ -74,8 +74,19 @@ namespace DigitalBusiness.DependencyInjectionExtensions.ServiceConfig
             public bool HasConfig<T>() where T : class
             {
                 ArgumentNullException.ThrowIfNull(services);
-                return services.Any(d => d.ServiceType == typeof(ServiceConfig<T>));
+                return services.FindConfigDescriptors<T>().Any();
             }
+
+            /// <summary>
+            /// Returns every descriptor in this collection whose service type is
+            /// <see cref="ServiceConfig{T}"/>, regardless of whether it carries a usable
+            /// <see cref="ServiceConfig{T}"/> instance. Shared lookup for callers (within this
+            /// assembly) that need to locate or remove a <typeparamref name="T"/> config's
+            /// descriptor(s) directly, rather than hand-rolling the same scan.
+            /// </summary>
+            /// <typeparam name="T">The configuration or shared-state type.</typeparam>
+            internal IEnumerable<ServiceDescriptor> FindConfigDescriptors<T>() where T : class
+                => services.Where(d => d.ServiceType == typeof(ServiceConfig<T>));
         }
     }
 }

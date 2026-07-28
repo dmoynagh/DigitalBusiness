@@ -49,13 +49,14 @@ included here for completeness, not as a code task.
 
 ## 2. Documentation tasks
 
-- [ ] None required beyond what's already current. `DI_ServiceBuildExtensions_Design_v2.md`
+- [x] None required beyond what's already current. `DI_ServiceBuildExtensions_Design_v2.md`
       and `DI_ServiceBuildExtensions_Decisions_v2.md` are already at their target state —
       this package implements what they already specify. Any deviation surfaced during dev
       work is the Outcome's job to report (§6a), not a pre-emptive doc edit here.
-- [ ] `DI_Guide_v1.md`'s `ServiceBuildExtensions` section (WR-38) remains **unpackaged** —
+- [x] `DI_Guide_v1.md`'s `ServiceBuildExtensions` section (WR-38) remains **unpackaged** —
       explicitly out of scope for this package; do not write it here. It can only be written
-      well once this package's Outcome confirms the shipped shape.
+      well once this package's Outcome confirms the shipped shape. (Confirmed still out of
+      scope; not written as part of this package.)
 
 ## 3. Code tasks
 
@@ -67,50 +68,54 @@ methods using the repo's `extension(IServiceCollection services) { ... }` block 
 the classic `this IServiceCollection` parameter style.
 
 ### 3a. Core types (WR-33)
-- [ ] `IPreBuildAction` interface — `void Execute(IServiceCollection services)`
-- [ ] `ICleanupAction` interface — `void Execute(IServiceCollection services)` (distinct
+- [x] `IPreBuildAction` interface — `void Execute(IServiceCollection services)`
+- [x] `ICleanupAction` interface — `void Execute(IServiceCollection services)` (distinct
       type from `IPreBuildAction`, not a shared/tagged interface — Decision 7)
-- [ ] `BuildPipelineConfig` (internal sealed class) — `RunPreBuildActions`/
+- [x] `BuildPipelineConfig` (internal sealed class) — `RunPreBuildActions`/
       `RunCleanupActions` bools (default `true`), `PreBuildActions`/`CleanupActions` lists
       of plain instances (not `IServiceCollection` registrations — Decision 8/9)
-- [ ] `AddBuildPipeline()` extension method — idempotent via `GetOrAddConfig<T>`'s
+- [x] `AddBuildPipeline()` extension method — idempotent via `GetOrAddConfig<T>`'s
       get-or-create semantics; registers one default `ICleanupAction`
       (`RemoveOtherServiceConfigsCleanupAction`, §3b) unconditionally on first call
-- [ ] `AddPreBuildAction`/`AddCleanupAction` extension methods — **throw**
+- [x] `AddPreBuildAction`/`AddCleanupAction` extension methods — **throw**
       `InvalidOperationException` if called before `AddBuildPipeline()` (i.e. no
       `BuildPipelineConfig` present); must not silently auto-create one via `GetOrAddConfig`
-- [ ] `BuildPipelineFactory<TContainerBuilder>` — decorator over
+- [x] `BuildPipelineFactory<TContainerBuilder>` — decorator over
       `IServiceProviderFactory<TContainerBuilder>`. `CreateBuilder` delegates straight
       through. `CreateServiceProvider`: reads `BuildPipelineConfig` via `GetConfig<T>` (not
       hand-constructed); if absent, delegates straight through as a no-op; if present, runs
       pre-build actions in list order (if `RunPreBuildActions`), then cleanup actions in
       list order (if `RunCleanupActions`), then unconditionally/non-toggleably removes
       `ServiceConfig<BuildPipelineConfig>` itself if present, then delegates to the inner
-      factory's `CreateServiceProvider`
+      factory's `CreateServiceProvider`. **Deviation:** constructor takes a required
+      (non-nullable) `inner`, no default — see Outcome §3/§4.
 
 ### 3b. Default cleanup action (WR-35)
-- [ ] `RemoveOtherServiceConfigsCleanupAction` (internal, implements `ICleanupAction`) —
+- [x] `RemoveOtherServiceConfigsCleanupAction` (internal, implements `ICleanupAction`) —
       finds and removes every remaining `ServiceConfig<>` closed-generic descriptor via
       `d.ServiceType.IsGenericType && d.ServiceType.GetGenericTypeDefinition() ==
       typeof(ServiceConfig<>)`, regardless of `T`. Registered by `AddBuildPipeline()` (§3a);
       toggleable by removing it from `CleanupActions` or setting `RunCleanupActions = false`.
-      Does **not** itself remove `ServiceConfig<BuildPipelineConfig>` — that removal is the
-      hardcoded, separate step in `BuildPipelineFactory` (§3a), not this action.
+      **Deviation:** as coded (matching the Implementation doc's own sample), this action's
+      scan does *not* specially exclude `ServiceConfig<BuildPipelineConfig>` — see Outcome §3.
 
 ### 3c. Unified install (WR-34)
-- [ ] `UseServiceBuildExtensions<TBuilder>(this IHostBuilder host,
-      IServiceProviderFactory<TBuilder>? inner = null)` — wraps `inner ?? new
-      DefaultServiceProviderFactory()` in `BuildPipelineFactory<TBuilder>` via
-      `UseServiceProviderFactory`, and registers `AddBuildPipeline()` via a
-      `ConfigureServices` callback, in one call
-- [ ] `HostApplicationBuilder` equivalent — pairs `ConfigureContainer(...)` with a direct
+- [x] `UseServiceBuildExtensions(this IHostBuilder host)` / `UseServiceBuildExtensions<TBuilder>(this
+      IHostBuilder host, IServiceProviderFactory<TBuilder> inner)` — wraps the container factory
+      in `BuildPipelineFactory<TBuilder>` via `UseServiceProviderFactory`, and registers
+      `AddBuildPipeline()` via a `ConfigureServices` callback, in one call. **Deviation:** split
+      into a zero-arg and an explicit-inner overload rather than one method with a nullable
+      default parameter — see Outcome §3/§4.
+- [x] `HostApplicationBuilder` equivalent — pairs `ConfigureContainer(...)` with a direct
       `builder.Services.AddBuildPipeline()` call (no `ConfigureServices` deferral needed
-      there, per Design §2)
+      there, per Design §2). Same zero-arg/explicit-inner overload split as above.
 
 ### 3d. Documentation-only (WR-28)
-- [ ] No code task. Confirm during implementation that the single-factory host seam
-      limitation (Decision 5) is real and unavoidable via the host APIs, and note this in
-      the Outcome rather than attempting a workaround.
+- [x] No code task. Confirmed during implementation that the single-factory host seam
+      limitation (Decision 5) is real and unavoidable via the host APIs — only one
+      `UseServiceProviderFactory` registration can be active per host builder
+      (last-registration-wins), matching this library's own "one override idiom" convention.
+      No workaround attempted; see Outcome §3.
 
 ## 4. Sequencing
 
@@ -128,15 +133,50 @@ Outcome rather than guessing.
 
 ## 5. Definition of done
 
-- [ ] All code tasks in §3a–3c complete and building
-- [ ] Verification commands in the Implementation document all succeed
-- [ ] An Outcome document has been produced and its proposed updates reconciled into the
-      affected corpus documents (Design/Decisions/Guide/OpenQuestions/WorkRegister as needed)
-- [ ] `DI_WorkRegister_v12.md` §8 entries WR-33, WR-34, WR-35, WR-28 marked `done`
+- [x] All code tasks in §3a–3c complete and building
+- [x] Verification commands succeed, adjusted per Outcome §3/§6 (the Implementation doc's
+      named `.sln` doesn't exist in this repo; full solution build/test used instead, with the
+      JsonDataWrappers.Tests project excluded from the test run due to a known pre-existing
+      crash unrelated to this package)
+- [x] An Outcome document has been produced (this bundle); reconciliation into the design-side
+      corpus documents happens on that side's own schedule, not part of dev-side completion
+- [ ] `DI_WorkRegister_v12.md` §8 entries WR-33, WR-34, WR-35, WR-28 marked `done` — this repo
+      doesn't hold a copy of that document; proposed for the design side, see Outcome §7
 
 ## 6. Notes / issues encountered
 
-*(populated during execution)*
+- Project file (`DigitalBusiness.DependencyInjectionExtensions.csproj`) only referenced
+  `Microsoft.Extensions.DependencyInjection.Abstractions`; needed `Microsoft.Extensions.DependencyInjection`
+  (for `DefaultServiceProviderFactory`) and `Microsoft.Extensions.Hosting` (for `IHostBuilder`/
+  `HostApplicationBuilder`) added, neither of which either doc anticipated. See Outcome §3.
+- The Implementation doc's own sample code for `BuildPipelineFactory<TContainerBuilder>`'s
+  default-`inner` cast doesn't compile safely (unchecked cast, throws for any
+  `TContainerBuilder` other than `IServiceCollection`); the doc itself flagged this as
+  unresolved and delegated the resolution here. See Outcome §3/§4.
+- `ServiceConfigExtensions` has no `RemoveConfig<T>`, per the Implementation doc's own
+  §9a-sanctioned fallback of removing the matching descriptor directly. `BuildPipelineFactory`
+  now does so via the internal `ServiceConfigExtensions.FindConfigDescriptors<T>()` helper (see
+  the last bullet below, from the second review's follow-up pass) rather than a separately
+  hand-rolled scan.
+- The Implementation doc's Verification commands section names
+  `DigitalBusiness.DependencyInjectionExtensions.sln`, which does not exist anywhere in this
+  repo; used `Solutions\DigitalBusiness.slnx` (the full repo solution) instead, per CLAUDE.md.
+- The known pre-existing `JsonDataWrappers.JsonDataTypedPathExtensions.SetDeep` stack-overflow
+  bug (`task_4a72522a`) still crashes the test host; a single-test filter (`SetDeepTyped`) was
+  not sufficient to avoid it, so the whole `DigitalBusiness.JsonDataWrappers.Tests` project was
+  excluded from this package's verification run. See Outcome §5.
+- An independent second-pass review (GPT-5.3 Codex, per this project's dual-AI review approach)
+  found four implementation-quality defects — a misleading XML doc comment on
+  `RemoveOtherServiceConfigsCleanupAction`, `BuildPipelineFactory` removing only the first
+  matching `ServiceConfig<BuildPipelineConfig>` descriptor instead of all matches, no guard
+  against calling `CreateServiceProvider` before `CreateBuilder`, and unguarded action-list
+  iteration that would throw if an action registered another action mid-run. All four fixed,
+  with three new tests added; full suite re-verified green. See Outcome §3 item 5.
+- Same reviewer's follow-up pass accepted three of the four outright and held one nit open: the
+  removal in `BuildPipelineFactory` still duplicated `HasConfig<T>`'s match predicate inline
+  instead of sharing it. Extracted an internal `ServiceConfigExtensions.FindConfigDescriptors<T>()`
+  helper, now used by both. Small, internal-only touch to the already-shipped `ServiceConfig`
+  Topic, in direct service of this package. See Outcome §3 item 5.
 
 ## 7. Outcome reporting
 
