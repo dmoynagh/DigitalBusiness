@@ -167,55 +167,13 @@ namespace DigitalBusiness.JsonDataWrappers
 
             /// <summary>Sets the item at the given index. A null value sets a JSON null at that position.
             /// Extends the array with nulls if the index is beyond the current length. Requires a writable instance.</summary>
-            public void Set(int index, JsonData? value)
-            {
-                jsonData.ThrowIfNotArray();
-                jsonData.ThrowIfReadOnly();
+            public void Set(int index, JsonData? value) => SetCore(jsonData, index, value);
 
-                var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
-                if (jsonData.Node is JsonArray jsonArray)
-                {
-                    // Fill with nulls if index is beyond current length
-                    while (jsonArray.Count <= index)
-                        jsonArray.Add((JsonNode?)null);
-                    jsonArray[index] = addNode;
-                }
-                else
-                {
-                    jsonData.Node![index] = addNode;
-                }
-            }
-
-      
             /// <summary>Appends an item to the end of the array. Requires a writable instance.</summary>
-            public void Add(in JsonData? value)
-            {
-                jsonData.ThrowIfNotArray();
-                jsonData.ThrowIfReadOnly();
-
-                var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
-                if(jsonData.Node is JsonArray jsonArray)
-                {
-                    jsonArray.Add(addNode);
-
-                }
-                else throw new InvalidOperationException("Node is not an array.");
-            }
+            public void Add(in JsonData? value) => AddCore(jsonData, value);
 
             /// <summary>Inserts an item at the given index, shifting subsequent items. Requires a writable instance.</summary>
-            public void Insert(int index, JsonData? value)
-            {
-                jsonData.ThrowIfNotArray();
-                jsonData.ThrowIfReadOnly();
-
-                var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
-                if (jsonData.Node is JsonArray jsonArray)
-                {
-                    jsonArray.Insert(index, addNode);
-
-                }
-                else throw new InvalidOperationException("Node is not an array.");              
-            }           
+            public void Insert(int index, JsonData? value) => InsertCore(jsonData, index, value);
 
             /// <summary>Removes the item at the given index. Requires a writable instance.</summary>
             public void RemoveAt(int index)
@@ -231,6 +189,61 @@ namespace DigitalBusiness.JsonDataWrappers
                 else throw new InvalidOperationException("Node is not an array.");
             }
 
+        }
+
+        // ----------------------------------------------------------------
+        // Internal helpers — plain static methods (not inside the extension
+        // block) so typed callers in JsonDataTypedExtensions can invoke them
+        // by fully-qualified name instead of the ambiguous unqualified
+        // `jsonData.Set/Add/Insert(...)`, which would otherwise bind back to
+        // that class's own generic overload (T inferred as JsonData, since
+        // JsonData is a readonly struct and both T? and JsonData? erase to
+        // Nullable<JsonData>) and recurse infinitely.
+        // ----------------------------------------------------------------
+
+        internal static void SetCore(JsonData jsonData, int index, JsonData? value)
+        {
+            jsonData.ThrowIfNotArray();
+            jsonData.ThrowIfReadOnly();
+
+            var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
+            if (jsonData.Node is JsonArray jsonArray)
+            {
+                // Fill with nulls if index is beyond current length
+                while (jsonArray.Count <= index)
+                    jsonArray.Add((JsonNode?)null);
+                jsonArray[index] = addNode;
+            }
+            else
+            {
+                jsonData.Node![index] = addNode;
+            }
+        }
+
+        internal static void AddCore(JsonData jsonData, in JsonData? value)
+        {
+            jsonData.ThrowIfNotArray();
+            jsonData.ThrowIfReadOnly();
+
+            var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
+            if (jsonData.Node is JsonArray jsonArray)
+            {
+                jsonArray.Add(addNode);
+            }
+            else throw new InvalidOperationException("Node is not an array.");
+        }
+
+        internal static void InsertCore(JsonData jsonData, int index, JsonData? value)
+        {
+            jsonData.ThrowIfNotArray();
+            jsonData.ThrowIfReadOnly();
+
+            var addNode = value.HasValue ? JsonDataHelper.GetNodeToAdd(value.Value, jsonData.Node!) : null;
+            if (jsonData.Node is JsonArray jsonArray)
+            {
+                jsonArray.Insert(index, addNode);
+            }
+            else throw new InvalidOperationException("Node is not an array.");
         }
 
     }

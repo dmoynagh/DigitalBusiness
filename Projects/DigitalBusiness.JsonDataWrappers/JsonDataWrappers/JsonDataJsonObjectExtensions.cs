@@ -143,14 +143,7 @@ namespace DigitalBusiness.JsonDataWrappers
 
             /// <summary>Sets the named property, always writing a value — including an explicit JSON null. Requires a writable instance.
             /// Removal is via <see cref="Remove(string)"/> only, never implied by passing a null-valued <see cref="JsonData"/>.</summary>
-            public void Set(string key, JsonData value)               
-            {
-                jsonData.ThrowIfReadOnly(); 
-                jsonData.ThrowIfNotObject();
-
-                var addNode = JsonDataHelper.GetNodeToAdd(value, jsonData.Node!);
-                jsonData.Node![key] = addNode;
-            }
+            public void Set(string key, JsonData value) => SetCore(jsonData, key, value);
 
             /// <summary>Removes the named property. Requires a writable instance.</summary>
             public bool Remove(string key)
@@ -166,9 +159,26 @@ namespace DigitalBusiness.JsonDataWrappers
             /// <summary>Enumerates all (name, value) pairs in this JSON object. Child values inherit
             /// this instance's readonly state for Node-backed sources, matching PropertyNames.</summary>
             public IEnumerable<(string Name, JsonData Value)> Properties => JsonDataHelper.GetProperties(jsonData);
-      
+
         }
 
-       
+        // ----------------------------------------------------------------
+        // Internal helper — plain static method (not inside the extension
+        // block) so JsonDataTypedExtensions.Set<T>(string, T?) can invoke it
+        // by fully-qualified name instead of the ambiguous unqualified
+        // `jsonData.Set(...)`, which would otherwise bind back to that
+        // class's own generic overload (T inferred as JsonData, since
+        // JsonData is a readonly struct) and recurse infinitely.
+        // ----------------------------------------------------------------
+
+        internal static void SetCore(JsonData jsonData, string key, JsonData value)
+        {
+            jsonData.ThrowIfReadOnly();
+            jsonData.ThrowIfNotObject();
+
+            var addNode = JsonDataHelper.GetNodeToAdd(value, jsonData.Node!);
+            jsonData.Node![key] = addNode;
+        }
+
     }
 }
